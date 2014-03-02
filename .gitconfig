@@ -1,0 +1,7 @@
+[user]
+	email = coeuvre@gmail.com
+	name = Coeuvre
+[color]
+	ui = true
+[mergetool]
+	keepBackup = true
