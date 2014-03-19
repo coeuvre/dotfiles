@@ -1,7 +1,9 @@
 [user]
-	email = coeuvre@gmail.com
-	name = Coeuvre
+    email = coeuvre@gmail.com
+    name = Coeuvre
 [color]
-	ui = true
+    ui = true
 [mergetool]
-	keepBackup = true
+    keepBackup = true
+[core]
+    editor = vim

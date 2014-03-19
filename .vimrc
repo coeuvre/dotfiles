@@ -32,7 +32,7 @@
 " Bundles {
     NeoBundleFetch 'Shougo/neobundle.vim'
 
-    if has("lua")
+    if version >= 703 && has("lua")
     NeoBundle 'Shougo/neocomplete.vim' " {
         let g:neocomplete#data_directory = $HOME . '/.vim/cache/neocomplete'
         "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
@@ -321,11 +321,11 @@
 
     NeoBundle 'airblade/vim-gitgutter'
 
-
     " Syntax Highlight
     NeoBundle 'wting/rust.vim'
     NeoBundle 'tikhomirov/vim-glsl'
     NeoBundle 'plasticboy/vim-markdown'
+    NeoBundle 'elzr/vim-json'
 
     " Theme
     NeoBundle 'chriskempson/vim-tomorrow-theme'
@@ -564,6 +564,7 @@
         elseif has("gui_win32")
             set guifont=Consolas:h11,Courier_New:h10
         endif
+
         if has('gui_macvim')
             set transparency=2      " Make the window slightly transparent
         endif

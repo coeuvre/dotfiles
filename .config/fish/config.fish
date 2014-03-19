@@ -14,9 +14,19 @@ set fish_theme robbyrussell
 # Load oh-my-fish configuration.
 . $fish_path/oh-my-fish.fish
 
-set -x C_INCLUDE_PATH /usr/local/include $C_INCLUDE_PATH
+# Environment Variable
+
+set -x PATH /usr/local/bin /usr/local/sbin /usr/bin /bin /usr/sbin /sbin
+
+# C/C++
+set -x C_INCLUDE_PATH ~/.local/include /usr/local/include
 set -x CPLUS_INCLUDE_PATH $C_INCLUDE_PATH
-set -x LIBRARY_PATH /usr/local/lib $LIBRARY_PATH
-set -x LD_LIBRARY_PATH /usr/local/lib $LIBRARY_PATH
+set -x LIBRARY_PATH ~/.local/lib /usr/local/lib
+set -x LD_LIBRARY_PATH $LIBRARY_PATH
+
+# Java
+set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home
+
 
 alias vim "mvim -v"
+alias l ls
