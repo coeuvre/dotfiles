@@ -23,10 +23,10 @@ set -x C_INCLUDE_PATH ~/.local/include /usr/local/include
 set -x CPLUS_INCLUDE_PATH $C_INCLUDE_PATH
 set -x LIBRARY_PATH ~/.local/lib /usr/local/lib
 set -x LD_LIBRARY_PATH $LIBRARY_PATH
+set -x PKG_CONFIG_PATH ~/.local/lib/pkgconfig /usr/local/lib/pkgconfig
 
 # Java
-set -x JAVA_HOME /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home
-
+set -x JAVA_HOME (/usr/libexec/java_home -v ‘1.7*’)
 
 alias vim "mvim -v"
 alias l ls

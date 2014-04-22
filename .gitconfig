@@ -6,4 +6,4 @@
 [mergetool]
     keepBackup = true
 [core]
-    editor = vim
+    editor = gvim

@@ -32,7 +32,7 @@
 " Bundles {
     NeoBundleFetch 'Shougo/neobundle.vim'
 
-    if version >= 703 && has("lua")
+    if version >= 704 && has("lua")
     NeoBundle 'Shougo/neocomplete.vim' " {
         let g:neocomplete#data_directory = $HOME . '/.vim/cache/neocomplete'
         "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
@@ -45,6 +45,10 @@
         " Set minimum syntax keyword length.
         let g:neocomplete#sources#syntax#min_keyword_length = 3
         let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+        " Use camel case completion.
+        let g:neocomplete#enable_camel_case = 1
+        let g:neocomplete#enable_ignore_case = 0
 
         " Define dictionary.
         let g:neocomplete#sources#dictionary#dictionaries = {
@@ -111,9 +115,9 @@
         if !exists('g:neocomplete#sources#omni#input_patterns')
           let g:neocomplete#sources#omni#input_patterns = {}
         endif
-        "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-        "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-        "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+        let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+        let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+        let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
         " For perlomni.vim setting.
         " https://github.com/c9s/perlomni.vim
@@ -121,7 +125,7 @@
     " }
     else
     NeoBundle 'Shougo/neocomplcache.vim' " {
-        let g:neocomplcache#data_directory = $HOME . '/.vim/cache/neocomplete'
+        let g:neocomplcache#data_directory = $HOME . '/.vim/cache/neocomplcache'
         "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
         " Disable AutoComplPop.
         let g:acp_enableAtStartup = 0
@@ -135,9 +139,9 @@
 
         " Enable heavy features.
         " Use camel case completion.
-        "let g:neocomplcache_enable_camel_case_completion = 1
+        let g:neocomplcache_enable_camel_case_completion = 1
         " Use underbar completion.
-        "let g:neocomplcache_enable_underbar_completion = 1
+        let g:neocomplcache_enable_underbar_completion = 1
 
         " Define dictionary.
         let g:neocomplcache_dictionary_filetype_lists = {
@@ -219,7 +223,7 @@
 
         call unite#filters#matcher_default#use(['matcher_fuzzy'])
         nnoremap <leader>t :<C-u>Unite -no-split -buffer-name=files file_rec/async:!<cr>
-        nnoremap <leader>f :<C-u>Unite -no-split -buffer-name=files file<cr>
+        nnoremap <leader>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 
         let g:unite_source_history_yank_enable = 1
         nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
@@ -240,7 +244,7 @@
     NeoBundle 'Shougo/neomru.vim' " {
         let g:neomru#file_mru_path = $HOME . '/.vim/cache/neomru/file'
         let g:neomru#directory_mru_path = $HOME . '/.vim/cache/neomru/dictionary'
-        nnoremap <leader>r :<C-u>Unite -no-split -buffer-name=mru   file_mru<cr>
+        nnoremap <leader>r :<C-u>Unite -no-split -buffer-name=mru -start-insert file_mru<cr>
     " }
 
     NeoBundle 'Shougo/unite-outline' "{
@@ -287,6 +291,8 @@
     NeoBundle 'scrooloose/syntastic' " {
         let g:syntastic_c_gcc_args = "-I$C_INCLUDE_PATH -L$LIBRARY_PATH"
         let g:syntastic_cpp_gcc_args = "-I$CPLUS_INCLUDE_PATH -L$LIBRARY_PATH"
+
+        let g:syntastic_rust_checkers = ['']
     " }
 
     NeoBundle 'godlygeek/tabular' " {
@@ -327,6 +333,8 @@
     NeoBundle 'plasticboy/vim-markdown'
     NeoBundle 'elzr/vim-json'
 
+    NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
+
     " Theme
     NeoBundle 'chriskempson/vim-tomorrow-theme'
 " }
@@ -365,6 +373,7 @@
     set history=1000                    " Store a ton of history (default is 20)
     set nospell                         " Spell checking off
     set hidden                          " Allow buffer switching without saving
+    set autoread
 
     " Setting up the directories {
         set backup                  " Backups are nice ...
@@ -381,6 +390,10 @@
             \ ]
     " }
 
+    " Uncomment the following to have Vim jump to the last position when
+    " reopening a file
+    autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+            \| exe "normal! g'\"" | endif
 " }
 
 " Vim UI {
@@ -391,6 +404,8 @@
 
     highlight clear SignColumn      " SignColumn should match background for
                                     " things like vim-gitgutter
+    highlight Search guibg=NONE gui=underline
+    highlight Search ctermbg=NONE cterm=underline
 
     set colorcolumn=80
     if has('cmdline_info')
@@ -446,7 +461,6 @@
     " Remove trailing whitespaces and ^M chars
     autocmd FileType c,cpp,java,php,javascript,python,twig,xml,yml,mkd autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
-
 " }
 
 " Key (re)Mappings {
