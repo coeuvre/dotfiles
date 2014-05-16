@@ -125,7 +125,7 @@
     " }
     else
     NeoBundle 'Shougo/neocomplcache.vim' " {
-        let g:neocomplcache#data_directory = $HOME . '/.vim/cache/neocomplcache'
+        let g:neocomplcache_temporary_dir = $HOME . '/.vim/cache/neocomplcache'
         "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
         " Disable AutoComplPop.
         let g:acp_enableAtStartup = 0
