@@ -247,10 +247,6 @@
         nnoremap <leader>r :<C-u>Unite -no-split -buffer-name=mru -start-insert file_mru<cr>
     " }
 
-    NeoBundle 'Shougo/unite-outline' "{
-        nnoremap <leader>o :<C-u>Unite -no-split -buffer-name=outline outline<cr>
-    " }
-
     NeoBundle 'Shougo/neosnippet.vim' " {
         " Plugin key-mappings.
         imap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -290,7 +286,7 @@
 
     NeoBundle 'scrooloose/syntastic' " {
         let g:syntastic_c_gcc_args = "-I$C_INCLUDE_PATH -L$LIBRARY_PATH"
-        let g:syntastic_cpp_gcc_args = "-I$CPLUS_INCLUDE_PATH -L$LIBRARY_PATH"
+        let g:syntastic_cpp_gcc_args = "-std=c++11 -I$CPLUS_INCLUDE_PATH -L$LIBRARY_PATH"
 
         let g:syntastic_rust_checkers = ['']
     " }
@@ -404,8 +400,8 @@
 
     highlight clear SignColumn      " SignColumn should match background for
                                     " things like vim-gitgutter
-    highlight Search guibg=NONE gui=underline
-    highlight Search ctermbg=NONE cterm=underline
+    highlight Search guibg=yellow gui=underline
+    highlight Search ctermbg=yellow cterm=underline
 
     set colorcolumn=80
     if has('cmdline_info')
@@ -459,7 +455,7 @@
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
     " Remove trailing whitespaces and ^M chars
-    autocmd FileType c,cpp,java,php,javascript,python,twig,xml,yml,mkd autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+    autocmd FileType c,cpp,rust,java,php,javascript,python,twig,xml,yml,mkd autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
 " }
 

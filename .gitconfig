@@ -5,5 +5,20 @@
     ui = true
 [mergetool]
     keepBackup = true
+    prompt = false
 [core]
-    editor = gvim
+    editor = "mvim -v"
+[mergetool "Kaleidoscope"]
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustexitcode = true
+[merge]
+    tool = Kaleidoscope
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[difftool]
+    prompt = false
+[diff]
+    tool = Kaleidoscope
+[filter "media"]
+    clean = git-media-clean %f
+    smudge = git-media-smudge %f
