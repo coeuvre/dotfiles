@@ -373,7 +373,7 @@
     set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
     set virtualedit=onemore             " Allow for cursor beyond last character
     set history=1000                    " Store a ton of history (default is 20)
-    set nospell                         " Spell checking off
+    set spell                           " Spell checking on
     set hidden                          " Allow buffer switching without saving
     set autoread
 
@@ -558,6 +558,13 @@
 
     " Insert <CR> at current cursor.
     nmap <S-CR> i<CR><Esc>
+
+    " Spell checking
+    map <leader>ss :setlocal spell!<cr>
+    map <leader>sn ]s
+    map <leader>sn [s
+    map <leader>sa zg
+    map <leader>s= z=
 " }
 
 " GUI Settings {
