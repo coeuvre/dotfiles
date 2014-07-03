@@ -319,14 +319,20 @@
         nnoremap <silent> <leader>gb :Gblame<CR>
         nnoremap <silent> <leader>gl :Glog<CR>
         nnoremap <silent> <leader>gp :Git push<CR>
-    "}
+    " }
 
     NeoBundle 'airblade/vim-gitgutter'
+
+    NeoBundle 'junegunn/goyo.vim' " {
+        nnoremap <leader>z :Goyo<CR>
+    " }
+
+    NeoBundle 'amix/vim-zenroom2'
 
     " Syntax Highlight
     NeoBundle 'wting/rust.vim'
     NeoBundle 'tikhomirov/vim-glsl'
-    NeoBundle 'plasticboy/vim-markdown'
+    NeoBundle 'tpope/vim-markdown'
     NeoBundle 'elzr/vim-json'
 
     NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
