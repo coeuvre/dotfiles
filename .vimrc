@@ -284,12 +284,12 @@
 
     NeoBundle 'scrooloose/nerdcommenter'
 
-    NeoBundle 'scrooloose/syntastic' " {
-        let g:syntastic_c_gcc_args = "-I$C_INCLUDE_PATH -L$LIBRARY_PATH"
-        let g:syntastic_cpp_gcc_args = "-std=c++11 -I$CPLUS_INCLUDE_PATH -L$LIBRARY_PATH"
+    "NeoBundle 'scrooloose/syntastic' " {
+        "let g:syntastic_c_gcc_args = "-I$C_INCLUDE_PATH -L$LIBRARY_PATH"
+        "let g:syntastic_cpp_gcc_args = "-std=c++11 -I$CPLUS_INCLUDE_PATH -L$LIBRARY_PATH"
 
-        let g:syntastic_rust_checkers = ['']
-    " }
+        "let g:syntastic_rust_checkers = ['']
+    "" }
 
     NeoBundle 'godlygeek/tabular' " {
         nmap <Leader>a& :Tabularize /&<CR>
@@ -323,17 +323,12 @@
 
     NeoBundle 'airblade/vim-gitgutter'
 
-    NeoBundle 'junegunn/goyo.vim' " {
-        nnoremap <leader>z :Goyo<CR>
-    " }
-
-    NeoBundle 'amix/vim-zenroom2'
-
     " Syntax Highlight
     NeoBundle 'wting/rust.vim'
     NeoBundle 'tikhomirov/vim-glsl'
     NeoBundle 'tpope/vim-markdown'
     NeoBundle 'elzr/vim-json'
+    NeoBundle 'cespare/vim-toml'
 
     NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
 
