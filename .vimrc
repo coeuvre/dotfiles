@@ -2,11 +2,17 @@
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker :
 " }
 
+" Note: Skip initialization for vim-tiny or vim-small
+if !1 | finish | endif
+
 " Environment {
     set shell=/bin/sh
 
     " Basics {
-        set nocompatible        " Must be first line
+        if has('vim_starting')
+            set nocompatible        " Be iMproved
+            set rtp+=~/.vim/bundle/neobundle.vim/
+        endif
 
         " The default leader is '\', but many people prefer ',' as it's in a standard
         " location.
@@ -20,16 +26,11 @@
           let $HOME=$VIM
         endif
     " }
-
-    " Setup Bundle Support {
-        " The next three lines ensure that the ~/.vim/bundle/ system works
-        set rtp+=~/.vim/bundle/neobundle.vim/
-        call neobundle#rc(expand('~/.vim/bundle/'))
-    " }
-
 " }
 
 " Bundles {
+    call neobundle#begin(expand('~/.vim/bundle/'))
+
     NeoBundleFetch 'Shougo/neobundle.vim'
 
     if version >= 704 && has("lua")
@@ -221,14 +222,11 @@
     NeoBundle 'Shougo/unite.vim' " {
         let g:unite_data_directory = $HOME . '/.vim/cache/unite'
 
-        call unite#filters#matcher_default#use(['matcher_fuzzy'])
-        nnoremap <leader>t :<C-u>Unite -no-split -buffer-name=files file_rec/async:!<cr>
+        nnoremap <leader>b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
         nnoremap <leader>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 
         let g:unite_source_history_yank_enable = 1
         nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
-
-        nnoremap <leader>b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
 
         " Custom mappings for the unite buffer
         autocmd FileType unite call s:unite_settings()
@@ -334,6 +332,12 @@
 
     " Theme
     NeoBundle 'chriskempson/vim-tomorrow-theme'
+
+    call neobundle#end()
+
+    filetype plugin indent on   " Automatically detect file types.
+
+    NeoBundleCheck
 " }
 
 " General {
@@ -346,7 +350,6 @@
     if !has('gui')
         set term=$TERM          " Make arrow and other keys work
     endif
-    filetype plugin indent on   " Automatically detect file types.
     syntax on                   " Syntax highlighting
     set mouse=a                 " Automatically enable mouse usage
     set mousehide               " Hide the mouse cursor while typing
