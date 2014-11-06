@@ -321,14 +321,32 @@ if !1 | finish | endif
 
     NeoBundle 'airblade/vim-gitgutter'
 
+    NeoBundle 'kristijanhusak/vim-multiple-cursors' " {
+        let g:multi_cursor_exit_from_visual_mode = 0
+        let g:multi_cursor_exit_from_insert_mode = 0
+        " Called once right before you start selecting multiple cursors
+        function! Multiple_cursors_before()
+          if exists(':NeoCompleteLock')==2
+            exe 'NeoCompleteLock'
+          endif
+        endfunction
+
+        " Called once only when the multiple selection is canceled (default <Esc>)
+        function! Multiple_cursors_after()
+          if exists(':NeoCompleteUnlock')==2
+            exe 'NeoCompleteUnlock'
+          endif
+        endfunction
+    " }
+
     " Syntax Highlight
     NeoBundle 'wting/rust.vim'
     NeoBundle 'tikhomirov/vim-glsl'
     NeoBundle 'tpope/vim-markdown'
     NeoBundle 'elzr/vim-json'
     NeoBundle 'cespare/vim-toml'
-
-    NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
+    NeoBundle 'vim-scripts/syntax-highlighting-for-tintinttpp'
+    NeoBundle 'jelera/vim-javascript-syntax'
 
     " Theme
     NeoBundle 'chriskempson/vim-tomorrow-theme'
@@ -337,7 +355,7 @@ if !1 | finish | endif
 
     filetype plugin indent on   " Automatically detect file types.
 
-    NeoBundleCheck
+    "NeoBundleCheck
 " }
 
 " General {
@@ -345,7 +363,7 @@ if !1 | finish | endif
     set noeb vb t_vb=           " Close error bells
     autocmd GUIEnter * set visualbell t_vb=
 
-    set fileencodings=utf-8
+    set fileencodings=ucs-bom,utf-8,cp936,gb18030
     set background=dark         " Assume a dark background
     if !has('gui')
         set term=$TERM          " Make arrow and other keys work
