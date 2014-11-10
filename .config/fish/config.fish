@@ -12,21 +12,27 @@ set fish_theme robbyrussell
 #set fish_custom $HOME/dotfiles/oh-my-fish
 
 # Load oh-my-fish configuration.
-. $fish_path/oh-my-fish.fish
+source $fish_path/oh-my-fish.fish
 
 # Environment Variable
 
-set -x PATH /usr/local/bin /usr/local/sbin /usr/bin /bin /usr/sbin /sbin
+set -x PATH ~/.local/bin $PATH
 
 # C/C++
-set -x C_INCLUDE_PATH ~/.local/include /usr/local/include
-set -x CPLUS_INCLUDE_PATH $C_INCLUDE_PATH
-set -x LIBRARY_PATH ~/.local/lib /usr/local/lib
-set -x LD_LIBRARY_PATH $LIBRARY_PATH
-set -x PKG_CONFIG_PATH ~/.local/lib/pkgconfig /usr/local/lib/pkgconfig
+set -x C_INCLUDE_PATH ~/.local/include /usr/local/include $C_INCLUDE_PATH
+set -x CPLUS_INCLUDE_PATH $C_INCLUDE_PATH $CPLUS_INCLUDE_PATH
+set -x LIBRARY_PATH ~/.local/lib /usr/local/lib $LIBRARY_PATH
+set -x LD_LIBRARY_PATH $LIBRARY_PATH $LD_LIBRARY_PATH
+set -x PKG_CONFIG_PATH ~/.local/lib/pkgconfig /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 
-# Java
-set -x JAVA_HOME (/usr/libexec/java_home -v ‘1.7*’)
-
-alias vim "mvim -v"
 alias l ls
+
+switch (uname)
+    case Linux
+        set -x PATH ~/.linuxbrew/bin $PATH
+        set -x MANPATH ~/.linuxbrew/share/man $MANPATH
+        set -x INFOPATH ~/.linuxbrew/share/info $INFOPATH
+    case Darwin # MAC OS X
+        set -x JAVA_HOME (/usr/libexec/java_home -v ‘1.7*’)
+        #set -x DYLD_LIBRARY_PATH ~/.local/lib
+end

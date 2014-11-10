@@ -412,6 +412,36 @@ if !1 | finish | endif
     " reopening a file
     autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
             \| exe "normal! g'\"" | endif
+
+
+    " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
+    let common_dir = $HOME . '/.vim/cache/'
+    let dir_list = {
+                \ 'backup': 'backupdir',
+                \ 'views': 'viewdir',
+                \ 'swap': 'directory' }
+
+    if has('persistent_undo')
+        let dir_list['undo'] = 'undodir'
+    endif
+
+    exec "set viminfo='100,<50,s10,h,n" . common_dir . 'viminfo'
+
+    for [dirname, settingname] in items(dir_list)
+        let directory = common_dir . dirname . '/'
+        if exists("*mkdir")
+            if !isdirectory(directory)
+                call mkdir(directory)
+            endif
+        endif
+        if !isdirectory(directory)
+            echo "Warning: Unable to create backup directory: " . directory
+            echo "Try: mkdir -p " . directory
+        else
+            let directory = substitute(directory, " ", "\\\\ ", "g")
+            exec "set " . settingname . "=" . directory
+        endif
+    endfor
 " }
 
 " Vim UI {
@@ -617,42 +647,6 @@ if !1 | finish | endif
 " }
 
 " Functions {
-    " Initialize directories {
-    function! InitializeDirectories()
-        let parent = $HOME . '/.vim'
-        let prefix = 'cache/'
-        let dir_list = {
-                    \ 'backup': 'backupdir',
-                    \ 'views': 'viewdir',
-                    \ 'swap': 'directory' }
-
-        if has('persistent_undo')
-            let dir_list['undo'] = 'undodir'
-        endif
-
-
-        " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
-        let common_dir = parent . '/' . prefix
-
-        exec "set viminfo='100,<50,s10,h,n" . common_dir . 'viminfo'
-
-        for [dirname, settingname] in items(dir_list)
-            let directory = common_dir . dirname . '/'
-            if exists("*mkdir")
-                if !isdirectory(directory)
-                    call mkdir(directory)
-                endif
-            endif
-            if !isdirectory(directory)
-                echo "Warning: Unable to create backup directory: " . directory
-                echo "Try: mkdir -p " . directory
-            else
-                let directory = substitute(directory, " ", "\\\\ ", "g")
-                exec "set " . settingname . "=" . directory
-            endif
-        endfor
-    endfunction
-    " }
 
     " Strip whitespace {
     function! StripTrailingWhitespace()
@@ -670,6 +664,3 @@ if !1 | finish | endif
 
 " }
 
-" Finish local initializations {
-    call InitializeDirectories()
-" }
