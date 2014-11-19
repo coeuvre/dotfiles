@@ -321,22 +321,38 @@ if !1 | finish | endif
 
     NeoBundle 'airblade/vim-gitgutter'
 
-    NeoBundle 'kristijanhusak/vim-multiple-cursors' " {
-        let g:multi_cursor_exit_from_visual_mode = 0
-        let g:multi_cursor_exit_from_insert_mode = 0
-        " Called once right before you start selecting multiple cursors
-        function! Multiple_cursors_before()
-          if exists(':NeoCompleteLock')==2
-            exe 'NeoCompleteLock'
-          endif
-        endfunction
+    "NeoBundle 'kristijanhusak/vim-multiple-cursors' " {
+        "let g:multi_cursor_exit_from_visual_mode = 0
+        "let g:multi_cursor_exit_from_insert_mode = 0
+        "" Called once right before you start selecting multiple cursors
+        "function! Multiple_cursors_before()
+          "if exists(':NeoCompleteLock')==2
+            "exe 'NeoCompleteLock'
+          "endif
+        "endfunction
 
-        " Called once only when the multiple selection is canceled (default <Esc>)
-        function! Multiple_cursors_after()
-          if exists(':NeoCompleteUnlock')==2
-            exe 'NeoCompleteUnlock'
-          endif
-        endfunction
+        "" Called once only when the multiple selection is canceled (default <Esc>)
+        "function! Multiple_cursors_after()
+          "if exists(':NeoCompleteUnlock')==2
+            "exe 'NeoCompleteUnlock'
+          "endif
+        "endfunction
+    " }
+
+    NeoBundle 'haya14busa/incsearch.vim' " {
+        let g:incsearch#auto_nohlsearch = 1
+        " n and N directions are always forward and backward respectively even after performing <Plug>(incsearch-backward).
+        let g:incsearch#consistent_n_direction = 1
+
+        map /  <Plug>(incsearch-forward)
+        map ?  <Plug>(incsearch-backward)
+        map g/ <Plug>(incsearch-stay)
+        map n  <Plug>(incsearch-nohl-n)
+        map N  <Plug>(incsearch-nohl-N)
+        map *  <Plug>(incsearch-nohl-*)
+        map #  <Plug>(incsearch-nohl-#)
+        map g* <Plug>(incsearch-nohl-g*)
+        map g# <Plug>(incsearch-nohl-g#)
     " }
 
     " Syntax Highlight
@@ -389,7 +405,7 @@ if !1 | finish | endif
     set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
     set virtualedit=onemore             " Allow for cursor beyond last character
     set history=1000                    " Store a ton of history (default is 20)
-    set spell                           " Spell checking on
+    "set spell                           " Spell checking on
     set hidden                          " Allow buffer switching without saving
     set autoread
 
