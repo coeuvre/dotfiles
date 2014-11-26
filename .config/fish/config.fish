@@ -30,7 +30,7 @@ function fish_prompt
   else
       set arrow "$red➜ "
   end
-  set -l cwd $cyan(_remote_hostname)' '(basename (prompt_pwd))
+  set -l cwd $cyan (_remote_hostname) ' ' (basename (prompt_pwd))
 
   if [ (_git_branch_name) ]
     set -l git_branch $red(_git_branch_name)
