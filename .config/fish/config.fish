@@ -67,6 +67,7 @@ set -x LD_LIBRARY_PATH $LIBRARY_PATH $LD_LIBRARY_PATH
 set -x PKG_CONFIG_PATH ~/.local/lib/pkgconfig /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 
 alias l ls
+alias grep "grep --color"
 
 switch (uname)
     case Linux
@@ -74,6 +75,6 @@ switch (uname)
         set -x MANPATH ~/.linuxbrew/share/man $MANPATH
         set -x INFOPATH ~/.linuxbrew/share/info $INFOPATH
     case Darwin # MAC OS X
-        set -x JAVA_HOME (/usr/libexec/java_home -v ‘1.7*’)
+        set -x JAVA_HOME (/usr/libexec/java_home -v '1.7*')
         #set -x DYLD_LIBRARY_PATH ~/.local/lib
 end
