@@ -47,9 +47,27 @@ if !1 | finish | endif
 
     NeoBundleFetch 'Shougo/neobundle.vim'
 
+    NeoBundle 'Shougo/vimproc.vim', {
+    \ 'build' : {
+    \     'windows' : 'tools\\update-dll-mingw',
+    \     'cygwin' : 'make -f make_cygwin.mak',
+    \     'mac' : 'make -f make_mac.mak',
+    \     'linux' : 'make',
+    \     'unix' : 'gmake',
+    \    },
+    \ }
+
+    NeoBundle 'Shougo/vimshell.vim' " {
+        let g:vimshell_data_directory= $HOME . '/.vim/cache/vimshell'
+        " Use current directory as vimshell prompt.
+        let g:vimshell_prompt_expr =
+        \ 'escape(fnamemodify(getcwd(), ":~").">", "\\[]()?! ")." "'
+        let g:vimshell_prompt_pattern = '^\%(\f\|\\.\)\+> '
+    " }
+
     if !WINDOWS()
         NeoBundle 'Valloric/YouCompleteMe' " {
-            let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
+            let g:ycm_global_ycm_extra_conf = $HOME . '/.vim/.ycm_extra_conf.py'
             " Use Syntastic checkers
             let g:ycm_show_diagnostics_ui = 0
             " Enable omni completion.
@@ -186,7 +204,6 @@ if !1 | finish | endif
           " Enable navigation with control-n and control-p in insert mode
           imap <buffer> <C-n>   <Plug>(unite_select_next_line)
           imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
-          imap <silent><buffer><expr> <C-s> unite#do_action('split')
         endfunction
     " }
 
@@ -520,9 +537,9 @@ if !1 | finish | endif
     vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
 
     " The following two lines conflict with moving to top and bottom of the screen
-    map <C-h> :tabprevious<cr>
-    map <C-l> :tabnext<cr>
-    map <C-x> :q!<cr>
+    noremap <silent> <C-h> :tabprevious<cr>
+    noremap <silent> <C-l> :tabnext<cr>
+    noremap <silent> <C-x> :q!<cr>
 
     " Stupid shift key fixes
     if has("user_commands")
@@ -587,14 +604,14 @@ if !1 | finish | endif
     map <leader>et :tabe %%
 
     " Split windows
-    map <C-w>% :vsplit<CR>
-    map <C-w>" :split<CR>
+    noremap <silent> <C-w>% :vsplit<CR>
+    noremap <silent> <C-w>" :split<CR>
 
     " Resize windows
-    map <C-w><C-h> :vertical resize -5<CR>
-    map <C-w><C-l> :vertical resize +5<CR>
-    map <C-w><C-j> :resize +5<CR>
-    map <C-w><C-k> :resize -5<CR>
+    noremap <silent> <C-w><C-h> :vertical resize -5<CR>
+    noremap <silent> <C-w><C-l> :vertical resize +5<CR>
+    noremap <silent> <C-w><C-j> :resize +5<CR>
+    noremap <silent> <C-w><C-k> :resize -5<CR>
 
     " Map <Leader>ff to display all lines with keyword under cursor
     " and ask which one to jump to
