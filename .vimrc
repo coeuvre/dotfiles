@@ -47,6 +47,16 @@ if !1 | finish | endif
 
     NeoBundleFetch 'Shougo/neobundle.vim'
 
+    NeoBundle 'Shougo/vimproc.vim', {
+    \ 'build' : {
+    \     'windows' : 'tools\\update-dll-mingw',
+    \     'cygwin' : 'make -f make_cygwin.mak',
+    \     'mac' : 'make -f make_mac.mak',
+    \     'linux' : 'make',
+    \     'unix' : 'gmake',
+    \    },
+    \ }
+
     if !WINDOWS()
         NeoBundle 'Valloric/YouCompleteMe' , {
         \   'build' : {
@@ -191,6 +201,7 @@ if !1 | finish | endif
           " Enable navigation with control-n and control-p in insert mode
           imap <buffer> <C-n>   <Plug>(unite_select_next_line)
           imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
+          imap <silent><buffer><expr> <C-s> unite#do_action('split')
         endfunction
     " }
 
@@ -216,6 +227,10 @@ if !1 | finish | endif
         let g:airline_right_sep=''
 
         let g:airline#extensions#tabline#enabled = 1
+        let g:airline#extensions#tabline#show_buffers = 0
+        let g:airline#extensions#tabline#show_tabs = 1
+        let g:airline#extensions#tabline#show_tab_nr = 0
+
         let g:airline#extensions#tabline#left_sep = ''
         let g:airline#extensions#tabline#_alt_sep = ''
 
@@ -468,6 +483,8 @@ if !1 | finish | endif
     autocmd FileType haskell setlocal commentstring=--\ %s
     " Workaround broken colour highlighting in Haskell
     autocmd FileType haskell,rust setlocal nospell
+
+    map <Leader>j :%!python -m json.tool<CR>
 " }
 
 " Key (re)Mappings {
@@ -500,27 +517,27 @@ if !1 | finish | endif
     endfunction
 
     " Map g* keys in Normal, Operator-pending, and Visual+select
-    noremap $ :call WrapRelativeMotion("$")<CR>
-    noremap <End> :call WrapRelativeMotion("$")<CR>
-    noremap 0 :call WrapRelativeMotion("0")<CR>
-    noremap <Home> :call WrapRelativeMotion("0")<CR>
-    noremap ^ :call WrapRelativeMotion("^")<CR>
+    noremap <silent> $ :call WrapRelativeMotion("$")<CR>
+    noremap <silent> <End> :call WrapRelativeMotion("$")<CR>
+    noremap <silent> 0 :call WrapRelativeMotion("0")<CR>
+    noremap <silent> <Home> :call WrapRelativeMotion("0")<CR>
+    noremap <silent> ^ :call WrapRelativeMotion("^")<CR>
     " Overwrite the operator pending $/<End> mappings from above
     " to force inclusive motion with :execute normal!
-    onoremap $ v:call WrapRelativeMotion("$")<CR>
-    onoremap <End> v:call WrapRelativeMotion("$")<CR>
+    onoremap <silent> $ v:call WrapRelativeMotion("$")<CR>
+    onoremap <silent> <End> v:call WrapRelativeMotion("$")<CR>
     " Overwrite the Visual+select mode mappings from above
     " to ensure the correct vis_sel flag is passed to function
-    vnoremap $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
-    vnoremap <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
-    vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
-    vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
-    vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
+    vnoremap <silent> $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
+    vnoremap <silent> <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
+    vnoremap <silent> 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
+    vnoremap <silent> <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
+    vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
 
     " The following two lines conflict with moving to top and bottom of the screen
-    map <C-H> :bp<cr>
-    map <C-L> :bn<cr>
-    map <C-X> :bd!<cr>
+    map <C-h> :tabprevious<cr>
+    map <C-l> :tabnext<cr>
+    map <C-x> :q!<cr>
 
     " Stupid shift key fixes
     if has("user_commands")
@@ -584,8 +601,15 @@ if !1 | finish | endif
     map <leader>ev :vsp %%
     map <leader>et :tabe %%
 
-    " Adjust viewports to the same size
-    map <Leader>= <C-w>=
+    " Split windows
+    map <C-w>% :vsplit<CR>
+    map <C-w>" :split<CR>
+
+    " Resize windows
+    map <C-w><C-h> :vertical resize -5<CR>
+    map <C-w><C-l> :vertical resize +5<CR>
+    map <C-w><C-j> :resize +5<CR>
+    map <C-w><C-k> :resize -5<CR>
 
     " Map <Leader>ff to display all lines with keyword under cursor
     " and ask which one to jump to
