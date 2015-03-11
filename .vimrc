@@ -47,23 +47,8 @@ if !1 | finish | endif
 
     NeoBundleFetch 'Shougo/neobundle.vim'
 
-    NeoBundle 'Shougo/vimproc.vim', {
-    \ 'build' : {
-    \     'windows' : 'tools\\update-dll-mingw',
-    \     'cygwin' : 'make -f make_cygwin.mak',
-    \     'mac' : 'make -f make_mac.mak',
-    \     'linux' : 'make',
-    \     'unix' : 'gmake',
-    \    },
-    \ }
-
     if !WINDOWS()
-        NeoBundle 'Valloric/YouCompleteMe' , {
-        \   'build' : {
-        \     'mac': 'git submodule update --init --recursive; ./install.sh --clang-completer',
-        \     'unix': 'git submodule update --init --recursive; ./install.sh --clang-completer',
-        \   }
-        \ } " {
+        NeoBundle 'Valloric/YouCompleteMe' " {
             let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
             " Use Syntastic checkers
             let g:ycm_show_diagnostics_ui = 0
