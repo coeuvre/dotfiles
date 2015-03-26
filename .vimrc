@@ -47,24 +47,6 @@ if !1 | finish | endif
 
     NeoBundleFetch 'Shougo/neobundle.vim'
 
-    NeoBundle 'Shougo/vimproc.vim', {
-    \ 'build' : {
-    \     'windows' : 'tools\\update-dll-mingw',
-    \     'cygwin' : 'make -f make_cygwin.mak',
-    \     'mac' : 'make -f make_mac.mak',
-    \     'linux' : 'make',
-    \     'unix' : 'gmake',
-    \    },
-    \ }
-
-    NeoBundle 'Shougo/vimshell.vim' " {
-        let g:vimshell_data_directory= $HOME . '/.vim/cache/vimshell'
-        " Use current directory as vimshell prompt.
-        let g:vimshell_prompt_expr =
-        \ 'escape(fnamemodify(getcwd(), ":~").">", "\\[]()?! ")." "'
-        let g:vimshell_prompt_pattern = '^\%(\f\|\\.\)\+> '
-    " }
-
     if !WINDOWS()
         NeoBundle 'Valloric/YouCompleteMe' " {
             let g:ycm_global_ycm_extra_conf = $HOME . '/.vim/.ycm_extra_conf.py'
@@ -174,6 +156,11 @@ if !1 | finish | endif
         " }
     endif
 
+    NeoBundle 'phildawes/racer' " {
+        let g:racer_cmd = "~/.vim/bundle/racer/target/release/racer"
+        let $RUST_SRC_PATH="/Library/Caches/Homebrew/rust--git/src/"
+    " }
+
     NeoBundle 'scrooloose/syntastic' " {
         let g:syntastic_always_populate_loc_list = 1
         let g:syntastic_auto_loc_list = 1
@@ -187,11 +174,28 @@ if !1 | finish | endif
         noremap ]e :lnext<CR>
     " }
 
+    NeoBundle 'scrooloose/nerdtree' " {
+        let NERDTreeShowBookmarks=1
+        let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
+        let NERDTreeChDirMode=0
+        let NERDTreeQuitOnOpen=1
+        let NERDTreeMouseMode=2
+        let NERDTreeShowHidden=1
+        let NERDTreeKeepTreeInNewTab=1
+    " }
+
+    NeoBundle 'jistr/vim-nerdtree-tabs' " {
+        map <C-e> <plug>NERDTreeTabsToggle<CR>
+        map <leader>f :NERDTreeFind<CR>
+
+        let g:nerdtree_tabs_open_on_gui_startup=0
+    " }
+
     NeoBundle 'Shougo/unite.vim' " {
         let g:unite_data_directory = $HOME . '/.vim/cache/unite'
 
-        nnoremap <leader>b :<C-u>Unite -no-split -buffer-name=buffer buffer<cr>
-        nnoremap <leader>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
+        nnoremap <leader>b :<C-u>Unite -no-split -buffer-name=buffer -start-insert buffer<cr>
+        "nnoremap <leader>f :<C-u>Unite -no-split -buffer-name=files -start-insert file<cr>
 
         let g:unite_source_history_yank_enable = 1
         nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
@@ -275,6 +279,8 @@ if !1 | finish | endif
     " }
 
     NeoBundle 'airblade/vim-gitgutter'
+
+    NeoBundle 'kshenoy/vim-signature'
 
     "NeoBundle 'kristijanhusak/vim-multiple-cursors' " {
         "let g:multi_cursor_exit_from_visual_mode = 0
@@ -597,15 +603,15 @@ if !1 | finish | endif
 
     " Some helpers to edit mode
     " http://vimcasts.org/e/14
-    cnoremap %% <C-R>=expand('%:h').'/'<cr>
-    map <leader>ew :e %%
-    map <leader>es :sp %%
-    map <leader>ev :vsp %%
-    map <leader>et :tabe %%
+    "cnoremap %% <C-R>=expand('%:h').'/'<cr>
+    "map <leader>ew :e %%
+    "map <leader>es :sp %%
+    "map <leader>ev :vsp %%
+    "map <leader>et :tabe %%
 
     " Split windows
-    noremap <silent> <C-w>% :vsplit<CR>
-    noremap <silent> <C-w>" :split<CR>
+    noremap <silent> <C-w>% :vnew<CR>
+    noremap <silent> <C-w>" :new<CR>
 
     " Resize windows
     noremap <silent> <C-w><C-h> :vertical resize -5<CR>
@@ -644,7 +650,7 @@ if !1 | finish | endif
         set guioptions-=L
         set guioptions-=b
         set guioptions-=e
-        set lines=60 columns=90             " 40 lines of text instead of 24
+        set lines=56 columns=180
         if LINUX()
             set guifont=Sauce\ Code\ Powerline\ 11,YaHei\ Mono\ for\ Powerline\ 11,YaHei\ Consolas\ Hybrid\ for\ Powerline\ 11,Source\ Code\ Pro\ 11,Andale\ Mono\ Regular\ 16,Menlo\ Regular\ 15,Consolas\ Regular\ 16,Courier\ New\ Regular\ 18
         elseif OSX()
@@ -712,6 +718,7 @@ if !1 | finish | endif
             wincmd l
         endif
     endfunction
+    call NERDTreeInitAsNeeded()
     " }
 
     " Strip whitespace {
