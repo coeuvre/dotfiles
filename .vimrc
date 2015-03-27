@@ -177,8 +177,8 @@ if !1 | finish | endif
     NeoBundle 'scrooloose/nerdtree' " {
         let NERDTreeShowBookmarks=1
         let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
-        let NERDTreeChDirMode=0
-        let NERDTreeQuitOnOpen=1
+        let NERDTreeChDirMode=1
+        let NERDTreeQuitOnOpen=0
         let NERDTreeMouseMode=2
         let NERDTreeShowHidden=1
         let NERDTreeKeepTreeInNewTab=1
@@ -186,7 +186,7 @@ if !1 | finish | endif
 
     NeoBundle 'jistr/vim-nerdtree-tabs' " {
         map <C-e> <plug>NERDTreeTabsToggle<CR>
-        map <leader>f :NERDTreeFind<CR>
+        map <leader>f <plug>NERDTreeTabsFind<CR>
 
         let g:nerdtree_tabs_open_on_gui_startup=0
     " }
@@ -542,10 +542,12 @@ if !1 | finish | endif
     vnoremap <silent> <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
     vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
 
-    " The following two lines conflict with moving to top and bottom of the screen
     noremap <silent> <C-h> :tabprevious<cr>
     noremap <silent> <C-l> :tabnext<cr>
     noremap <silent> <C-x> :q!<cr>
+    " The following two lines conflict with moving to top and bottom of the screen
+    noremap <silent> H :tabm -1<cr>
+    noremap <silent> L :tabm +1<cr>
 
     " Stupid shift key fixes
     if has("user_commands")
@@ -718,7 +720,6 @@ if !1 | finish | endif
             wincmd l
         endif
     endfunction
-    call NERDTreeInitAsNeeded()
     " }
 
     " Strip whitespace {
