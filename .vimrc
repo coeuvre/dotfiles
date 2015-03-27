@@ -185,7 +185,7 @@ if !1 | finish | endif
     " }
 
     NeoBundle 'jistr/vim-nerdtree-tabs' " {
-        map <C-e> <plug>NERDTreeTabsToggle<CR>
+        map <C-e> <plug>NERDTreeFocusToggle<CR>
         map <leader>f <plug>NERDTreeTabsFind<CR>
 
         let g:nerdtree_tabs_open_on_gui_startup=0
