@@ -76,5 +76,5 @@ switch (uname)
         set -x INFOPATH ~/.linuxbrew/share/info $INFOPATH
     case Darwin # MAC OS X
         set -x JAVA_HOME (/usr/libexec/java_home -v '1.7*')
-        #set -x DYLD_LIBRARY_PATH ~/.local/lib
+        set -x DYLD_LIBRARY_PATH ~/.local/lib $DYLD_LIBRARY_PATH
 end
