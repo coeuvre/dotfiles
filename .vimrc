@@ -366,6 +366,7 @@ if !1 | finish | endif
     set iskeyword-=.                    " '.' is an end of word designator
     set iskeyword-=#                    " '#' is an end of word designator
     set iskeyword-=-                    " '-' is an end of word designator
+    set iskeyword-=_
 
     " Instead of reverting the cursor to the last position in the buffer,
     " we set it to the first line when editing a git commit message
@@ -734,5 +735,42 @@ if !1 | finish | endif
         let @/=_s
         call cursor(l, c)
     endfunction
+    " }
+
+    " http://vim.wikia.com/wiki/VimTip171
+    " Search for selected text {
+    let s:save_cpo = &cpo | set cpo&vim
+    if !exists('g:VeryLiteral')
+        let g:VeryLiteral = 0
+    endif
+    function! s:VSetSearch(cmd)
+        let old_reg = getreg('"')
+        let old_regtype = getregtype('"')
+        normal! gvy
+        if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
+            let @/ = @@
+        else
+            let pat = escape(@@, a:cmd.'\')
+            if g:VeryLiteral
+                let pat = substitute(pat, '\n', '\\n', 'g')
+            else
+                let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
+                let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
+                let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
+            endif
+            let @/ = '\V'.pat
+        endif
+        normal! gV
+        call setreg('"', old_reg, old_regtype)
+    endfunction
+    vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
+    vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+    vmap <kMultiply> *
+    nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
+                \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
+    if !hasmapto("<Plug>VLToggle")
+        nmap <unique> <Leader>vl <Plug>VLToggle
+    endif
+    let &cpo = s:save_cpo | unlet s:save_cpo
     " }
 " }
