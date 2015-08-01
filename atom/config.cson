@@ -1,19 +1,21 @@
 "*":
   editor:
-    fontFamily: "Monaco"
-    fontSize: 12
-    showInvisibles: true
     showIndentGuide: true
     tabLength: 4
     invisibles:
       eol: " "
+    zoomFontWhenCtrlScrolling: true
+    fontFamily: "Fira Mono"
+    fontSize: 16
   core:
     themes: [
-      "atom-material-ui"
-      "atom-material-syntax"
+      "one-light-ui"
+      "one-light-syntax"
     ]
-    projectHome: "/Users/coeuvre"
-    destroyEmptyPanes: false
+    disabledPackages: [
+      "nuclide-language-hack"
+      "nuclide-hack"
+    ]
   "exception-reporting":
     userId: "07b4a68c-3ba8-72f0-dbbb-25af7ed1bcdc"
   "release-notes":
@@ -26,9 +28,65 @@
     useClipboardAsDefaultRegister: true
     useSmartcaseForSearch: true
     wrapLeftRightMotion: true
-  "linter-rust":
-    rustcPath: "/Users/coeuvre/.local/bin/rustc"
-    cargoPath: "/Users/coeuvre/.local/bin/cargo"
   minimap:
+    plugins:
+      selection: true
+      "highlight-selected": true
+      "git-diff": true
+      linter: true
+      "find-and-replace": true
     absoluteMode: true
   "autocomplete-plus": {}
+  "linter-rust": {}
+  "linter-less":
+    includePath: [
+      "/Users/coeuvre/Developer/Works/cm-web/"
+    ]
+  "ember-cli-helper": {}
+  "atom-material-ui":
+    panelContrast: true
+    disableAnimations: true
+    depth: true
+    compactTreeView: true
+    altCmdPalette: true
+    showTabIcons: true
+    themeSyle: "Lighter"
+    useRoboto: true
+    slimScrollbar: true
+  "bracket-matcher":
+    autocompleteBrackets: false
+  "one-light-ui":
+    layoutMode: "Compact"
+  "cursor-history":
+    excludeClosedBuffer: true
+  "unity-ui":
+    showIcons: true
+    colorStatusIndicatorsInTreeView: true
+  "file-watcher":
+    promptWhenFileHasChangedOnDisk: false
+  nuclide:
+    remoteProjectsConfig: []
+    lastConnectionDetails:
+      config:
+        host: "cm-web-1"
+        sshPort: "22"
+        username: "coeuvre"
+        pathToPrivateKey: "/Users/coeuvre/.ssh/id_rsa"
+        authMethod: "SSL_AGENT"
+        cwd: "/src/cheezmall"
+        remoteServerCommand: "nuclide-start-server"
+        password: ""
+      lastOfficialRemoteServerCommand: "nuclide-start-server"
+  "nuclide-flow": {}
+  linter: {}
+  "git-history": {}
+  pigments: {}
+  "minimap-selection":
+    highlightCursorsLines: true
+  "highlight-selected": {}
+".nim.source":
+  editor:
+    tabLength: 2
+".rust.source":
+  editor:
+    preferredLineLength: 80
