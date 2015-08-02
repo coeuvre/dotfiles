@@ -1,6 +1,15 @@
 # Path to your oh-my-fish.
 set fish_path $HOME/.oh-my-fish
 
+# Path to your custom folder (default path is ~/.oh-my-fish/custom)
+#set fish_custom $HOME/dotfiles/oh-my-fish
+
+# Load oh-my-fish configuration.
+. $fish_path/oh-my-fish.fish
+
+# Custom plugins and themes may be added to ~/.oh-my-fish/custom
+# Plugins and themes can be found at https://github.com/oh-my-fish/
+
 # Theme
 function _remote_hostname
   if test -n "$SSH_CONNECTION"
@@ -45,19 +54,9 @@ function fish_prompt
   echo -n -s $arrow $cyan $cwd $git_info $normal ' '
 end
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-fish/plugins/*)
-# Custom plugins may be added to ~/.oh-my-fish/custom/plugins/
-# Example format: set fish_plugins autojump bundler
-
-# Path to your custom folder (default path is $FISH/custom)
-#set fish_custom $HOME/dotfiles/oh-my-fish
-
-# Load oh-my-fish configuration.
-. $fish_path/oh-my-fish.fish
-
 # Environment Variable
 
-set -x PATH ~/.local/bin $PATH
+set -x PATH ~/.local/bin /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin
 
 # C/C++
 set -x C_INCLUDE_PATH ~/.local/include /usr/local/include $C_INCLUDE_PATH
