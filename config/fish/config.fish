@@ -5,7 +5,7 @@ set fish_path $HOME/.oh-my-fish
 #set fish_custom $HOME/dotfiles/oh-my-fish
 
 # Load oh-my-fish configuration.
-. $fish_path/oh-my-fish.fish
+source $fish_path/oh-my-fish.fish
 
 # Custom plugins and themes may be added to ~/.oh-my-fish/custom
 # Plugins and themes can be found at https://github.com/oh-my-fish/
@@ -64,6 +64,11 @@ set -x CPLUS_INCLUDE_PATH $C_INCLUDE_PATH $CPLUS_INCLUDE_PATH
 set -x LIBRARY_PATH ~/.local/lib /usr/local/lib $LIBRARY_PATH
 set -x LD_LIBRARY_PATH $LIBRARY_PATH $LD_LIBRARY_PATH
 set -x PKG_CONFIG_PATH ~/.local/lib/pkgconfig /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
+
+# Go
+set -x GOROOT /usr/local/go
+set -x GOPATH ~/Developer/go
+set -x PATH $GOPATH/bin $GOROOT/bin $PATH
 
 alias l ls
 alias grep "grep --color"

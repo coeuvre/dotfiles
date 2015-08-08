@@ -12,10 +12,6 @@
       "one-light-ui"
       "one-light-syntax"
     ]
-    disabledPackages: [
-      "nuclide-language-hack"
-      "nuclide-hack"
-    ]
   "exception-reporting":
     userId: "07b4a68c-3ba8-72f0-dbbb-25af7ed1bcdc"
   "release-notes":
@@ -84,6 +80,11 @@
   "minimap-selection":
     highlightCursorsLines: true
   "highlight-selected": {}
+  "atom-beautify":
+    _analyticsUserId: "fdd59e89-4b37-4f82-b956-2ec0d2a6b34b"
+  "go-plus":
+    formatTool: "gofmt"
+  "linter-golinter": {}
 ".nim.source":
   editor:
     tabLength: 2

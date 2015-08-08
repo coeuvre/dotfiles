@@ -13,4 +13,13 @@
 #   if path.extname(editor.getPath()) is '.md'
 #     editor.setSoftWrap(true)
 
-process.env.PATH = [process.env.HOME + "/.local/bin", "/usr/local/bin", process.env.PATH].join(":")
+process.env.GOPATH = process.env.HOME + "/Developer/go"
+process.env.GOROOT = "/usr/local/go"
+
+process.env.PATH = [
+    process.env.GOPATH + "/bin",
+    process.env.GOROOT + "/bin",
+    process.env.HOME + "/.local/bin",
+    "/usr/local/bin",
+    process.env.PATH
+].join(":")
