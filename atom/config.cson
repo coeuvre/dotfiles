@@ -6,7 +6,7 @@
       eol: " "
     zoomFontWhenCtrlScrolling: true
     fontFamily: "Fira Mono"
-    fontSize: 16
+    fontSize: 12
   core:
     themes: [
       "one-light-ui"
@@ -33,7 +33,10 @@
       "find-and-replace": true
     absoluteMode: true
   "autocomplete-plus": {}
-  "linter-rust": {}
+  "linter-rust":
+    buildTest: true
+    cargoPath: "/Users/coeuvre/.local/bin/cargo"
+    rustcPath: "/Users/coeuvre/.local/bin/rustc"
   "linter-less":
     includePath: [
       "/Users/coeuvre/Developer/Works/cm-web/"
@@ -74,7 +77,8 @@
         password: ""
       lastOfficialRemoteServerCommand: "nuclide-start-server"
   "nuclide-flow": {}
-  linter: {}
+  linter:
+    showErrorPanel: false
   "git-history": {}
   pigments: {}
   "minimap-selection":
@@ -85,6 +89,7 @@
   "go-plus":
     formatTool: "gofmt"
   "linter-golinter": {}
+  "tree-view": {}
 ".nim.source":
   editor:
     tabLength: 2
