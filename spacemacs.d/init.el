@@ -164,7 +164,7 @@ values."
    ;; If non nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-maximized-at-startup t
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -221,9 +221,13 @@ layers configuration. You are free to put any user code."
   (setq-default tab-width 4
                 indent-tabs-mode nil)
 
-  (setq-default c-basic-offset 4)
-
   (setq powerline-default-separator 'nil)
+
+  ;; for C/C++
+  (add-hook 'c-mode-common-hook (lambda ()
+                                  (setq-default c-basic-offset 4)
+                                  (c-set-offset 'case-label 4)
+                                  ))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
