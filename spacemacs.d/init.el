@@ -41,8 +41,11 @@ values."
      syntax-checking
      version-control
 
-     c-c++
+     (c-c++ :variables
+            c-c++-enable-clang-support t)
+     csharp
      html
+     lua
      javascript
      rust
      shell-scripts
@@ -214,8 +217,6 @@ layers configuration. You are free to put any user code."
   (setq mac-command-modifier 'meta)
   (setq mac-option-modifier 'super)
 
-  (global-company-mode)
-
   (setq-default truncate-lines t)
 
   (setq-default tab-width 4
@@ -224,10 +225,20 @@ layers configuration. You are free to put any user code."
   (setq powerline-default-separator 'nil)
 
   ;; for C/C++
+  (setq-default c-basic-offset 4)
   (add-hook 'c-mode-common-hook (lambda ()
-                                  (setq-default c-basic-offset 4)
                                   (c-set-offset 'case-label 4)
                                   ))
+
+  ;; multiple cursors key bindings
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+  ;; Company mode
+  (global-company-mode)
+  (setq-default company-idle-delay 0)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
