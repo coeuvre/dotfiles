@@ -41,8 +41,8 @@
     " functional
     Plug 'Shougo/unite.vim' " {
         nnoremap <leader>ff :<C-u>Unite -direction=bot -buffer-name=files -start-insert file<cr>
-        nnoremap <leader>fb :<C-u>Unite -direction=bot -buffer-name=buffer -start-insert buffer<cr>
         nnoremap <leader>fr :<C-u>Unite -direction=bot -buffer-name=mru -start-insert file_mru<cr>
+        nnoremap <leader>bb :<C-u>Unite -direction=bot -buffer-name=buffer -start-insert buffer<cr>
 
         " Custom mappings for the unite buffer
         autocmd FileType unite call s:unite_settings()
@@ -92,6 +92,20 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
+    function! BuildYCM(info)
+        " info is a dictionary with 3 fields
+        " - name:   name of the plugin
+        " - status: 'installed', 'updated', or 'unchanged'
+        " - force:  set on PlugInstall! or PlugUpdate!
+        if a:info.status == 'installed' || a:info.force
+            !./install.py
+        endif
+    endfunction
+
+    Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') } " {
+        let g:ycm_global_ycm_extra_conf = $HOME . '/.config/nvim/.ycm_extra_conf.py'
+    " }
+
     " Key
     Plug 'tpope/vim-unimpaired'
 
@@ -109,8 +123,8 @@
         let g:airline_right_sep=''
 
         let g:airline#extensions#tabline#enabled = 1
-        let g:airline#extensions#tabline#show_buffers = 1
-        let g:airline#extensions#tabline#show_tabs = 0
+        let g:airline#extensions#tabline#show_buffers = 0
+        let g:airline#extensions#tabline#show_tabs = 1
         let g:airline#extensions#tabline#show_tab_nr = 0
 
         let g:airline#extensions#tabline#left_sep = ''
@@ -133,6 +147,7 @@
 
     Plug 'mhinz/vim-startify'
 
+    Plug 'zah/nim.vim'
     Plug 'wting/rust.vim'
     Plug 'tikhomirov/vim-glsl'
     Plug 'tpope/vim-markdown'
@@ -355,12 +370,12 @@
     vnoremap <silent> <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
     vnoremap <silent> ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
 
-    "noremap <silent> <C-h> :tabprevious<cr>
-    "noremap <silent> <C-l> :tabnext<cr>
-    noremap <silent> <C-x> :bd<cr>
-    " The following two lines conflict with moving to top and bottom of the screen
-    noremap <silent> H :tabm -1<cr>
-    noremap <silent> L :tabm +1<cr>
+    " Tab operations
+    noremap <silent> <leader>tp :tabprevious<cr>
+    noremap <silent> <leader>tn :tabnext<cr>
+    noremap <silent> <leader>tc :tabclose<cr>
+    noremap <silent> <leader>tmh :tabm -1<cr>
+    noremap <silent> <leader>tml :tabm +1<cr>
 
     " Stupid shift key fixes
     if has("user_commands")
@@ -424,9 +439,14 @@
     "map <leader>ev :vsp %%
     "map <leader>et :tabe %%
 
-    " Split windows
-    noremap <silent> <C-w>% :vnew<CR>
-    noremap <silent> <C-w>" :new<CR>
+    " Window operations
+    noremap <silent> <leader>wv <C-w>v
+    noremap <silent> <leader>wV <C-w>V
+
+    noremap <silent> <leader>ws <C-w>s
+    noremap <silent> <leader>wS <C-w>S
+
+    noremap <silent> <leader>wc <C-w>c
 
     " Resize windows
     noremap <silent> <C-w><C-h> :vertical resize -5<CR>
