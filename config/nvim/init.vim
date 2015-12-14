@@ -221,7 +221,7 @@
     set fileencodings=ucs-bom,utf-8,cp936,gb18030
 
     " Setting up the directories {
-        set backup                  " Backups are nice ...
+        set backup                      " Backups are nice ...
         if has('persistent_undo')
             set undofile                " So is persistent undo ...
             set undolevels=1000         " Maximum number of changes that can be undone
@@ -507,6 +507,38 @@
 " }
 
 " Functions {
+    function! InitializeDirectories()
+        " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
+        let common_dir = $HOME . '/.cache/nvim/'
+        let dir_list = {
+                    \ 'backup': 'backupdir',
+                    \ 'views': 'viewdir',
+                    \ 'swap': 'directory' }
+
+        if has('persistent_undo')
+            let dir_list['undo'] = 'undodir'
+        endif
+
+        exec "set viminfo='100,<50,s10,h,n" . common_dir . 'viminfo'
+
+        for [dirname, settingname] in items(dir_list)
+            let directory = common_dir . dirname . '/'
+            if exists("*mkdir")
+                if !isdirectory(directory)
+                    call mkdir(directory)
+                endif
+            endif
+            if !isdirectory(directory)
+                echo "Warning: Unable to create backup directory: " . directory
+                echo "Try: mkdir -p " . directory
+            else
+                let directory = substitute(directory, " ", "\\\\ ", "g")
+                exec "set " . settingname . "=" . directory
+            endif
+        endfor
+    endfunction
+    call InitializeDirectories()
+    " }
     " Initialize NERDTree as needed {
     function! NERDTreeInitAsNeeded()
         redir => bufoutput
