@@ -38,42 +38,28 @@
 " Plugins {
     call plug#begin()
 
-    " functional
-    Plug 'Shougo/unite.vim' " {
-        nnoremap <leader>ff :<C-u>Unite -direction=bot -buffer-name=files -start-insert file<cr>
-        nnoremap <leader>fr :<C-u>Unite -direction=bot -buffer-name=mru -start-insert file_mru<cr>
-        nnoremap <leader>bb :<C-u>Unite -direction=bot -buffer-name=buffer -start-insert buffer<cr>
+    " functionalities
+    Plug 'mhinz/vim-startify'
 
-        " Custom mappings for the unite buffer
-        autocmd FileType unite call s:unite_settings()
-        function! s:unite_settings()
-            " Play nice with supertab
-            let b:SuperTabDisabled=1
-            " Enable navigation with control-n and control-p in insert mode
-            imap <buffer> <C-n>   <Plug>(unite_select_next_line)
-            imap <buffer> <C-p>   <Plug>(unite_select_previous_line)
-        endfunction
+    Plug 'Shougo/deoplete.nvim' " {
+        let g:deoplete#enable_at_startup = 1
     " }
 
-    Plug 'Shougo/neomru.vim'
-
-    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-
-    Plug 'benekastah/neomake' " {
-        autocmd! BufWritePost * Neomake
-    " }
+    Plug 'ctrlpvim/ctrlp.vim'
 
     Plug 'tpope/vim-repeat'
 
     Plug 'mbbill/undotree'
 
-    Plug 'tpope/vim-fugitive' " {
-        nnoremap <silent> <leader>gs :Gstatus<CR>
-        nnoremap <silent> <leader>gd :Gdiff<CR>
-        nnoremap <silent> <leader>gc :Gcommit<CR>
-        nnoremap <silent> <leader>gb :Gblame<CR>
-        nnoremap <silent> <leader>gl :Glog<CR>
-        nnoremap <silent> <leader>gp :Git push<CR>
+    Plug 'scrooloose/nerdcommenter'
+
+    "Plug 'tpope/vim-fugitive' " {
+    "    nnoremap <silent> <leader>gs :Gstatus<CR>
+    "    nnoremap <silent> <leader>gd :Gdiff<CR>
+    "    nnoremap <silent> <leader>gc :Gcommit<CR>
+    "    nnoremap <silent> <leader>gb :Gblame<CR>
+    "    nnoremap <silent> <leader>gl :Glog<CR>
+    "    nnoremap <silent> <leader>gp :Git push<CR>
     " }
 
     Plug 'haya14busa/incsearch.vim' " {
@@ -90,20 +76,6 @@
         map #  <Plug>(incsearch-nohl-#)
         map g* <Plug>(incsearch-nohl-g*)
         map g# <Plug>(incsearch-nohl-g#)
-    " }
-
-    function! BuildYCM(info)
-        " info is a dictionary with 3 fields
-        " - name:   name of the plugin
-        " - status: 'installed', 'updated', or 'unchanged'
-        " - force:  set on PlugInstall! or PlugUpdate!
-        if a:info.status == 'installed' || a:info.force
-            !./install.py
-        endif
-    endfunction
-
-    Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') } " {
-        let g:ycm_global_ycm_extra_conf = $HOME . '/.config/nvim/.ycm_extra_conf.py'
     " }
 
     " Key
@@ -145,15 +117,13 @@
 
     Plug 'airblade/vim-gitgutter'
 
-    Plug 'mhinz/vim-startify'
-
+    " Syntax
     Plug 'zah/nim.vim'
     Plug 'wting/rust.vim'
     Plug 'tikhomirov/vim-glsl'
     Plug 'tpope/vim-markdown'
     Plug 'elzr/vim-json'
     Plug 'cespare/vim-toml'
-    Plug 'vim-scripts/syntax-highlighting-for-tintinttpp'
     Plug 'jelera/vim-javascript-syntax'
 
     Plug 'chriskempson/vim-tomorrow-theme'
@@ -237,7 +207,7 @@
 " }
 
 " Vim UI {
-    colorscheme Tomorrow-Night-Eighties
+    colorscheme Tomorrow
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
@@ -277,7 +247,7 @@
 
     set backspace=indent,eol,start  " Backspace for dummies
     set linespace=0                 " No extra spaces between rows
-    set nu                          " Line numbers on
+    "set nu                          " Line numbers on
     set showmatch                   " Show matching brackets/parenthesis
     set incsearch                   " Find as you type search
     set hlsearch                    " Highlight search terms
@@ -309,18 +279,9 @@
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
     set cindent                     " do C program indenting
+
     " Remove trailing whitespaces and ^M chars
-    autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
-    autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
-    autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
-    autocmd BufNewFile,BufRead *.coffee set filetype=coffee
-
-    " Workaround vim-commentary for Haskell
-    autocmd FileType haskell setlocal commentstring=--\ %s
-    " Workaround broken colour highlighting in Haskell
-    autocmd FileType haskell,rust setlocal nospell
-
-    map <Leader>j :%!python -m json.tool<CR>
+    autocmd BufWritePre * call StripTrailingWhitespace()
 " }
 
 " Key (re)Mappings {
@@ -408,9 +369,6 @@
     nmap <leader>7 :set foldlevel=7<CR>
     nmap <leader>8 :set foldlevel=8<CR>
     nmap <leader>9 :set foldlevel=9<CR>
-
-    " Toggle search highlighting
-    nmap <silent> <leader>/ :set invhlsearch<CR>
 
     " Find merge conflict markers
     map <leader>m /\v^[<\|=>]{7}( .*\|$)<CR>
@@ -537,20 +495,8 @@
             endif
         endfor
     endfunction
+
     call InitializeDirectories()
-    " }
-    " Initialize NERDTree as needed {
-    function! NERDTreeInitAsNeeded()
-        redir => bufoutput
-        buffers!
-        redir END
-        let idx = stridx(bufoutput, "NERD_tree")
-        if idx > -1
-            NERDTreeMirror
-            NERDTreeFind
-            wincmd l
-        endif
-    endfunction
     " }
 
     " Strip whitespace {
