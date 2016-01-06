@@ -43,9 +43,15 @@
 
     Plug 'Shougo/deoplete.nvim' " {
         let g:deoplete#enable_at_startup = 1
+        " <TAB>: completion.
+        inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     " }
 
-    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'ctrlpvim/ctrlp.vim' " {
+        nnoremap <silent> <leader>ff :CtrlP<CR>
+        nnoremap <silent> <leader>fr :CtrlPMRU<CR>
+        nnoremap <silent> <leader>fb :CtrlPBuffer<CR>
+    " }
 
     Plug 'tpope/vim-repeat'
 
