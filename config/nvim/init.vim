@@ -48,7 +48,12 @@
             return centered_lines
         endfunction
 
-        let g:startify_custom_header = s:filter_header([
+        redir => s:title
+        silent version
+        redir END
+        let s:title = split(s:title, '\n')[0]
+        let g:startify_custom_header = s:filter_header([s:title]) + s:filter_header([
+            \ '',
             \ ' _________________________              ',
             \ '( Gamer                   )             ',
             \ '(       ->                )             ',
@@ -59,15 +64,6 @@
             \ '            (__)\       )\/\            ',
             \ '                ||----w |               ',
             \ '                ||     ||               ',
-            \ '',
-            \ ])
-
-        redir => footer
-        silent version
-        redir END
-        let g:startify_custom_footer =s:filter_header([
-            \ '',
-            \ split(footer, '\n')[0],
             \ '',
             \ ])
     " }
