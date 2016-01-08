@@ -13,7 +13,11 @@
         endfunction
 
         silent function! WINDOWS()
-            return  (has('win16') || has('win32') || has('win64'))
+            return  has('win16') || has('win32') || has('win64')
+        endfunction
+
+        silent function! MINGW()
+            return has('win32unix')
         endfunction
     " }
 
@@ -28,7 +32,7 @@
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
           let $HOME=$VIM
-          set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+          let &runtimepath.=','.escape('$HOME/.vim', '\,')
         endif
     " }
 
@@ -68,7 +72,7 @@
             \ ])
     " }
 
-    if WINDOWS()
+    if WINDOWS() || MINGW()
         Plug 'Shougo/neocomplcache.vim' " {
             "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
             " Disable AutoComplPop.
