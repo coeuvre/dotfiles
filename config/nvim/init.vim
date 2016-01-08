@@ -39,8 +39,38 @@
 " Plugins {
     call plug#begin()
 
-    " functionalities
-    Plug 'mhinz/vim-startify'
+    " Functionalities
+    Plug 'mhinz/vim-startify' " {
+        function! s:filter_header(lines) abort
+            let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
+            let centered_lines = map(copy(a:lines),
+                        \ 'repeat(" ", (&columns / 2) - (longest_line / 2)) . v:val')
+            return centered_lines
+        endfunction
+
+        let g:startify_custom_header = s:filter_header([
+            \ ' _________________________              ',
+            \ '( Gamer                   )             ',
+            \ '(       ->                )             ',
+            \ '(          Game Developer )             ',
+            \ ' -------------------------              ',
+            \ '        o   ^__^                        ',
+            \ '         o  (oo)\_______                ',
+            \ '            (__)\       )\/\            ',
+            \ '                ||----w |               ',
+            \ '                ||     ||               ',
+            \ '',
+            \ ])
+
+        redir => footer
+        silent version
+        redir END
+        let g:startify_custom_footer =s:filter_header([
+            \ '',
+            \ split(footer, '\n')[0],
+            \ '',
+            \ ])
+    " }
 
     if WINDOWS()
         Plug 'Shougo/neocomplcache.vim' " {
