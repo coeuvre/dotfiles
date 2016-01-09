@@ -20,19 +20,26 @@
             return has('win32unix')
         endfunction
     " }
+    "
+    " Windows Compatible {
+        " On Windows, also use '.vim' instead of 'vimfiles';
+        " this makes synchronization across (heterogeneous) systems easier.
+        if WINDOWS()
+          let $HOME = $VIM
+          let &runtimepath .= ','.escape($HOME . '/.vim', ' \,')
+        endif
+    " }
 
     " Basics {
         if !WINDOWS()
             set shell=/bin/sh
         endif
-    " }
 
-    " Windows Compatible {
-        " On Windows, also use '.vim' instead of 'vimfiles';
-        " this makes synchronization across (heterogeneous) systems easier.
-        if WINDOWS()
-          let $HOME=$VIM
-          let &runtimepath.=','.escape('$HOME/.vim', '\,')
+        " Directory that put all the vim data files.
+        if has('nvim')
+            let s:common_dir = escape($HOME . '/.cache/nvim/', ' ')
+        else
+            let s:common_dir = escape($HOME . '/.cache/vim/', ' ')
         endif
     " }
 
@@ -48,31 +55,115 @@
         function! s:filter_header(lines) abort
             let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
             let centered_lines = map(copy(a:lines),
-                        \ 'repeat(" ", (&columns / 2) - (longest_line / 2)) . v:val')
+                        \ 'repeat(" ", (80 / 2) - (longest_line / 2)) . v:val')
             return centered_lines
         endfunction
 
-        redir => s:title
+        redir => s:startify_title
         silent version
         redir END
-        let s:title = split(s:title, '\n')[0]
-        let g:startify_custom_header = s:filter_header([s:title]) + s:filter_header([
+        let s:startify_title = split(s:startify_title, '\n')[0]
+        let g:startify_custom_header = s:filter_header([s:startify_title])
+            \ + s:filter_header([
             \ '',
-            \ ' _________________________              ',
-            \ '( Gamer                   )             ',
-            \ '(       ->                )             ',
-            \ '(          Game Developer )             ',
-            \ ' -------------------------              ',
-            \ '        o   ^__^                        ',
-            \ '         o  (oo)\_______                ',
-            \ '            (__)\       )\/\            ',
-            \ '                ||----w |               ',
-            \ '                ||     ||               ',
+            \ '              -------------------------              ',
+            \ '             ( Gamer                   )             ',
+            \ '             (       ->                )             ',
+            \ '             (          Game Developer )             ',
+            \ '              -------------------------              ',
+            \ '                                 o                   ',
+            \ '                                  o  ^__^            ',
+            \ '                                     (oo)\_______    ',
+            \ '                                     (__)\       )\/\',
+            \ '                                         ||----w |   ',
+            \ '                                         ||     ||   ',
             \ '',
             \ ])
     " }
 
-    if WINDOWS() || MINGW()
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim' " {
+            let g:deoplete#enable_at_startup = 1
+            " <TAB>: completion.
+            inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+            inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+        " }
+    elseif has('lua')
+        Plug 'Shougo/neocomplete.vim' " {
+            "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+            " Disable AutoComplPop.
+            let g:acp_enableAtStartup = 0
+            " Use neocomplete.
+            let g:neocomplete#enable_at_startup = 1
+            " Use smartcase.
+            let g:neocomplete#enable_smart_case = 1
+            " Set minimum syntax keyword length.
+            let g:neocomplete#sources#syntax#min_keyword_length = 3
+            let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+            " Define dictionary.
+            let g:neocomplete#sources#dictionary#dictionaries = {
+                \ 'default' : '',
+                \ 'vimshell' : $HOME.'/.vimshell_hist',
+                \ 'scheme' : $HOME.'/.gosh_completions'
+                    \ }
+
+            " Define keyword.
+            if !exists('g:neocomplete#keyword_patterns')
+                let g:neocomplete#keyword_patterns = {}
+            endif
+            let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+            " Plugin key-mappings.
+            inoremap <expr><C-g>     neocomplete#undo_completion()
+            inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+            " Recommended key-mappings.
+            " <CR>: close popup and save indent.
+            inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+            function! s:my_cr_function()
+              return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+              " For no inserting <CR> key.
+              "return pumvisible() ? "\<C-y>" : "\<CR>"
+            endfunction
+            " <TAB>: completion.
+            inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+            inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+            " <C-h>, <BS>: close popup and delete backword char.
+            inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+            inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+            " Close popup by <Space>.
+            "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+            " AutoComplPop like behavior.
+            "let g:neocomplete#enable_auto_select = 1
+
+            " Shell like behavior(not recommended).
+            "set completeopt+=longest
+            "let g:neocomplete#enable_auto_select = 1
+            "let g:neocomplete#disable_auto_complete = 1
+            "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+            " Enable omni completion.
+            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+            " Enable heavy omni completion.
+            if !exists('g:neocomplete#sources#omni#input_patterns')
+              let g:neocomplete#sources#omni#input_patterns = {}
+            endif
+            "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+            "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+            "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+            " For perlomni.vim setting.
+            " https://github.com/c9s/perlomni.vim
+            let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+        " }
+    else
         Plug 'Shougo/neocomplcache.vim' " {
             "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
             " Disable AutoComplPop.
@@ -165,13 +256,6 @@
             " https://github.com/c9s/perlomni.vim
             let g:neocomplcache_force_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
         " }
-    else
-        Plug 'Shougo/deoplete.nvim' " {
-            let g:deoplete#enable_at_startup = 1
-            " <TAB>: completion.
-            inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-            inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-        " }
     endif
 
     Plug 'ctrlpvim/ctrlp.vim' " {
@@ -186,13 +270,13 @@
 
     Plug 'scrooloose/nerdcommenter'
 
-    "Plug 'tpope/vim-fugitive' " {
-    "    nnoremap <silent> <leader>gs :Gstatus<CR>
-    "    nnoremap <silent> <leader>gd :Gdiff<CR>
-    "    nnoremap <silent> <leader>gc :Gcommit<CR>
-    "    nnoremap <silent> <leader>gb :Gblame<CR>
-    "    nnoremap <silent> <leader>gl :Glog<CR>
-    "    nnoremap <silent> <leader>gp :Git push<CR>
+    Plug 'tpope/vim-fugitive' " {
+        nnoremap <silent> <leader>gs :Gstatus<CR>
+        nnoremap <silent> <leader>gd :Gdiff<CR>
+        nnoremap <silent> <leader>gc :Gcommit<CR>
+        nnoremap <silent> <leader>gb :Gblame<CR>
+        nnoremap <silent> <leader>gl :Glog<CR>
+        nnoremap <silent> <leader>gp :Git push<CR>
     " }
 
     Plug 'haya14busa/incsearch.vim' " {
@@ -579,11 +663,11 @@
         set guioptions-=L
         set guioptions-=b
         set guioptions-=e
-        set lines=56 columns=180
+        set lines=48 columns=163
         if LINUX()
             set guifont=Fira\ Mono\ 11,Courier\ New\ Regular\ 18
         elseif OSX()
-            set guifont=Fira\ Mono:h11,Monaco:h11
+            set guifont=Fira\ Mono:h14,Monaco:h11
         elseif WINDOWS()
             set guifont=Fira\ Mono:h11,Consolas:h11
         endif
@@ -601,9 +685,8 @@
 " }
 
 " Functions {
-    function! InitializeDirectories()
+    function! InitializeDirectories(common_dir)
         " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
-        let common_dir = $HOME . '/.cache/nvim/'
         let dir_list = {
                     \ 'backup': 'backupdir',
                     \ 'views': 'viewdir',
@@ -613,12 +696,10 @@
             let dir_list['undo'] = 'undodir'
         endif
 
-        if !WINDOWS()
-            exec "set viminfo='100,<50,s10,h,n" . common_dir . 'viminfo'
-        endif
+        exec "set viminfo='100,n" . a:common_dir . 'viminfo'
 
         for [dirname, settingname] in items(dir_list)
-            let directory = common_dir . dirname . '/'
+            let directory = a:common_dir . dirname . '/'
             if exists("*mkdir")
                 if !isdirectory(directory)
                     call mkdir(directory)
@@ -634,7 +715,7 @@
         endfor
     endfunction
 
-    call InitializeDirectories()
+    call InitializeDirectories(s:common_dir)
     " }
 
     " Strip whitespace {
