@@ -264,6 +264,18 @@
 
     Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
+
+        let g:ctrlp_prompt_mappings = {
+            \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+            \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+            \ 'PrtHistory(-1)':       ['<c-j>'],
+            \ 'PrtHistory(1)':        ['<c-k>'],
+            \ 'ToggleType(1)':        ['<c-l>', '<c-up>'],
+            \ 'ToggleType(-1)':       ['<c-h>', '<c-down>'],
+            \ 'PrtCurLeft()':         ['<c-b>', '<left>', '<c-^>'],
+            \ 'PrtCurRight()':        ['<c-f>', '<right>'],
+            \ }
+
         nnoremap <silent> <leader>ff :CtrlP<CR>
         nnoremap <silent> <leader>fr :CtrlPMRU<CR>
         nnoremap <silent> <leader>fb :CtrlPBuffer<CR>
@@ -316,13 +328,13 @@
         let g:airline_left_sep=''
         let g:airline_right_sep=''
 
-        let g:airline#extensions#tabline#enabled = 1
-        let g:airline#extensions#tabline#show_buffers = 0
-        let g:airline#extensions#tabline#show_tabs = 1
-        let g:airline#extensions#tabline#show_tab_nr = 0
-
-        let g:airline#extensions#tabline#left_sep = ''
-        let g:airline#extensions#tabline#_alt_sep = ''
+        "let g:airline#extensions#tabline#enabled = 1
+        "let g:airline#extensions#tabline#show_buffers = 0
+        "let g:airline#extensions#tabline#show_tabs = 1
+        "let g:airline#extensions#tabline#show_tab_nr = 0
+        "let g:airline#extensions#tabline#left_sep = ''
+        "let g:airline#extensions#tabline#_alt_sep = ''
+        "let g:airline#extensions#tabline#show_tab_type = 0
 
         let g:airline#extensions#hunks#non_zero_only = 1
 
@@ -356,8 +368,6 @@
 " }
 
 " Gernal {
-    set background=light
-
     "if !has('gui')
         "let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
     "endif
@@ -432,7 +442,8 @@
 " }
 
 " Vim UI {
-    colorscheme Tomorrow
+    set background=dark
+    colorscheme Tomorrow-Night
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
@@ -443,8 +454,17 @@
     highlight clear LineNr          " Current line number row will have same background color in relative mode
     "highlight clear CursorLineNr    " Remove highlight color from current line number
 
-    highlight Search guibg=yellow gui=underline
-    highlight Search ctermbg=yellow cterm=underline
+    highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
+
+    " Highlight task tags
+    highlight Important ctermfg=Yellow cterm=underline guifg=#FFFF00 gui=underline
+    autocmd Syntax * call matchadd('Important', '\W\zs\(IMPORTANT\|HACK\)')
+
+    highlight Note ctermfg=Green cterm=underline guifg=#00FF00 gui=underline
+    autocmd Syntax * call matchadd('Note', '\W\zs\(NOTE\|INFO\|IDEA\)')
+
+    highlight Todo ctermfg=Red cterm=underline guifg=#FF0000 gui=underline
+    autocmd Syntax * call matchadd('Todo',  '\W\zs\(TODO\|FIXME\|CHANGED\|BUG\)')
 
     " set colorcolumn=80
     if has('cmdline_info')
