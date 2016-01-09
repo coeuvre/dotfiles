@@ -267,10 +267,11 @@
 " }
 
 " Gernal {
-    set background=dark
-    if !has('gui')
-        let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
-    endif
+    set background=light
+
+    "if !has('gui')
+        "let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+    "endif
 
     filetype plugin indent on   " Automatically detect file types
     syntax on                   " Syntax highlighting
