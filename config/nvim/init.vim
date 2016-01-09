@@ -663,7 +663,7 @@
         set guioptions-=L
         set guioptions-=b
         set guioptions-=e
-        set lines=48 columns=163
+        set lines=48 columns=162
         if LINUX()
             set guifont=Fira\ Mono\ 11,Courier\ New\ Regular\ 18
         elseif OSX()
