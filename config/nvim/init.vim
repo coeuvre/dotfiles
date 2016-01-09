@@ -441,7 +441,7 @@
     highlight Search guibg=yellow gui=underline
     highlight Search ctermbg=yellow cterm=underline
 
-    set colorcolumn=80
+    " set colorcolumn=80
     if has('cmdline_info')
         set ruler                   " Show the ruler
         set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
