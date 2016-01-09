@@ -20,13 +20,16 @@
             return has('win32unix')
         endfunction
     " }
-    "
+
     " Windows Compatible {
         " On Windows, also use '.vim' instead of 'vimfiles';
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
-          let $HOME = $VIM
-          let &runtimepath .= ','.escape($HOME . '/.vim', ' \,')
+            let $HOME = substitute($HOME, '\\', '/', 'g')
+            " TODO(coeuvre): set runtimepath for NVim on Windows.
+            if !has('nvim')
+                set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME
+            endif
         endif
     " }
 
@@ -165,6 +168,7 @@
         " }
     else
         Plug 'Shougo/neocomplcache.vim' " {
+            let g:neocomplcache_temporary_dir = s:common_dir . 'neocomplcache'
             "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
             " Disable AutoComplPop.
             let g:acp_enableAtStartup = 0
@@ -259,6 +263,7 @@
     endif
 
     Plug 'ctrlpvim/ctrlp.vim' " {
+        let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
         nnoremap <silent> <leader>ff :CtrlP<CR>
         nnoremap <silent> <leader>fr :CtrlPMRU<CR>
         nnoremap <silent> <leader>fb :CtrlPBuffer<CR>
