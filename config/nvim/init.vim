@@ -457,13 +457,13 @@
     highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
 
     " Highlight task tags
-    highlight Important ctermfg=Yellow cterm=underline guifg=#FFFF00 gui=underline
+    highlight Important ctermfg=Yellow cterm=underline,bold guifg=#FFFF00 gui=underline,bold
     autocmd Syntax * call matchadd('Important', '\W\zs\(IMPORTANT\|HACK\)')
 
-    highlight Note ctermfg=Green cterm=underline guifg=#00FF00 gui=underline
+    highlight Note ctermfg=Green cterm=underline,bold guifg=#00FF00 gui=underline,bold
     autocmd Syntax * call matchadd('Note', '\W\zs\(NOTE\|INFO\|IDEA\)')
 
-    highlight Todo ctermfg=Red cterm=underline guifg=#FF0000 gui=underline
+    highlight Todo ctermfg=Red cterm=underline,bold guifg=#FF0000 gui=underline,bold
     autocmd Syntax * call matchadd('Todo',  '\W\zs\(TODO\|FIXME\|CHANGED\|BUG\)')
 
     " set colorcolumn=80
