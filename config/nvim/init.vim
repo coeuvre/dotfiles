@@ -291,7 +291,11 @@
 
     Plug 'mbbill/undotree'
 
-    Plug 'scrooloose/nerdcommenter'
+    Plug 'scrooloose/nerdcommenter' " {
+        let g:NERDCustomDelimiters = {
+            \ 'c': { 'leftAlt': '/*', 'rightAlt': '*/', 'left': '// '}
+        \ }
+    " }
 
     Plug 'editorconfig/editorconfig-vim'
 
