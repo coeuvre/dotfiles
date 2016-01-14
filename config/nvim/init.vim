@@ -283,9 +283,10 @@
 
     Plug 'scrooloose/nerdtree' " {
         nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
+        nnoremap <silent> <C-\> :NERDTreeToggle<CR>
     " }
 
-    Plug 'Xuyuanp/nerdtree-git-plugin'
+    "Plug 'Xuyuanp/nerdtree-git-plugin'
 
     Plug 'benmills/vimux' " {
         function! SetupRustBuildCommand()
@@ -463,7 +464,7 @@
 " Vim UI {
     set background=dark
    " colorscheme Tomorrow-Night
-   let base16colorspace=256
+    let base16colorspace=256
     colorscheme base16-default
 
     set tabpagemax=15               " Only show 15 tabs
