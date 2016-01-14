@@ -381,8 +381,8 @@
     Plug 'cespare/vim-toml'
     Plug 'jelera/vim-javascript-syntax'
 
-    Plug 'chriskempson/vim-tomorrow-theme'
-
+    "Plug 'chriskempson/vim-tomorrow-theme'
+    Plug 'chriskempson/base16-vim'
     call plug#end()
 " }
 
@@ -462,7 +462,9 @@
 
 " Vim UI {
     set background=dark
-    colorscheme Tomorrow-Night
+   " colorscheme Tomorrow-Night
+   let base16colorspace=256
+    colorscheme base16-default
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
