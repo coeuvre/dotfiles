@@ -281,6 +281,25 @@
         nnoremap <silent> <leader>fb :CtrlPBuffer<CR>
     " }
 
+    Plug 'scrooloose/nerdtree' " {
+        nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
+    " }
+
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+
+    Plug 'benmills/vimux' " {
+        function! SetupRustBuildCommand()
+            nnoremap <buffer> <leader>bb :VimuxRunCommand("cargo build")<cr>
+            nnoremap <buffer> <leader>br :VimuxRunCommand("cargo run")<cr>
+        endfunction
+        autocmd FileType rust call SetupRustBuildCommand()
+    " }
+
+    Plug 'embear/vim-localvimrc' " {
+        let g:localvimrc_sandbox=0
+        let g:localvimrc_whitelist='.*'
+    " }
+
     Plug 'tpope/vim-repeat'
 
     Plug 'mbbill/undotree'
