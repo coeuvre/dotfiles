@@ -485,6 +485,7 @@
     highlight Note ctermfg=Green cterm=underline,bold guifg=#00FF00 gui=underline,bold
     autocmd Syntax * call matchadd('Note', '\W\zs\(NOTE\|INFO\|IDEA\)')
 
+    highlight clear Todo
     highlight Todo ctermfg=Red cterm=underline,bold guifg=#FF0000 gui=underline,bold
     autocmd Syntax * call matchadd('Todo',  '\W\zs\(TODO\|FIXME\|CHANGED\|BUG\)')
 
