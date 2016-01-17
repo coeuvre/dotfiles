@@ -265,6 +265,7 @@
     Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
 
+        let g:ctrlp_cmd = 'CtrlPMixed'
         let g:ctrlp_prompt_mappings = {
             \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
             \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
@@ -472,9 +473,23 @@
 
     set cursorline                  " Highlight current line
 
+    "highlight clear CursorLineNr    " Remove highlight color from current line number
+
+    " Highlight for GitGutter
     highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
     highlight clear LineNr          " Current line number row will have same background color in relative mode
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
+
+    highlight clear GitGutterAdd
+    highlight link GitGutterAdd GitGutterAddDefault
+
+    highlight clear GitGutterDelete
+    highlight link GitGutterDelete GitGutterDeleteDefault
+
+    highlight clear GitGutterChange
+    highlight link GitGutterChange GitGutterChangeDefault
+
+    highlight clear GitGutterChangeDelete
+    highlight link GitGutterChangeDelete GitGutterChangeDeleteDefault
 
     highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
 
