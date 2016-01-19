@@ -265,6 +265,16 @@
     Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
 
+        let g:ctrlp_root_markers = ['Cargo.toml']
+
+        if OSX() || LINUX()
+            set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+        else
+            set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+        endif
+
+        let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
         let g:ctrlp_cmd = 'CtrlPMixed'
         let g:ctrlp_prompt_mappings = {
             \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
@@ -291,8 +301,8 @@
 
     Plug 'benmills/vimux' " {
         function! SetupRustBuildCommand()
-            nnoremap <buffer> <leader>bb :VimuxRunCommand("cargo build")<cr>
-            nnoremap <buffer> <leader>br :VimuxRunCommand("cargo run")<cr>
+            nnoremap <silent> <buffer> <leader>bb :VimuxRunCommand("cargo build")<cr>
+            nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("cargo run")<cr>
         endfunction
         autocmd FileType rust call SetupRustBuildCommand()
     " }
@@ -479,17 +489,10 @@
     highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
     highlight clear LineNr          " Current line number row will have same background color in relative mode
 
-    highlight clear GitGutterAdd
-    highlight link GitGutterAdd GitGutterAddDefault
-
-    highlight clear GitGutterDelete
-    highlight link GitGutterDelete GitGutterDeleteDefault
-
-    highlight clear GitGutterChange
-    highlight link GitGutterChange GitGutterChangeDefault
-
-    highlight clear GitGutterChangeDelete
-    highlight link GitGutterChangeDelete GitGutterChangeDeleteDefault
+    highlight! link GitGutterAdd GitGutterAddDefault
+    highlight! link GitGutterDelete GitGutterDeleteDefault
+    highlight! link GitGutterChange GitGutterChangeDefault
+    highlight! link GitGutterChangeDelete GitGutterChangeDeleteDefault
 
     highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
 
