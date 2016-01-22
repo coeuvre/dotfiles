@@ -385,7 +385,7 @@
     " Syntax
     Plug 'zah/nim.vim'
     Plug 'rust-lang/rust.vim' " {
-        let g:rustfmt_autosave = 1
+        "let g:rustfmt_autosave = 1
     " }
     Plug 'tikhomirov/vim-glsl'
     Plug 'tpope/vim-markdown'
