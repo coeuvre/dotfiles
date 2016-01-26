@@ -275,7 +275,6 @@
 
         let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
-        let g:ctrlp_cmd = 'CtrlPMixed'
         let g:ctrlp_prompt_mappings = {
             \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
             \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
@@ -303,6 +302,7 @@
         function! SetupRustBuildCommand()
             nnoremap <silent> <buffer> <leader>bb :VimuxRunCommand("cargo build")<cr>
             nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("cargo run")<cr>
+            nnoremap <silent> <buffer> <leader>bt :VimuxRunCommand("cargo test -- --nocapture")<cr>
         endfunction
         autocmd FileType rust call SetupRustBuildCommand()
     " }
