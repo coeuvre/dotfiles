@@ -393,8 +393,7 @@
     Plug 'cespare/vim-toml'
     Plug 'jelera/vim-javascript-syntax'
 
-    "Plug 'chriskempson/vim-tomorrow-theme'
-    Plug 'chriskempson/base16-vim'
+    Plug 'chriskempson/vim-tomorrow-theme'
     call plug#end()
 " }
 
@@ -474,25 +473,18 @@
 
 " Vim UI {
     set background=dark
-   " colorscheme Tomorrow-Night
-    let base16colorspace=256
-    colorscheme base16-default
+    colorscheme Tomorrow-Night
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
 
     set cursorline                  " Highlight current line
 
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
+    highlight clear CursorLineNr    " Remove highlight color from current line number
 
     " Highlight for GitGutter
     highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
     highlight clear LineNr          " Current line number row will have same background color in relative mode
-
-    highlight! link GitGutterAdd GitGutterAddDefault
-    highlight! link GitGutterDelete GitGutterDeleteDefault
-    highlight! link GitGutterChange GitGutterChangeDefault
-    highlight! link GitGutterChangeDelete GitGutterChangeDeleteDefault
 
     highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
 
