@@ -318,14 +318,14 @@
 
     Plug 'scrooloose/nerdcommenter'
 
-    Plug 'tpope/vim-fugitive' " {
-        nnoremap <silent> <leader>gs :Gstatus<CR>
-        nnoremap <silent> <leader>gd :Gdiff<CR>
-        nnoremap <silent> <leader>gc :Gcommit<CR>
-        nnoremap <silent> <leader>gb :Gblame<CR>
-        nnoremap <silent> <leader>gl :Glog<CR>
-        nnoremap <silent> <leader>gp :Git push<CR>
-    " }
+    "Plug 'tpope/vim-fugitive' " {
+        "nnoremap <silent> <leader>gs :Gstatus<CR>
+        "nnoremap <silent> <leader>gd :Gdiff<CR>
+        "nnoremap <silent> <leader>gc :Gcommit<CR>
+        "nnoremap <silent> <leader>gb :Gblame<CR>
+        "nnoremap <silent> <leader>gl :Glog<CR>
+        "nnoremap <silent> <leader>gp :Git push<CR>
+    "" }
 
     Plug 'haya14busa/incsearch.vim' " {
         let g:incsearch#auto_nohlsearch = 1
@@ -380,7 +380,7 @@
         au Syntax * RainbowParenthesesLoadBraces
     " }
 
-    Plug 'airblade/vim-gitgutter'
+    "Plug 'airblade/vim-gitgutter'
 
     " Syntax
     Plug 'zah/nim.vim'
