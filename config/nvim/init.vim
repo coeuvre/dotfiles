@@ -46,6 +46,15 @@
         endif
     " }
 
+    function! ShellCommandAnd()
+        if empty(matchstr($SHELL, 'fish'))
+            return ' && '
+        else
+            return '; and '
+        endif
+    endfunction
+    let g:coeuvre_shell_cmd_and = ShellCommandAnd()
+
     " The default leader is '\', but many people prefer ',' as it's in a standard location.
     let mapleader = "\<Space>"
 " }
@@ -84,183 +93,7 @@
             \ ])
     " }
 
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim' " {
-            let g:deoplete#enable_at_startup = 1
-            " <TAB>: completion.
-            inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-            inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-        " }
-    elseif has('lua')
-        Plug 'Shougo/neocomplete.vim' " {
-            "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-            " Disable AutoComplPop.
-            let g:acp_enableAtStartup = 0
-            " Use neocomplete.
-            let g:neocomplete#enable_at_startup = 1
-            " Use smartcase.
-            let g:neocomplete#enable_smart_case = 1
-            " Set minimum syntax keyword length.
-            let g:neocomplete#sources#syntax#min_keyword_length = 3
-            let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-            " Define dictionary.
-            let g:neocomplete#sources#dictionary#dictionaries = {
-                \ 'default' : '',
-                \ 'vimshell' : $HOME.'/.vimshell_hist',
-                \ 'scheme' : $HOME.'/.gosh_completions'
-                    \ }
-
-            " Define keyword.
-            if !exists('g:neocomplete#keyword_patterns')
-                let g:neocomplete#keyword_patterns = {}
-            endif
-            let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-            " Plugin key-mappings.
-            inoremap <expr><C-g>     neocomplete#undo_completion()
-            inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-            " Recommended key-mappings.
-            " <CR>: close popup and save indent.
-            inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-            function! s:my_cr_function()
-              return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-              " For no inserting <CR> key.
-              "return pumvisible() ? "\<C-y>" : "\<CR>"
-            endfunction
-            " <TAB>: completion.
-            inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-            inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-            " <C-h>, <BS>: close popup and delete backword char.
-            inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-            inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-            " Close popup by <Space>.
-            "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-
-            " AutoComplPop like behavior.
-            "let g:neocomplete#enable_auto_select = 1
-
-            " Shell like behavior(not recommended).
-            "set completeopt+=longest
-            "let g:neocomplete#enable_auto_select = 1
-            "let g:neocomplete#disable_auto_complete = 1
-            "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-            " Enable omni completion.
-            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-            " Enable heavy omni completion.
-            if !exists('g:neocomplete#sources#omni#input_patterns')
-              let g:neocomplete#sources#omni#input_patterns = {}
-            endif
-            "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-            "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-            "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-            " For perlomni.vim setting.
-            " https://github.com/c9s/perlomni.vim
-            let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-        " }
-    else
-        Plug 'Shougo/neocomplcache.vim' " {
-            let g:neocomplcache_temporary_dir = s:common_dir . 'neocomplcache'
-            "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-            " Disable AutoComplPop.
-            let g:acp_enableAtStartup = 0
-            " Use neocomplcache.
-            let g:neocomplcache_enable_at_startup = 1
-            " Use smartcase.
-            let g:neocomplcache_enable_smart_case = 1
-            " Set minimum syntax keyword length.
-            let g:neocomplcache_min_syntax_length = 3
-            let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-
-            " Enable heavy features.
-            " Use camel case completion.
-            "let g:neocomplcache_enable_camel_case_completion = 1
-            " Use underbar completion.
-            "let g:neocomplcache_enable_underbar_completion = 1
-
-            " Define dictionary.
-            let g:neocomplcache_dictionary_filetype_lists = {
-                        \ 'default' : '',
-                        \ 'vimshell' : $HOME.'/.vimshell_hist',
-                        \ 'scheme' : $HOME.'/.gosh_completions'
-                        \ }
-
-            " Define keyword.
-            if !exists('g:neocomplcache_keyword_patterns')
-                let g:neocomplcache_keyword_patterns = {}
-            endif
-            let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
-
-            " Plugin key-mappings.
-            inoremap <expr><C-g>     neocomplcache#undo_completion()
-            inoremap <expr><C-l>     neocomplcache#complete_common_string()
-
-            " Recommended key-mappings.
-            " <CR>: close popup and save indent.
-            inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-            function! s:my_cr_function()
-                return neocomplcache#smart_close_popup() . "\<CR>"
-                " For no inserting <CR> key.
-                "return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-            endfunction
-            " <TAB>: completion.
-            inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-            inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-            " <C-h>, <BS>: close popup and delete backword char.
-            inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-            inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-            inoremap <expr><C-y>  neocomplcache#close_popup()
-            inoremap <expr><C-e>  neocomplcache#cancel_popup()
-            " Close popup by <Space>.
-            "inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
-
-            " For cursor moving in insert mode(Not recommended)
-            "inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-            "inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-            "inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-            "inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-            " Or set this.
-            "let g:neocomplcache_enable_cursor_hold_i = 1
-            " Or set this.
-            "let g:neocomplcache_enable_insert_char_pre = 1
-
-            " AutoComplPop like behavior.
-            "let g:neocomplcache_enable_auto_select = 1
-
-            " Shell like behavior(not recommended).
-            "set completeopt+=longest
-            "let g:neocomplcache_enable_auto_select = 1
-            "let g:neocomplcache_disable_auto_complete = 1
-            "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-            " Enable omni completion.
-            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-            " Enable heavy omni completion.
-            if !exists('g:neocomplcache_force_omni_patterns')
-                let g:neocomplcache_force_omni_patterns = {}
-            endif
-            let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-            let g:neocomplcache_force_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-            let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-            " For perlomni.vim setting.
-            " https://github.com/c9s/perlomni.vim
-            let g:neocomplcache_force_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-        " }
-    endif
+    Plug 'Valloric/YouCompleteMe'
 
     Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
@@ -300,9 +133,9 @@
 
     Plug 'benmills/vimux' " {
         function! SetupRustBuildCommand()
-            nnoremap <silent> <buffer> <leader>bb :VimuxRunCommand("cargo build")<cr>
-            nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("cargo run")<cr>
-            nnoremap <silent> <buffer> <leader>bt :VimuxRunCommand("cargo test -- --nocapture")<cr>
+            nnoremap <silent> <buffer> <leader>bb :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo build")<cr>
+            nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo run")<cr>
+            nnoremap <silent> <buffer> <leader>bt :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo test -- --nocapture")<cr>
         endfunction
         autocmd FileType rust call SetupRustBuildCommand()
     " }
@@ -743,87 +576,88 @@
 " }
 
 " Functions {
-    function! InitializeDirectories(common_dir)
-        " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
-        let dir_list = {
-                    \ 'backup': 'backupdir',
-                    \ 'views': 'viewdir',
-                    \ 'swap': 'directory' }
+    " Initialize cache directories {
+        function! InitializeDirectories(common_dir)
+            " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
+            let dir_list = {
+                        \ 'backup': 'backupdir',
+                        \ 'views': 'viewdir',
+                        \ 'swap': 'directory' }
 
-        if has('persistent_undo')
-            let dir_list['undo'] = 'undodir'
-        endif
+            if has('persistent_undo')
+                let dir_list['undo'] = 'undodir'
+            endif
 
-        exec "set viminfo='100,n" . a:common_dir . 'viminfo'
+            exec "set viminfo='100,n" . a:common_dir . 'viminfo'
 
-        for [dirname, settingname] in items(dir_list)
-            let directory = a:common_dir . dirname . '/'
-            if exists("*mkdir")
-                if !isdirectory(directory)
-                    call mkdir(directory)
+            for [dirname, settingname] in items(dir_list)
+                let directory = a:common_dir . dirname . '/'
+                if exists("*mkdir")
+                    if !isdirectory(directory)
+                        call mkdir(directory)
+                    endif
                 endif
-            endif
-            if !isdirectory(directory)
-                echo "Warning: Unable to create backup directory: " . directory
-                echo "Try: mkdir -p " . directory
-            else
-                let directory = substitute(directory, " ", "\\\\ ", "g")
-                exec "set " . settingname . "=" . directory
-            endif
-        endfor
-    endfunction
+                if !isdirectory(directory)
+                    echo "Warning: Unable to create backup directory: " . directory
+                    echo "Try: mkdir -p " . directory
+                else
+                    let directory = substitute(directory, " ", "\\\\ ", "g")
+                    exec "set " . settingname . "=" . directory
+                endif
+            endfor
+        endfunction
 
-    call InitializeDirectories(s:common_dir)
+        call InitializeDirectories(s:common_dir)
     " }
 
     " Strip whitespace {
-    function! StripTrailingWhitespace()
-        " Preparation: save last search, and cursor position.
-        let _s=@/
-        let l = line(".")
-        let c = col(".")
-        " do the business:
-        %s/\s\+$//e
-        " clean up: restore previous search history, and cursor position
-        let @/=_s
-        call cursor(l, c)
-    endfunction
+        function! StripTrailingWhitespace()
+            " Preparation: save last search, and cursor position.
+            let _s=@/
+            let l = line(".")
+            let c = col(".")
+            " do the business:
+            %s/\s\+$//e
+            " clean up: restore previous search history, and cursor position
+            let @/=_s
+            call cursor(l, c)
+        endfunction
     " }
 
     " http://vim.wikia.com/wiki/VimTip171
     " Search for selected text {
-    let s:save_cpo = &cpo | set cpo&vim
-    if !exists('g:VeryLiteral')
-        let g:VeryLiteral = 0
-    endif
-    function! s:VSetSearch(cmd)
-        let old_reg = getreg('"')
-        let old_regtype = getregtype('"')
-        normal! gvy
-        if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
-            let @/ = @@
-        else
-            let pat = escape(@@, a:cmd.'\')
-            if g:VeryLiteral
-                let pat = substitute(pat, '\n', '\\n', 'g')
-            else
-                let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
-                let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
-                let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
-            endif
-            let @/ = '\V'.pat
+        let s:save_cpo = &cpo | set cpo&vim
+        if !exists('g:VeryLiteral')
+            let g:VeryLiteral = 0
         endif
-        normal! gV
-        call setreg('"', old_reg, old_regtype)
-    endfunction
-    vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
-    vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
-    vmap <kMultiply> *
-    nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
-                \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
-    if !hasmapto("<Plug>VLToggle")
-        nmap <unique> <Leader>vl <Plug>VLToggle
-    endif
-    let &cpo = s:save_cpo | unlet s:save_cpo
+        function! s:VSetSearch(cmd)
+            let old_reg = getreg('"')
+            let old_regtype = getregtype('"')
+            normal! gvy
+            if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
+                let @/ = @@
+            else
+                let pat = escape(@@, a:cmd.'\')
+                if g:VeryLiteral
+                    let pat = substitute(pat, '\n', '\\n', 'g')
+                else
+                    let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
+                    let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
+                    let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
+                endif
+                let @/ = '\V'.pat
+            endif
+            normal! gV
+            call setreg('"', old_reg, old_regtype)
+        endfunction
+        vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
+        vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+        vmap <kMultiply> *
+        nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
+                    \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
+        if !hasmapto("<Plug>VLToggle")
+            nmap <unique> <Leader>vl <Plug>VLToggle
+        endif
+        let &cpo = s:save_cpo | unlet s:save_cpo
     " }
 " }
