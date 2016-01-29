@@ -1,3 +1,7 @@
-package brew
-package z
 theme default
+package z
+
+switch (uname)
+    case Darwin
+        package brew
+end
