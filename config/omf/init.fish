@@ -3,7 +3,7 @@
 # Environment Variable
 #
 ###############################################################################
-set -x PATH ~/.multirust/toolchains/nightly/cargo/bin ~/.local/bin /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin
+set -x PATH ~/.multirust/toolchains/nightly/cargo/bin ~/.local/bin /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin $PATH
 set -x MANPATH /usr/local/share/man $MANPATH
 
 # C/C++
@@ -33,6 +33,7 @@ switch (uname)
                     "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Performance Tools"\
                     "C:\Program Files (x86)\Windows Kits\8.1\bin\x86"\
                     "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools"\
+                    ~/.local/Cellar/rust/bin\
                     $PATH
         set -x INCLUDE "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE;C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\8.1\include\\shared;C:\Program Files (x86)\Windows Kits\8.1\include\\um;C:\Program Files (x86)\Windows Kits\8.1\include\\winrt;"
         set -x LIB "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\LIB;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\LIB;C:\Program Files (x86)\Windows Kits\10\lib\10.0.10240.0\ucrt\x86;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\lib\um\x86;C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86;"
