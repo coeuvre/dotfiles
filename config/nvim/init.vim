@@ -19,6 +19,10 @@
         silent function! MINGW()
             return has('win32unix')
         endfunction
+
+        silent function! UNIX()
+            return OSX() || LINUX()
+        endfunction
     " }
 
     " Windows Compatible {
@@ -93,7 +97,7 @@
             \ ])
     " }
 
-    if OSX() || LINUX()
+    if UNIX()
         Plug 'Valloric/YouCompleteMe'
     else
         Plug 'Shougo/neocomplete.vim' " {
@@ -178,13 +182,29 @@
 
         let g:ctrlp_root_markers = ['Cargo.toml']
 
-        if OSX() || LINUX()
+        if WINDOWS()
             set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
         else
             set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
         endif
 
         let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+        " The Silver Searcher
+        if executable('ag')
+            Plug 'lokikl/vim-ctrlp-ag' " {
+                nnoremap <silent> <leader>fa :CtrlPagLocate<space>
+            " }
+
+            " Use ag over grep
+            set grepprg=ag\ --nogroup\ --nocolor
+
+            " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+            let g:ctrlp_user_command += ['ag %s -l --nocolor --hidden -g ""']
+
+            " ag is fast enough that CtrlP doesn't need to cache
+            let g:ctrlp_use_caching = 0
+        endif
 
         let g:ctrlp_prompt_mappings = {
             \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
@@ -204,10 +224,8 @@
 
     Plug 'scrooloose/nerdtree' " {
         nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
-        nnoremap <silent> <C-\> :NERDTreeToggle<CR>
+        map <silent> <C-\> :NERDTreeToggle<CR>
     " }
-
-    "Plug 'Xuyuanp/nerdtree-git-plugin'
 
     Plug 'benmills/vimux' " {
         function! SetupRustBuildCommand()
@@ -223,20 +241,9 @@
         let g:localvimrc_whitelist='.*'
     " }
 
-    Plug 'tpope/vim-repeat'
-
     Plug 'mbbill/undotree'
 
     Plug 'scrooloose/nerdcommenter'
-
-    "Plug 'tpope/vim-fugitive' " {
-        "nnoremap <silent> <leader>gs :Gstatus<CR>
-        "nnoremap <silent> <leader>gd :Gdiff<CR>
-        "nnoremap <silent> <leader>gc :Gcommit<CR>
-        "nnoremap <silent> <leader>gb :Gblame<CR>
-        "nnoremap <silent> <leader>gl :Glog<CR>
-        "nnoremap <silent> <leader>gp :Git push<CR>
-    "" }
 
     Plug 'haya14busa/incsearch.vim' " {
         let g:incsearch#auto_nohlsearch = 1
@@ -254,16 +261,11 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
+    Plug 'editorconfig/editorconfig-vim'
+
     " Key
-    Plug 'tpope/vim-unimpaired'
-
-    Plug 'easymotion/vim-easymotion'
-
     Plug 'terryma/vim-multiple-cursors'
-
     Plug 'tpope/vim-surround'
-
-    Plug 'kshenoy/vim-signature'
 
     " Visual
     Plug 'bling/vim-airline' " {
@@ -284,20 +286,10 @@
         "let g:airline_powerline_fonts = 1
     " }
 
-    Plug 'kien/rainbow_parentheses.vim' " {
-        au VimEnter * RainbowParenthesesToggle
-        au Syntax * RainbowParenthesesLoadRound
-        au Syntax * RainbowParenthesesLoadSquare
-        au Syntax * RainbowParenthesesLoadBraces
-    " }
-
     "Plug 'airblade/vim-gitgutter'
 
     " Syntax
-    Plug 'zah/nim.vim'
-    Plug 'rust-lang/rust.vim' " {
-        "let g:rustfmt_autosave = 1
-    " }
+    Plug 'rust-lang/rust.vim'
     Plug 'tikhomirov/vim-glsl'
     Plug 'tpope/vim-markdown'
     Plug 'elzr/vim-json'
@@ -309,9 +301,10 @@
 " }
 
 " Gernal {
-    "if !has('gui')
-        "let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
-    "endif
+    if !has('gui') && has('nvim')
+        let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+        let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+    endif
 
     filetype plugin indent on   " Automatically detect file types
     syntax on                   " Syntax highlighting
@@ -344,7 +337,7 @@
 
     " Instead of reverting the cursor to the last position in the buffer,
     " we set it to the first line when editing a git commit message
-    au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+    "au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
     " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
     " Restore cursor to file position in previous editing session
@@ -383,7 +376,6 @@
 " }
 
 " Vim UI {
-    set background=dark
     colorscheme Tomorrow-Night
 
     set tabpagemax=15               " Only show 15 tabs
@@ -480,6 +472,11 @@
     "map <C-K> <C-W>k<C-W>_
     "map <C-L> <C-W>l<C-W>_
     "map <C-H> <C-W>h<C-W>_
+
+    " No need for ex mode
+    nnoremap Q <nop>
+
+    nnoremap ; :
 
     " Wrapped lines goes down/up to next row, rather than next line in file.
     nnoremap j gj
@@ -601,10 +598,6 @@
     noremap <silent> <C-w><C-j> :resize +5<CR>
     noremap <silent> <C-w><C-k> :resize -5<CR>
 
-    " Map <Leader>ff to display all lines with keyword under cursor
-    " and ask which one to jump to
-    "nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
-
     " Easier horizontal scrolling
     map zl zL
     map zh zH
@@ -624,7 +617,7 @@
     " GVIM- (here instead of .gvimrc)
     if has('gui_running')
         set guioptions-=t
-        set guioptions-=T           " Remove the toolbar
+        set guioptions-=T
         set guioptions-=m
         set guioptions-=r
         set guioptions-=R
