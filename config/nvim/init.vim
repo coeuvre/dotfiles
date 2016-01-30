@@ -97,6 +97,8 @@
         Plug 'Valloric/YouCompleteMe'
     else
         Plug 'Shougo/neocomplete.vim' " {
+            let g:neocomplete#data_directory = s:common_dir . '/neocomplete'
+
             " Disable AutoComplPop.
             let g:acp_enableAtStartup = 0
             " Use neocomplete.
