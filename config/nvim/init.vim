@@ -301,10 +301,10 @@
 " }
 
 " Gernal {
-    if !has('gui') && has('nvim')
-        let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
-        let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-    endif
+    "if !has('gui') && has('nvim')
+        "let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+        "let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+    "endif
 
     filetype plugin indent on   " Automatically detect file types
     syntax on                   " Syntax highlighting
@@ -632,10 +632,6 @@
             set guifont=Fira\ Mono:h14,Monaco:h11
         elseif WINDOWS()
             set guifont=Fira\ Mono:h11,Consolas:h11
-        endif
-
-        if OSX()
-            set transparency=2      " Make the window slightly transparent
         endif
     else
         if &term == 'xterm' || &term == 'screen'
