@@ -214,6 +214,7 @@
         autocmd FileType unite call s:unite_my_settings()
         function! s:unite_my_settings() " {
           " Overwrite settings.
+          imap <buffer> <ESC> <Plug>(unite_exit)
         endfunction " }
     " }
 
