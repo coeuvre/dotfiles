@@ -227,14 +227,7 @@
         map <silent> <C-\> :NERDTreeToggle<CR>
     " }
 
-    NeoBundle 'benmills/vimux' " {
-        function! SetupRustBuildCommand()
-            nnoremap <silent> <buffer> <leader>bb :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo build")<cr>
-            nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo run")<cr>
-            nnoremap <silent> <buffer> <leader>bt :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo test -- --nocapture")<cr>
-        endfunction
-        autocmd FileType rust call SetupRustBuildCommand()
-    " }
+    NeoBundle 'benmills/vimux'
 
     NeoBundle 'embear/vim-localvimrc' " {
         let g:localvimrc_sandbox=0
@@ -299,9 +292,6 @@
     NeoBundle 'chriskempson/vim-tomorrow-theme'
 
     call neobundle#end()
-
-    " Required:
-    filetype plugin indent on
 
     " If there are uninstalled bundles found on startup,
     " this will conveniently prompt you to install them.
@@ -649,6 +639,9 @@
         elseif WINDOWS()
             set guifont=Fira\ Mono:h11,Consolas:h11
         endif
+
+        " Maximize gvim window
+        set lines=999 columns=999
     else
         if &term == 'xterm' || &term == 'screen'
             set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
@@ -743,4 +736,19 @@
         endif
         let &cpo = s:save_cpo | unlet s:save_cpo
     " }
+" }
+
+" Buildings {
+function! SetupRustBuildCommand()
+    set makeprg=cargo
+    let &errorformat  =
+        \ '%E%f:%l:%c: %\d%#:%\d%# %.%\{-}error:%.%\{-} %m,'   .
+        \ '%W%f:%l:%c: %\d%#:%\d%# %.%\{-}warning:%.%\{-} %m,' .
+        \ '%C%f:%l %m,' .
+        \ '%-Z%.%#'
+    nnoremap <silent> <buffer> <leader>bb :make build<cr>
+    nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo run")<cr>
+    nnoremap <silent> <buffer> <leader>bt :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo test -- --nocapture")<cr>
+endfunction
+autocmd FileType rust call SetupRustBuildCommand()
 " }
