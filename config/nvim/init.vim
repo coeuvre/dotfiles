@@ -205,7 +205,7 @@
         let g:unite_data_directory = s:common_dir . 'unite'
 
         nnoremap <silent> <leader>f  :Unite source<CR>
-        nnoremap <silent> <leader>ff :UniteWithProjectDir file_rec/async<CR>
+        nnoremap <silent> <leader>ff :UniteWithProjectDir file_rec<CR>
         nnoremap <silent> <leader>fg :UniteWithProjectDir grep<CR>
         nnoremap <silent> <leader>fr :Unite file_mru<CR>
         nnoremap <silent> <leader>fb :Unite buffer<CR>
@@ -215,6 +215,9 @@
         function! s:unite_my_settings() " {
           " Overwrite settings.
           imap <buffer> <ESC> <Plug>(unite_exit)
+          imap <silent><buffer><expr> <C-s> unite#do_action('split')
+          imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+          imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
         endfunction " }
     " }
 
@@ -254,7 +257,7 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
-    NeoBundle 'editorconfig/editorconfig-vim'
+    "NeoBundle 'editorconfig/editorconfig-vim'
 
     " Key
     NeoBundle 'terryma/vim-multiple-cursors'
@@ -298,7 +301,10 @@
     NeoBundleCheck
 
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
+    call unite#filters#sorter_default#use(['sorter_reverse'])
     " Like ctrlp.vim settings.
+    let g:unite_prompt = '> '
+    let g:unite_update_time = 200
     call unite#custom#profile('default', 'context', {
                           \   'start_insert': 1,
                           \   'winheight': 10,
