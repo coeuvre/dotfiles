@@ -225,6 +225,43 @@
         let g:neomru#file_mru_path = s:common_dir . 'neomru/file'
     " }
 
+    NeoBundle 'ctrlpvim/ctrlp.vim' " {
+        let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
+
+        let g:ctrlp_root_markers = ['Cargo.toml']
+
+        if WINDOWS()
+            set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+        else
+            set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+        endif
+
+        let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+        " The Silver Searcher
+        if executable('ag')
+            " Use ag over grep
+            set grepprg=ag\ --nogroup\ --nocolor
+
+            " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+            let g:ctrlp_user_command += ['ag %s -l --nocolor --hidden -g ""']
+
+            " ag is fast enough that CtrlP doesn't need to cache
+            let g:ctrlp_use_caching = 0
+        endif
+
+        let g:ctrlp_prompt_mappings = {
+            \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+            \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+            \ 'PrtHistory(-1)':       ['<c-j>'],
+            \ 'PrtHistory(1)':        ['<c-k>'],
+            \ 'ToggleType(1)':        ['<c-l>', '<c-up>'],
+            \ 'ToggleType(-1)':       ['<c-h>', '<c-down>'],
+            \ 'PrtCurLeft()':         ['<c-b>', '<left>', '<c-^>'],
+            \ 'PrtCurRight()':        ['<c-f>', '<right>'],
+            \ }
+    " }
+
     NeoBundle 'scrooloose/nerdtree' " {
         nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
         map <silent> <C-\> :NERDTreeToggle<CR>
@@ -257,7 +294,7 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
-    "NeoBundle 'editorconfig/editorconfig-vim'
+    NeoBundle 'editorconfig/editorconfig-vim'
 
     " Key
     NeoBundle 'terryma/vim-multiple-cursors'
