@@ -179,8 +179,20 @@
         let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
     " }
 
+    Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+
     Plug 'Shougo/unite.vim' " {
         let g:unite_data_directory = s:common_dir . 'unite'
+
+        if executable('ag')
+            " Use ag (the silver searcher)
+            " https://github.com/ggreer/the_silver_searcher
+            let g:unite_source_grep_command = 'ag'
+            let g:unite_source_grep_default_opts =
+            \ '-i --vimgrep --hidden --ignore ' .
+            \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
+            let g:unite_source_grep_recursive_opt = ''
+        endif
 
         nnoremap <silent> <leader>f  :Unite source<CR>
         nnoremap <silent> <leader>fg :UniteWithProjectDir grep<CR>
