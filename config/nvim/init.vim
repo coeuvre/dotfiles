@@ -64,38 +64,10 @@
 " }
 
 " Plugins {
-    " Note: Skip initialization for vim-tiny or vim-small.
-    if 0 | endif
-
-    " Required:
-    if has('nvim')
-        set runtimepath^=~/.config/nvim/bundle/neobundle.vim/
-        call neobundle#begin(expand('~/.config/nvim/bundle/'))
-    else
-        if &compatible
-            set nocompatible               " Be iMproved
-        endif
-        set runtimepath^=~/.vim/bundle/neobundle.vim/
-        call neobundle#begin(expand('~/.vim/bundle/'))
-    endif
-
-    " Let NeoBundle manage NeoBundle
-    " Required:
-    NeoBundleFetch 'Shougo/neobundle.vim'
-
+    call plug#begin()
 
     " Functionalities
-    NeoBundle 'Shougo/vimproc.vim', {
-        \ 'build' : {
-        \     'windows' : 'tools\\update-dll-mingw',
-        \     'cygwin' : 'make -f make_cygwin.mak',
-        \     'mac' : 'make',
-        \     'linux' : 'make',
-        \     'unix' : 'gmake',
-        \    },
-        \ }
-
-    NeoBundle 'mhinz/vim-startify' " {
+    Plug 'mhinz/vim-startify' " {
         function! s:filter_header(lines) abort
             let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
             let centered_lines = map(copy(a:lines),
@@ -125,7 +97,13 @@
             \ ])
     " }
 
-    NeoBundle 'Shougo/neocomplete.vim' " {
+    Plug 'dbakker/vim-projectroot' " {
+        let g:rootmarkers = ['.projectroot','.git','.hg','.svn',
+                            \'Cargo.toml',
+                            \'.bzr','_darcs','build.xml']
+    " }
+
+    Plug 'Shougo/neocomplete.vim' " {
         let g:neocomplete#data_directory = s:common_dir . '/neocomplete'
 
         " Disable AutoComplPop.
@@ -201,14 +179,11 @@
         let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
     " }
 
-    NeoBundle 'Shougo/unite.vim' " {
+    Plug 'Shougo/unite.vim' " {
         let g:unite_data_directory = s:common_dir . 'unite'
 
         nnoremap <silent> <leader>f  :Unite source<CR>
-        nnoremap <silent> <leader>ff :UniteWithProjectDir file_rec<CR>
         nnoremap <silent> <leader>fg :UniteWithProjectDir grep<CR>
-        nnoremap <silent> <leader>fr :Unite file_mru<CR>
-        nnoremap <silent> <leader>fb :Unite buffer<CR>
         nnoremap <silent> <leader>fm :Unite mapping<CR>
 
         autocmd FileType unite call s:unite_my_settings()
@@ -221,11 +196,7 @@
         endfunction " }
     " }
 
-    NeoBundle 'Shougo/neomru.vim' " {
-        let g:neomru#file_mru_path = s:common_dir . 'neomru/file'
-    " }
-
-    NeoBundle 'ctrlpvim/ctrlp.vim' " {
+    Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
 
         let g:ctrlp_root_markers = ['Cargo.toml']
@@ -260,25 +231,29 @@
             \ 'PrtCurLeft()':         ['<c-b>', '<left>', '<c-^>'],
             \ 'PrtCurRight()':        ['<c-f>', '<right>'],
             \ }
+
+        nnoremap <silent> <leader>fb :CtrlPBuffer<CR>
+        nnoremap <silent> <leader>ff :CtrlP<CR>
+        nnoremap <silent> <leader>fr :CtrlPMRUFiles<CR>
     " }
 
-    NeoBundle 'scrooloose/nerdtree' " {
-        nnoremap <silent> <leader>ft :NERDTreeToggle<CR>
-        map <silent> <C-\> :NERDTreeToggle<CR>
+    Plug 'scrooloose/nerdtree' " {
+        nnoremap <silent> <leader>ft :execute 'NERDTreeToggle ' projectroot#guess()<CR>
+        map <silent> <C-\> <leader>ft
     " }
 
-    NeoBundle 'benmills/vimux'
+    Plug 'benmills/vimux'
 
-    NeoBundle 'embear/vim-localvimrc' " {
+    Plug 'embear/vim-localvimrc' " {
         let g:localvimrc_sandbox=0
         let g:localvimrc_whitelist='.*'
     " }
 
-    NeoBundle 'mbbill/undotree'
+    Plug 'mbbill/undotree'
 
-    NeoBundle 'scrooloose/nerdcommenter'
+    Plug 'scrooloose/nerdcommenter'
 
-    NeoBundle 'haya14busa/incsearch.vim' " {
+    Plug 'haya14busa/incsearch.vim' " {
         let g:incsearch#auto_nohlsearch = 1
         " n and N directions are always forward and backward respectively even after performing <Plug>(incsearch-backward).
         let g:incsearch#consistent_n_direction = 1
@@ -294,14 +269,14 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
-    NeoBundle 'editorconfig/editorconfig-vim'
+    Plug 'editorconfig/editorconfig-vim'
 
     " Key
-    NeoBundle 'terryma/vim-multiple-cursors'
-    NeoBundle 'tpope/vim-surround'
+    Plug 'terryma/vim-multiple-cursors'
+    Plug 'tpope/vim-surround'
 
     " Visual
-    NeoBundle 'bling/vim-airline' " {
+    Plug 'bling/vim-airline' " {
         let g:airline_left_sep=''
         let g:airline_right_sep=''
 
@@ -322,23 +297,19 @@
     "Plug 'airblade/vim-gitgutter'
 
     " Syntax
-    NeoBundle 'rust-lang/rust.vim'
-    NeoBundle 'tikhomirov/vim-glsl'
-    NeoBundle 'tpope/vim-markdown'
-    NeoBundle 'elzr/vim-json'
-    NeoBundle 'cespare/vim-toml'
-    NeoBundle 'jelera/vim-javascript-syntax'
+    Plug 'rust-lang/rust.vim'
+    Plug 'tikhomirov/vim-glsl'
+    Plug 'tpope/vim-markdown'
+    Plug 'elzr/vim-json'
+    Plug 'cespare/vim-toml'
+    Plug 'jelera/vim-javascript-syntax'
 
-    NeoBundle 'chriskempson/vim-tomorrow-theme'
+    Plug 'chriskempson/vim-tomorrow-theme'
 
-    call neobundle#end()
-
-    " If there are uninstalled bundles found on startup,
-    " this will conveniently prompt you to install them.
-    NeoBundleCheck
+    call plug#end()
 
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
-    call unite#filters#sorter_default#use(['sorter_reverse'])
+    "call unite#filters#sorter_default#use(['sorter_reverse'])
     " Like ctrlp.vim settings.
     let g:unite_prompt = '> '
     let g:unite_update_time = 200
@@ -660,6 +631,9 @@
     map <leader>sp [s
     map <leader>sa zg
     map <leader>s= z=
+
+    nnoremap <silent> [c :cprevious<CR>
+    nnoremap <silent> ]c :cnext<CR>
 " }
 
 " GUI Settings {
@@ -782,16 +756,23 @@
 " }
 
 " Buildings {
-function! SetupRustBuildCommand()
-    set makeprg=cargo
+let g:coeuvre_project_run_cmd = ''
+let g:coeuvre_project_test_cmd = ''
+
+function! SetupRustProject()
+    let &makeprg='cargo build'
     let &errorformat  =
         \ '%E%f:%l:%c: %\d%#:%\d%# %.%\{-}error:%.%\{-} %m,'   .
         \ '%W%f:%l:%c: %\d%#:%\d%# %.%\{-}warning:%.%\{-} %m,' .
         \ '%C%f:%l %m,' .
         \ '%-Z%.%#'
-    nnoremap <silent> <buffer> <leader>bb :make build<cr>
-    nnoremap <silent> <buffer> <leader>br :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo run")<cr>
-    nnoremap <silent> <buffer> <leader>bt :VimuxRunCommand("clear" . g:coeuvre_shell_cmd_and . "cargo test -- --nocapture")<cr>
+    let g:coeuvre_project_run_cmd = '!cd ' . projectroot#guess() . ' && cargo run'
+    let g:coeuvre_project_test_cmd = '!cd ' . projectroot#guess() . ' && cargo test -- --nocapture'
 endfunction
-autocmd FileType rust call SetupRustBuildCommand()
+autocmd FileType rust,toml call SetupRustProject()
+
+nnoremap <silent> <leader>bb :make<cr>
+nnoremap <silent> <leader>br :execute g:coeuvre_project_run_cmd<cr>
+nnoremap <silent> <leader>bt :execute g:coeuvre_project_test_cmd<cr>
+
 " }
