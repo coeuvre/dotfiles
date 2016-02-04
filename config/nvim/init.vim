@@ -23,6 +23,14 @@
         silent function! UNIX()
             return OSX() || LINUX()
         endfunction
+
+        silent function! GUI()
+            return has('gui')
+        endfunction
+
+        silent function! TMUX()
+            return !GUI() && exists('$TMUX')
+        endfunction
     " }
 
     " Windows Compatible {
@@ -30,7 +38,7 @@
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
             let $HOME = substitute($HOME, '\\', '/', 'g')
-            " TODO(coeuvre): set runtimepath for NVim on Windows.
+            " TODO: set runtimepath for NVim on Windows.
             if !has('nvim')
                 set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME
             endif
@@ -97,11 +105,7 @@
             \ ])
     " }
 
-    Plug 'dbakker/vim-projectroot' " {
-        let g:rootmarkers = ['.projectroot','.git','.hg','.svn',
-                            \'Cargo.toml',
-                            \'.bzr','_darcs','build.xml']
-    " }
+    Plug 'dbakker/vim-projectroot'
 
     Plug 'Shougo/neocomplete.vim' " {
         let g:neocomplete#data_directory = s:common_dir . '/neocomplete'
@@ -211,8 +215,6 @@
     Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
 
-        let g:ctrlp_root_markers = ['Cargo.toml']
-
         if WINDOWS()
             set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
         else
@@ -255,6 +257,14 @@
     " }
 
     Plug 'benmills/vimux'
+    Plug 'christoomey/vim-tmux-navigator' " {
+        let g:tmux_navigator_no_mappings = 1
+
+        nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
+        nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
+        nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
+        nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
+    " }
 
     Plug 'embear/vim-localvimrc' " {
         let g:localvimrc_sandbox=0
@@ -772,19 +782,30 @@ let g:coeuvre_project_run_cmd = ''
 let g:coeuvre_project_test_cmd = ''
 
 function! SetupRustProject()
-    let &makeprg='cargo build'
     let &errorformat  =
         \ '%E%f:%l:%c: %\d%#:%\d%# %.%\{-}error:%.%\{-} %m,'   .
         \ '%W%f:%l:%c: %\d%#:%\d%# %.%\{-}warning:%.%\{-} %m,' .
         \ '%C%f:%l %m,' .
         \ '%-Z%.%#'
-    let g:coeuvre_project_run_cmd = '!cd ' . projectroot#guess() . ' && cargo run'
-    let g:coeuvre_project_test_cmd = '!cd ' . projectroot#guess() . ' && cargo test -- --nocapture'
+
+    if GUI()
+        let &makeprg='cargo build'
+    else
+        let &makeprg='clear && cargo build'
+    endif
+
+    if TMUX()
+        nnoremap <silent> <leader>br :execute VimuxRunCommand("cd " . projectroot#guess() . g:coeuvre_shell_cmd_and . "clear" . g:coeuvre_shell_cmd_and . "cargo run")<cr>
+        nnoremap <silent> <leader>bt :execute VimuxRunCommand("cd " . projectroot#guess() . g:coeuvre_shell_cmd_and . "clear" . g:coeuvre_shell_cmd_and . "cargo test -- --nocapture")<cr>
+    elseif GUI()
+        nnoremap <silent> <leader>br :execute "!cd " . projectroot#guess() . " && cargo run"<cr>
+        nnoremap <silent> <leader>bt :execute "!cd " . projectroot#guess() . " && cargo test -- --nocapture"<cr>
+    else
+        nnoremap <silent> <leader>br :execute "!clear && cd " . projectroot#guess() . " && cargo run"<cr>
+        nnoremap <silent> <leader>bt :execute "!clear && cd " . projectroot#guess() . " && cargo test -- --nocapture"<cr>
+    endif
 endfunction
 autocmd FileType rust,toml call SetupRustProject()
 
-nnoremap <silent> <leader>bb :make<cr>
-nnoremap <silent> <leader>br :execute g:coeuvre_project_run_cmd<cr>
-nnoremap <silent> <leader>bt :execute g:coeuvre_project_test_cmd<cr>
-
+nnoremap <silent> <leader>bb :make!<cr>
 " }
