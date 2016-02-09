@@ -489,7 +489,6 @@
 
 " Formatting {
     set nowrap                      " Do not wrap long lines
-    "set wrap                        " Wrap long lines
     set autoindent                  " Indent at the same level of the previous line
     set shiftwidth=4                " Use indents of 4 spaces
     set expandtab                   " Tabs are spaces, not tabs
@@ -502,9 +501,12 @@
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
     set cindent                     " do C program indenting
+    set cinoptions=l1               " set C switch case indentation
 
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
+
+    autocmd FileType lua setl sw=2 sts=2 ts=2 et
 " }
 
 " Key (re)Mappings {
@@ -807,5 +809,5 @@ function! SetupRustProject()
 endfunction
 autocmd FileType rust,toml call SetupRustProject()
 
-nnoremap <silent> <leader>bb :make!<cr>
+nnoremap <silent> <leader>bb :make<cr>
 " }
