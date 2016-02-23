@@ -105,6 +105,9 @@
             \ ])
     " }
 
+    Plug 'xolox/vim-misc'
+    Plug 'xolox/vim-shell'
+
     Plug 'dbakker/vim-projectroot'
 
     if has('nvim')
@@ -822,5 +825,5 @@ function! SetupRustProject()
 endfunction
 autocmd FileType rust,toml call SetupRustProject()
 
-nnoremap <silent> <leader>bb :make<cr>
+nnoremap <silent> <leader>bb :MakeWithShell<cr>
 " }
