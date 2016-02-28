@@ -105,8 +105,21 @@
             \ ])
     " }
 
-    Plug 'xolox/vim-misc'
-    Plug 'xolox/vim-shell'
+    if !has('nvim')
+        Plug 'xolox/vim-misc'
+        Plug 'xolox/vim-shell'
+    else
+        " Automatically open, but do not go to (if there are errors) the quickfix /
+        " location list window, or close it when is has become empty.
+        "
+        " Note: Must allow nesting of autocmds to enable any customizations for quickfix
+        " buffers.
+        " Note: Normally, :cwindow jumps to the quickfix window if the command opens it
+        " (but not if it's already open). However, as part of the autocmd, this doesn't
+        " seem to happen.
+        autocmd QuickFixCmdPost [^l]* nested cwindow
+        autocmd QuickFixCmdPost    l* nested lwindow
+    endif
 
     Plug 'dbakker/vim-projectroot'
 
@@ -268,6 +281,12 @@
         map <silent> <C-\> <leader>ft
     " }
 
+    Plug 'majutsushi/tagbar' " {
+        let g:tagbar_autofocus = 1
+        let g:tagbar_autoclose = 1
+        nnoremap <silent> <F8> :TagbarOpen fj<cr>
+    " }
+
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator' " {
         let g:tmux_navigator_no_mappings = 1
@@ -291,6 +310,12 @@
 
     Plug 'scrooloose/nerdcommenter'
 
+    Plug 'editorconfig/editorconfig-vim'
+
+    " Key
+    Plug 'terryma/vim-multiple-cursors'
+    Plug 'tpope/vim-surround'
+    Plug 'rhysd/clever-f.vim'
     Plug 'haya14busa/incsearch.vim' " {
         let g:incsearch#auto_nohlsearch = 1
         " n and N directions are always forward and backward respectively even after performing <Plug>(incsearch-backward).
@@ -307,11 +332,6 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
-    Plug 'editorconfig/editorconfig-vim'
-
-    " Key
-    Plug 'terryma/vim-multiple-cursors'
-    Plug 'tpope/vim-surround'
 
     " Visual
     Plug 'bling/vim-airline' " {
@@ -603,18 +623,18 @@
     nnoremap Y y$
 
     " Code folding options
-    set foldmethod=syntax
-    set foldlevel=9
-    nmap <leader>0 :set foldlevel=0<CR>
-    nmap <leader>1 :set foldlevel=1<CR>
-    nmap <leader>2 :set foldlevel=2<CR>
-    nmap <leader>3 :set foldlevel=3<CR>
-    nmap <leader>4 :set foldlevel=4<CR>
-    nmap <leader>5 :set foldlevel=5<CR>
-    nmap <leader>6 :set foldlevel=6<CR>
-    nmap <leader>7 :set foldlevel=7<CR>
-    nmap <leader>8 :set foldlevel=8<CR>
-    nmap <leader>9 :set foldlevel=9<CR>
+    set foldmethod=manual
+    "set foldlevel=9
+    "nmap <leader>0 :set foldlevel=0<CR>
+    "nmap <leader>1 :set foldlevel=1<CR>
+    "nmap <leader>2 :set foldlevel=2<CR>
+    "nmap <leader>3 :set foldlevel=3<CR>
+    "nmap <leader>4 :set foldlevel=4<CR>
+    "nmap <leader>5 :set foldlevel=5<CR>
+    "nmap <leader>6 :set foldlevel=6<CR>
+    "nmap <leader>7 :set foldlevel=7<CR>
+    "nmap <leader>8 :set foldlevel=8<CR>
+    "nmap <leader>9 :set foldlevel=9<CR>
 
     " Find merge conflict markers
     map <leader>m /\v^[<\|=>]{7}( .*\|$)<CR>
@@ -825,5 +845,9 @@ function! SetupRustProject()
 endfunction
 autocmd FileType rust,toml call SetupRustProject()
 
-nnoremap <silent> <leader>bb :MakeWithShell<cr>
+if has('nvim')
+    nnoremap <silent> <leader>bb :make<cr>
+else
+    nnoremap <silent> <leader>bb :MakeWithShell<cr>
+endif
 " }
