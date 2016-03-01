@@ -108,17 +108,6 @@
     if !has('nvim')
         Plug 'xolox/vim-misc'
         Plug 'xolox/vim-shell'
-    else
-        " Automatically open, but do not go to (if there are errors) the quickfix /
-        " location list window, or close it when is has become empty.
-        "
-        " Note: Must allow nesting of autocmds to enable any customizations for quickfix
-        " buffers.
-        " Note: Normally, :cwindow jumps to the quickfix window if the command opens it
-        " (but not if it's already open). However, as part of the autocmd, this doesn't
-        " seem to happen.
-        autocmd QuickFixCmdPost [^l]* nested cwindow
-        autocmd QuickFixCmdPost    l* nested lwindow
     endif
 
     Plug 'dbakker/vim-projectroot'
@@ -526,7 +515,7 @@
 " Formatting {
     set nowrap                      " Do not wrap long lines
     set autoindent                  " Indent at the same level of the previous line
-    set shiftwidth=4                " Use indents of 4 spaces
+    set shiftwidth=0                " use 'ts' value
     set expandtab                   " Tabs are spaces, not tabs
     set tabstop=4                   " An indentation every four columns
     set softtabstop=4               " Let backspace delete indent
@@ -542,7 +531,7 @@
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
 
-    autocmd FileType lua setl sw=2 sts=2 ts=2 et
+    autocmd FileType lua,html setl sts=2 ts=2
 " }
 
 " Key (re)Mappings {
@@ -816,9 +805,6 @@
 " }
 
 " Buildings {
-let g:coeuvre_project_run_cmd = ''
-let g:coeuvre_project_test_cmd = ''
-
 function! SetupRustProject()
     let &errorformat  =
         \ '%E%f:%l:%c: %\d%#:%\d%# %.%\{-}error:%.%\{-} %m,'   .
@@ -850,4 +836,16 @@ if has('nvim')
 else
     nnoremap <silent> <leader>bb :MakeWithShell<cr>
 endif
+
+" Automatically open, but do not go to (if there are errors) the quickfix /
+" location list window, or close it when is has become empty.
+"
+" Note: Must allow nesting of autocmds to enable any customizations for quickfix
+" buffers.
+" Note: Normally, :cwindow jumps to the quickfix window if the command opens it
+" (but not if it's already open). However, as part of the autocmd, this doesn't
+" seem to happen.
+autocmd QuickFixCmdPost [^l]* nested botright cwindow
+autocmd QuickFixCmdPost    l* nested botright lwindow
+autocmd BufReadPost quickfix nnoremap <buffer> q <c-w>c
 " }
