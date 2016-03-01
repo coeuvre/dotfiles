@@ -270,12 +270,6 @@
         map <silent> <C-\> <leader>ft
     " }
 
-    Plug 'majutsushi/tagbar' " {
-        let g:tagbar_autofocus = 1
-        let g:tagbar_autoclose = 1
-        nnoremap <silent> <F8> :TagbarOpen fj<cr>
-    " }
-
     Plug 'benmills/vimux'
     Plug 'christoomey/vim-tmux-navigator' " {
         let g:tmux_navigator_no_mappings = 1
