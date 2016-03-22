@@ -4,9 +4,29 @@ source $fisher_home/config.fish
 
 ###############################################################################
 #
+# Alias
+#
+###############################################################################
+alias l ls
+alias grep "grep --color"
+
+switch (uname)
+    case Darwin
+        # alias to love
+        alias love "/Applications/love.app/Contents/MacOS/love"
+end
+
+###############################################################################
+#
 # Environment Variable
 #
 ###############################################################################
+if test $FISH_RC_LOADED
+    exit
+end
+
+set -x FISH_RC_LOADED true
+
 set -x PATH ~/.multirust/toolchains/nightly/cargo/bin ~/.local/bin /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin $PATH
 set -x MANPATH /usr/local/share/man $MANPATH
 
@@ -31,11 +51,3 @@ end
 
 # SSH
 set -x SSH_KEY_PATH "~/.ssh/id_rsa"
-
-###############################################################################
-#
-# Alias
-#
-###############################################################################
-alias l ls
-alias grep "grep --color"
