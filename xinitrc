@@ -13,7 +13,7 @@ fi
 
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 
-/usr/bin/VBoxClient-all
+/usr/bin/vmware-user-suid-wrapper
 
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
