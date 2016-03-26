@@ -1,22 +1,22 @@
 [user]
-	email = coeuvre@gmail.com
-	name = Coeuvre Wong
+    email = coeuvre@gmail.com
+    name = Coeuvre Wong
 [core]
     editor = vim
 [color]
     ui = true
 [credential]
-	helper = cache
+    helper = store
 [merge]
-	tool = vimdiff
+    tool = vimdiff
 [mergetool]
-	keeptemporaries = false
-	keepbackups = false
-	prompt = false
-	trustexitcode = false
+    keeptemporaries = false
+    keepbackups = false
+    prompt = false
+    trustexitcode = false
 [alias]
-	last = log -1 --stat
-	st = status -sb
-	unstage = reset HEAD --
-	dc = diff --cached
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset' --abbrev-commit --date=relative --all
+    last = log -1 --stat
+    st = status -sb
+    unstage = reset HEAD --
+    dc = diff --cached
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset' --abbrev-commit --date=relative --all
