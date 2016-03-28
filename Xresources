@@ -67,7 +67,7 @@ Xft.lcdfilter: lcddefault
 ! URxvt
 !
 ! -----------------------------------------------------------------------------
-URxvt.font: xft:Fira Mono:size=11
+URxvt.font: xft:Fira Mono:size=10
 URxvt.scrollBar: false
 URxvt.mouseWheelScrollPage: false
 URxvt.cursorBlink: true
