@@ -520,7 +520,7 @@
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
     set cindent                     " do C program indenting
-    set cinoptions=l1,(0            " set C indent options
+    set cinoptions=l1,(0,W1s        " set C indent options
 
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
