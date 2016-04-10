@@ -443,6 +443,7 @@
     set noshowmode                  " DO NOT display the current mode, we use airline
 
     set cursorline                  " Highlight current line
+    set colorcolumn=80
 
     highlight clear CursorLineNr    " Remove highlight color from current line number
 
@@ -463,7 +464,6 @@
     highlight Todo ctermfg=Red cterm=underline,bold guifg=#FF0000 gui=underline,bold
     autocmd WinEnter,Syntax * call matchadd('Todo', '\W\zs\(TODO\|FIXME\|CHANGED\|BUG\)')
 
-    " set colorcolumn=80
     if has('cmdline_info')
         set ruler                   " Show the ruler
         set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
@@ -525,7 +525,7 @@
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
 
-    autocmd FileType lua,html setl sts=2 ts=2
+    autocmd FileType html setl sts=2 ts=2
 " }
 
 " Key (re)Mappings {
