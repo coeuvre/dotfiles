@@ -1,7 +1,3 @@
-set fisher_home ~/.local/share/fisherman
-set fisher_config ~/.config/fisherman
-source $fisher_home/config.fish
-
 ###############################################################################
 #
 # Alias
@@ -27,7 +23,7 @@ end
 
 set -x FISH_RC_LOADED true
 
-set -x PATH ~/.multirust/toolchains/nightly/cargo/bin ~/.local/bin /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin $PATH
+set -x PATH ~/.cargo/bin ~/.local/bin /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin $PATH
 set -x MANPATH /usr/local/share/man $MANPATH
 
 # C/C++
@@ -43,7 +39,7 @@ switch (uname)
         set -x MANPATH ~/.linuxbrew/share/man $MANPATH
         set -x INFOPATH ~/.linuxbrew/share/info $INFOPATH
     case Darwin # MAC OS X
-        set -x JAVA_HOME (/usr/libexec/java_home -v '1.7*')
+        set -x JAVA_HOME (/usr/libexec/java_home -v '1.8*')
         set -x DYLD_LIBRARY_PATH ~/.local/lib $DYLD_LIBRARY_PATH
     case 'CYGWIN*'
         set -x PATH ~/.local/Cellar/rust/bin $PATH
