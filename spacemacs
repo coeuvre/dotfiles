@@ -23,8 +23,6 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ivy
-
      (auto-completion :variables
                       auto-completion-return-key-behavior nil
                       auto-completion-tab-key-behavior 'complete
@@ -284,11 +282,13 @@ you should place your code here."
   ;; C/C++
   (setq-default c-basic-offset 4)
   (add-hook 'c-mode-common-hook (lambda ()
+                                  (modify-syntax-entry ?_ "w")
                                   (c-set-offset 'case-label 4)
                                   ))
 
   ;; Company mode
   (global-company-mode)
+  (setq-default company-idle-delay 0)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
