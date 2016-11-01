@@ -23,6 +23,8 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
+     ivy
+
      (auto-completion :variables
                       auto-completion-return-key-behavior nil
                       auto-completion-tab-key-behavior 'complete
@@ -252,6 +254,10 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (setq configuration-layer--elpa-archives
+        '(("melpa-cn" . "http://elpa.zilongshanren.com/melpa/")
+          ("org-cn"   . "http://elpa.zilongshanren.com/org/")
+          ("gnu-cn"   . "http://elpa.zilongshanren.com/gnu/")))
   )
 
 (defun dotspacemacs/user-config ()
@@ -270,6 +276,8 @@ you should place your code here."
   (setq-default tab-width 4
                 indent-tabs-mode nil)
 
+  (setq projectile-enable-caching t)
+
   (setq powerline-default-separator nil)
   (spaceline-compile)
 
@@ -279,17 +287,8 @@ you should place your code here."
                                   (c-set-offset 'case-label 4)
                                   ))
 
-  ;; multiple cursors key bindings
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
   ;; Company mode
   (global-company-mode)
-  (setq-default company-idle-delay 0)
-  (define-key company-active-map (kbd "C-n") 'company-select-next)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
