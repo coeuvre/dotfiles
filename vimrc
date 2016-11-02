@@ -49,7 +49,7 @@
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
             let $HOME = substitute($HOME, '/', '\\', 'g')
-            let s:common_dir = substitute(s:common_dir, '/', '\\', 'g')
+            let s:common_dir = substitute(s:common_dir . 'windows/', '/', '\\', 'g')
             set runtimepath=$HOME\\.vim,$VIM\\vimfiles,$VIMRUNTIME,$VIM\\vimfiles\\after,$HOME\\.vim\\after
         endif
     " }
@@ -154,7 +154,7 @@
     " Highlight for GitGutter
     highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
     highlight clear LineNr          " Current line number row will have same background color in relative mode
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
+    highlight clear CursorLineNr    " Remove highlight color from current line number
 
     highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
 
@@ -640,7 +640,7 @@
         set guioptions-=L
         set guioptions-=b
         set guioptions-=e
-        set lines=48 columns=162
+        "set lines=48 columns=162
         if LINUX()
             set guifont=Fira\ Code\ 11,Courier\ New\ Regular\ 18
         elseif OSX()
