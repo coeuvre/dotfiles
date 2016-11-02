@@ -1,5 +1,5 @@
 " Modeline {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+" vim: set sw=4 ts=4 sts=4 et tw=78
 " }
 
 " Environment {
@@ -14,7 +14,7 @@
         endfunction
 
         silent function! WINDOWS()
-            return  || has('win32') || has('win64')
+            return  has('win32') || has('win64')
         endfunction
 
         silent function! MINGW()
@@ -48,8 +48,9 @@
         " On Windows, also use '.vim' instead of 'vimfiles';
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
-            " let $HOME = substitute($HOME, '\\', '/', 'g')
-            set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+            let $HOME = substitute($HOME, '/', '\\', 'g')
+            let s:common_dir = substitute(s:common_dir, '/', '\\', 'g')
+            set runtimepath=$HOME\\.vim,$VIM\\vimfiles,$VIMRUNTIME,$VIM\\vimfiles\\after,$HOME\\.vim\\after
         endif
     " }
 
@@ -144,8 +145,6 @@
 " }
 
 " Vim UI {
-    colorscheme Tomorrow-Night
-
     set tabpagemax=15               " Only show 15 tabs
     set showmode                  " DO NOT display the current mode, we use airline
 
@@ -208,7 +207,7 @@
     set scrolloff=3                 " Minimum lines to keep above and below cursor
     set foldenable                  " Auto fold code
     set list
-    set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+    set listchars=tab:,.,trail:.,extends:>,precedes:<,nbsp:. " Highlight problematic whitespace
 " }
 
 " Formatting {
@@ -309,16 +308,17 @@
     nnoremap Y y$
 
     " Code folding options
-    nmap <leader>0 :set foldlevel=0<CR>
-    nmap <leader>1 :set foldlevel=1<CR>
-    nmap <leader>2 :set foldlevel=2<CR>
-    nmap <leader>3 :set foldlevel=3<CR>
-    nmap <leader>4 :set foldlevel=4<CR>
-    nmap <leader>5 :set foldlevel=5<CR>
-    nmap <leader>6 :set foldlevel=6<CR>
-    nmap <leader>7 :set foldlevel=7<CR>
-    nmap <leader>8 :set foldlevel=8<CR>
-    nmap <leader>9 :set foldlevel=9<CR>
+    set foldmethod=manual
+    "nmap <leader>0 :set foldlevel=0<CR>
+    "nmap <leader>1 :set foldlevel=1<CR>
+    "nmap <leader>2 :set foldlevel=2<CR>
+    "nmap <leader>3 :set foldlevel=3<CR>
+    "nmap <leader>4 :set foldlevel=4<CR>
+    "nmap <leader>5 :set foldlevel=5<CR>
+    "nmap <leader>6 :set foldlevel=6<CR>
+    "nmap <leader>7 :set foldlevel=7<CR>
+    "nmap <leader>8 :set foldlevel=8<CR>
+    "nmap <leader>9 :set foldlevel=9<CR>
 
     nmap <silent> <leader>/ :set invhlsearch<CR>
 
@@ -367,27 +367,52 @@
     nnoremap <silent> ]c :cnext<CR>
 
     " spacemacs like key-bindings {
-        " Tab operations
-        noremap <silent> <leader>tp :tabprevious<cr>
-        noremap <silent> <leader>tn :tabnext<cr>
-        noremap <silent> <leader>tc :tabclose<cr>
-        noremap <silent> <leader>tmh :tabm -1<cr>
-        noremap <silent> <leader>tml :tabm +1<cr>
+        noremap <silent> <leader>qq :xa<cr>
 
-        " Window operations
-        noremap <silent> <leader>wv <C-w>v
-        noremap <silent> <leader>wV <C-w>V
+        " Tab {
+            noremap <silent> <leader>th :tabprevious<cr>
+            noremap <silent> <leader>tl :tabnext<cr>
+            noremap <silent> <leader>tH :tabm -1<cr>
+            noremap <silent> <leader>tL :tabm +1<cr>
+            noremap <silent> <leader>td :tabclose<cr>
+        " }
 
-        noremap <silent> <leader>ws <C-w>s
-        noremap <silent> <leader>wS <C-w>S
+        " Window {
+            noremap <silent> <leader>wv <C-w>v
+            noremap <silent> <leader>wV <C-w>V
 
-        noremap <silent> <leader>wc <C-w>c
+            noremap <silent> <leader>ws <C-w>s
+            noremap <silent> <leader>wS <C-w>S
 
-        " Resize windows
-        noremap <silent> <C-w><C-h> :vertical resize -5<CR>
-        noremap <silent> <C-w><C-l> :vertical resize +5<CR>
-        noremap <silent> <C-w><C-j> :resize +5<CR>
-        noremap <silent> <C-w><C-k> :resize -5<CR>
+            noremap <silent> <leader>wd <C-w>c
+
+            noremap <silent> <leader>ww <C-w><C-w>
+            noremap <silent> <leader>wh <C-w>h
+            noremap <silent> <leader>wj <C-w>j
+            noremap <silent> <leader>wk <C-w>k
+            noremap <silent> <leader>wl <C-w>l
+            noremap <silent> <leader>wH <C-w>H
+            noremap <silent> <leader>wJ <C-w>J
+            noremap <silent> <leader>wK <C-w>K
+            noremap <silent> <leader>wL <C-w>L
+
+            " Resize
+            noremap <silent> <C-w><C-h> :vertical resize -5<CR>
+            noremap <silent> <C-w><C-l> :vertical resize +5<CR>
+            noremap <silent> <C-w><C-j> :resize +5<CR>
+            noremap <silent> <C-w><C-k> :resize -5<CR>
+        " }
+
+        " Files {
+            noremap <silent> <leader>fs :w<CR>
+            noremap <silent> <leader>fS :wa<CR>
+            noremap <silent> <leader>ff :CtrlP<CR>
+            noremap <silent> <leader>fr :CtrlPMRUFiles<CR>
+        " }
+
+        " Buffers {
+            noremap <silent> <leader>bb :CtrlPBuffer<CR>
+        " }
     " }
 
 " }
@@ -430,7 +455,7 @@
     " }
 
     Plug 'Shougo/neocomplete.vim' " {
-        let g:neocomplete#data_directory = s:common_dir . '/neocomplete'
+        let g:neocomplete#data_directory = s:common_dir . 'neocomplete'
 
         " Disable AutoComplPop.
         let g:acp_enableAtStartup = 0
@@ -524,21 +549,6 @@
             " ag is fast enough that CtrlP doesn't need to cache
             let g:ctrlp_use_caching = 0
         endif
-
-        let g:ctrlp_prompt_mappings = {
-            \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
-            \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
-            \ 'PrtHistory(-1)':       ['<c-j>'],
-            \ 'PrtHistory(1)':        ['<c-k>'],
-            \ 'ToggleType(1)':        ['<c-l>', '<c-up>'],
-            \ 'ToggleType(-1)':       ['<c-h>', '<c-down>'],
-            \ 'PrtCurLeft()':         ['<c-b>', '<left>', '<c-^>'],
-            \ 'PrtCurRight()':        ['<c-f>', '<right>'],
-            \ }
-
-        nnoremap <silent> <leader>fb :CtrlPBuffer<CR>
-        nnoremap <silent> <leader>ff :CtrlP<CR>
-        nnoremap <silent> <leader>fr :CtrlPMRUFiles<CR>
     " }
 
     Plug 'scrooloose/nerdtree' " {
@@ -614,6 +624,8 @@
     Plug 'jelera/vim-javascript-syntax'
 
     call plug#end()
+
+    colorscheme Tomorrow-Night
 " }
 
 " GUI Settings {
@@ -658,7 +670,13 @@
                 let dir_list['undo'] = 'undodir'
             endif
 
-            exec "set viminfo='100,n" . a:common_dir . 'viminfo'
+            if WINDOWS()
+                let viminfo_filename = substitute(a:common_dir, '\\', '\\\\', 'g') . 'viminfo'
+            else
+                let viminfo_filename = a:common_dir . 'viminfo'
+            endif
+
+            exec "set viminfo='100,n" . viminfo_filename
 
             for [dirname, settingname] in items(dir_list)
                 let directory = a:common_dir . dirname . '/'
