@@ -364,10 +364,8 @@
     "map <leader>sa zg
     "map <leader>s= z=
 
-    nnoremap <silent> [l :lprevious<cr>
-    nnoremap <silent> ]l :lnext<cr>
-    nnoremap <silent> [c :cprevious<cr>
-    nnoremap <silent> ]c :cnext<cr>
+    nmap <silent> <tab> ==
+    vmap <silent> <tab> =
 
     " Spacemacs like key-bindings {
         " Define prefix dictionary
@@ -494,8 +492,11 @@
 
         " Misc {
             " Find merge conflict markers
-            map <leader>m /\v^[<\|=>]{7}( .*\|$)<CR>
+            map <leader>m /\v^[<\|=>]{7}( .*\|$)<cr>
             let g:leader.m = ['/\v^[<\|=>]{7}( .*\|$)', 'Find Merge Conlict']
+
+            nmap <leader><tab> :b#<cr>
+            let g:leader['<C-I>'] = ['b#', 'Last Buffer']
         " }
     " }
 
@@ -660,7 +661,9 @@
         \ }
     " }
 
-    Plug 'editorconfig/editorconfig-vim'
+    if executable('editorconfig')
+        Plug 'editorconfig/editorconfig-vim'
+    endif
 
     "Plug 'pelodelfuego/vim-swoop' " {
         "let g:swoopUseDefaultKeyMap = 0
@@ -677,6 +680,8 @@
     "
     Plug 'terryma/vim-multiple-cursors'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-repeat'
     Plug 'rhysd/clever-f.vim'
     Plug 'haya14busa/incsearch.vim' " {
         let g:incsearch#auto_nohlsearch = 1
@@ -858,9 +863,9 @@
     function! ProjectRootGrepInteractive()
         call inputsave()
         if exists('g:project_root_grep_last_pattern')
-            let pattern = input('Pattern: ', g:project_root_grep_last_pattern)
+            let pattern = input('Search: ', g:project_root_grep_last_pattern)
         else
-            let pattern = input('Pattern: ')
+            let pattern = input('Search: ')
         endif
         call inputrestore()
         if pattern != ""
@@ -872,25 +877,25 @@
     function! ProjectRootMakeInteractive()
         call inputsave()
         if exists('g:project_root_make_last_cmd')
-            let cmd = input('Command: ', g:project_root_make_last_cmd)
+            let cmd = input('Compile: ', g:project_root_make_last_cmd)
         else
-            let cmd = input('Command: ')
+            let cmd = input('Compile: ')
         endif
         call inputrestore()
         if cmd != ""
             let g:project_root_make_last_cmd = cmd
             let g:last_makeprg = 'cd ' . projectroot#guess() . ShellCommandAnd() . g:project_root_make_last_cmd
             let &makeprg = g:last_makeprg
-            execute 'make'
+            execute 'wa | silent make'
         endif
     endfunction
 
     function! ProjectRootRunInteractive()
         call inputsave()
         if exists('g:project_root_run_last_cmd')
-            let cmd = input('Command: ', g:project_root_run_last_cmd)
+            let cmd = input('Run: ', g:project_root_run_last_cmd)
         else
-            let cmd = input('Command: ')
+            let cmd = input('Run: ')
         endif
         call inputrestore()
         if cmd != ""
@@ -902,7 +907,7 @@
     function! RepeatCompile()
         if exists('g:last_makeprg')
             let &makeprg = g:last_makeprg
-            execute 'make'
+            execute 'wa | silent make'
         endif
     endfunction
 " }
