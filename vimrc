@@ -69,6 +69,7 @@
             inoremap <silent> <C-[>OC <RIGHT>
         endif
     " }
+
 " }
 
 " General {
@@ -142,14 +143,16 @@
             \ '\[example pattern\]'
             \ ]
     " }
+
 " }
 
 " Vim UI {
+
     set tabpagemax=15               " Only show 15 tabs
     set showmode                  " DO NOT display the current mode, we use airline
 
     set cursorline                  " Highlight current line
-    set colorcolumn=80
+    "set colorcolumn=80
 
     " Highlight for GitGutter
     highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
@@ -208,6 +211,7 @@
     set foldenable                  " Auto fold code
     set list
     set listchars=tab:,.,trail:.,extends:>,precedes:<,nbsp:. " Highlight problematic whitespace
+
 " }
 
 " Formatting {
@@ -231,18 +235,20 @@
     autocmd BufWritePre * call StripTrailingWhitespace()
 
     autocmd FileType html setl sts=2 ts=2
+
 " }
 
 " Key (re)Mappings {
+
     " The default leader is '\', but I prefer 'Space'
-    let mapleader = "\<Space>"
+    let mapleader = "\<space>"
 
     " Easier moving in tabs and windows
     " The lines conflict with the default digraph mapping of <C-K>
-    map <C-J> <C-W>j<C-W>_
-    map <C-K> <C-W>k<C-W>_
-    map <C-L> <C-W>l<C-W>_
-    map <C-H> <C-W>h<C-W>_
+    "map <c-j> <c-w>j<c-w>_
+    "map <c-k> <c-w>k<c-w>_
+    "map <c-l> <c-w>l<c-w>_
+    "map <c-h> <c-w>h<c-w>_
 
     " No need for ex mode
     nnoremap Q <nop>
@@ -320,11 +326,6 @@
     "nmap <leader>8 :set foldlevel=8<CR>
     "nmap <leader>9 :set foldlevel=9<CR>
 
-    nmap <silent> <leader>/ :set invhlsearch<CR>
-
-    " Find merge conflict markers
-    map <leader>m /\v^[<\|=>]{7}( .*\|$)<CR>
-
     " Shortcuts
     " Change Working Directory to that of the current file
     cmap cwd lcd %:p:h
@@ -357,73 +358,154 @@
     nmap <S-CR> i<CR><Esc>
 
     " Spell checking
-    map <leader>ss :setlocal spell!<cr>
-    map <leader>sn ]s
-    map <leader>sp [s
-    map <leader>sa zg
-    map <leader>s= z=
+    "map <leader>ss :setlocal spell!<cr>
+    "map <leader>sn ]s
+    "map <leader>sp [s
+    "map <leader>sa zg
+    "map <leader>s= z=
 
-    nnoremap <silent> [c :cprevious<CR>
-    nnoremap <silent> ]c :cnext<CR>
+    nnoremap <silent> [l :lprevious<cr>
+    nnoremap <silent> ]l :lnext<cr>
+    nnoremap <silent> [c :cprevious<cr>
+    nnoremap <silent> ]c :cnext<cr>
 
-    " spacemacs like key-bindings {
-        noremap <silent> <leader>qq :xa<cr>
+    " Spacemacs like key-bindings {
+        " Define prefix dictionary
+        let g:leader =  {}
+        nnoremap <silent> <leader> :<c-u>LeaderGuide '<space>'<cr>
+        "vnoremap <silent> <leader> :<c-u>LeaderGuideVisual '<space>'<cr>
 
-        " Tab {
-            noremap <silent> <leader>th :tabprevious<cr>
-            noremap <silent> <leader>tl :tabnext<cr>
-            noremap <silent> <leader>tH :tabm -1<cr>
-            noremap <silent> <leader>tL :tabm +1<cr>
-            noremap <silent> <leader>td :tabclose<cr>
+        " Quit {
+            let g:leader.q = { 'name': '+Quit' }
+
+            nmap <silent> <leader>qq :xa<cr>
+            let g:leader.q.q = ['', 'Save and Quit']
         " }
 
         " Window {
-            noremap <silent> <leader>wv <C-w>v
-            noremap <silent> <leader>wV <C-w>V
+            let g:leader.w = { 'name': '+Windows' }
 
-            noremap <silent> <leader>ws <C-w>s
-            noremap <silent> <leader>wS <C-w>S
+            nmap <silent> <leader>wv :wincmd v<cr>
+            let g:leader.w.v = ['', 'Split Right']
+            nmap <silent> <leader>ws :wincmd s<cr>
+            let g:leader.w.s = ['', 'Split Below']
 
-            noremap <silent> <leader>wd <C-w>c
+            nmap <silent> <leader>wm :only<cr>
+            let g:leader.w.m = ['', 'Maximize']
+            nmap <silent> <leader>wd :wincmd c<cr>
+            let g:leader.w.d = ['', 'Delete']
 
-            noremap <silent> <leader>ww <C-w><C-w>
-            noremap <silent> <leader>wh <C-w>h
-            noremap <silent> <leader>wj <C-w>j
-            noremap <silent> <leader>wk <C-w>k
-            noremap <silent> <leader>wl <C-w>l
-            noremap <silent> <leader>wH <C-w>H
-            noremap <silent> <leader>wJ <C-w>J
-            noremap <silent> <leader>wK <C-w>K
-            noremap <silent> <leader>wL <C-w>L
+            nmap <silent> <leader>ww :wincmd w<cr>
+            let g:leader.w.w = ['', 'Other']
+            nmap <silent> <leader>wh :wincmd h<cr>
+            let g:leader.w.h = ['', 'Left']
+            nmap <silent> <leader>wj :wincmd j<cr>
+            let g:leader.w.j = ['', 'Down']
+            nmap <silent> <leader>wk :wincmd k<cr>
+            let g:leader.w.k = ['', 'Up']
+            nmap <silent> <leader>wl :wincmd l<cr>
+            let g:leader.w.l = ['', 'Right']
+            nmap <silent> <leader>wH :wincmd H<cr>
+            let g:leader.w.H = ['', 'Move Left']
+            nmap <silent> <leader>wJ :wincmd J<cr>
+            let g:leader.w.J = ['', 'Move Down']
+            nmap <silent> <leader>wK :wincmd K<cr>
+            let g:leader.w.K = ['', 'Move Up']
+            nmap <silent> <leader>wL :wincmd L<cr>
+            let g:leader.w.L = ['', 'Move Right']
 
-            " Resize
-            noremap <silent> <C-w><C-h> :vertical resize -5<CR>
-            noremap <silent> <C-w><C-l> :vertical resize +5<CR>
-            noremap <silent> <C-w><C-j> :resize +5<CR>
-            noremap <silent> <C-w><C-k> :resize -5<CR>
+            nmap <silent> <leader>w= :wincmd =<cr>
+            let g:leader.w['='] = ['', 'Balance']
         " }
 
         " Files {
-            noremap <silent> <leader>fs :w<CR>
-            noremap <silent> <leader>fS :wa<CR>
-            noremap <silent> <leader>ff :CtrlP<CR>
-            noremap <silent> <leader>fr :CtrlPMRUFiles<CR>
+            let g:leader.f = { 'name': '+Files' }
+
+            nmap <silent> <leader>fs :w<cr>
+            let g:leader.f.s = ['', 'Save']
+            nmap <silent> <leader>fS :wa<cr>
+            let g:leader.f.S = ['', 'Save All']
+            nmap <silent> <leader>fr :CtrlPMRUFiles<cr>
+            let g:leader.f.r = ['', 'Recent']
+
+            nmap <silent> <leader>ft :NERDTree<cr>
+            let g:leader.f.t = ['', 'Tree']
+            map <silent> <C-\> <leader>ft
         " }
 
         " Buffers {
-            noremap <silent> <leader>bb :CtrlPBuffer<CR>
+            let g:leader.b = { 'name': '+Buffers' }
+
+            nmap <silent> <leader>bb :CtrlPBuffer<CR>
+            let g:leader.b.b = ['', 'List']
+
+            nmap <silent> <leader>bd :bd<CR>
+            let g:leader.b.d = ['', 'Delete']
+        " }
+
+        " Projects {
+            let g:leader.p = { 'name': '+Projects' }
+
+            noremap <silent> <leader>pf :CtrlP<CR>
+            let g:leader.p.f = ['', 'Find']
+
+            nmap <silent> <leader>pt :ProjectRootExe NERDTree<cr>
+            let g:leader.p.t = ['', 'Tree']
+
+            nmap <silent> <leader>ps :call ProjectRootGrepInteractive()<cr>
+            let g:leader.p.s = ['', 'Search']
+
+            nmap <silent> <leader>pc :call ProjectRootMakeInteractive()<cr>
+            let g:leader.p.c = ['', 'Compile']
+        " }
+
+        " Search {
+            let g:leader.s = { 'name': '+Search' }
+
+            nmap <leader>ss :call Swoop()<cr>
+            vmap <leader>ss :call SwoopSelection()<cr>
+            let g:leader.s.s = ['', 'Swoop']
+        " }
+
+        " Comment {
+            let g:leader.c = { 'name': '+Compile' }
+
+            nmap <silent> <leader>cr :call RepeatCompile()<cr>
+            let g:leader.c.r = ['', 'Repeat']
+        " }
+
+        " Toggle {
+            let g:leader.t = { 'name': '+Toggle' }
+
+            " Search {
+                let g:leader.t.s = { 'name': '+Search' }
+
+                nmap <unique> <leader>tsl <Plug>VLToggle
+                let g:leader.t.s.l = ['', 'Very Literal']
+            " }
+
+            nmap <leader>tc <Plug>NERDCommenterToggle
+            vmap <leader>tc <Plug>NERDCommenterToggle
+            let g:leader.t.c = ['', 'Comment']
+        " }
+
+        " Misc {
+            " Find merge conflict markers
+            map <leader>m /\v^[<\|=>]{7}( .*\|$)<CR>
+            let g:leader.m = ['', 'Find Merge Conlict']
         " }
     " }
 
 " }
 
 " Plugins {
-
     call plug#begin()
 
     "
     " Core
     "
+    Plug 'hecal3/vim-leader-guide'
+
     Plug 'mhinz/vim-startify' " {
         function! s:filter_header(lines) abort
             let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
@@ -527,6 +609,16 @@
         let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
     " }
 
+    Plug 'dbakker/vim-projectroot'
+
+    Plug 'mileszs/ack.vim' " {
+        if executable('pt')
+          let g:ackprg = 'pt --nogroup --column'
+        elseif executable('ag')
+          let g:ackprg = 'ag --vimgrep'
+        endif
+    " }
+
     Plug 'ctrlpvim/ctrlp.vim' " {
         let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
 
@@ -539,32 +631,44 @@
         let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
         " The Silver Searcher
-        if executable('ag')
+        if executable('pt')
+            " Use pt over grep
+            set grepprg=pt\ --nogroup\ --nocolor
+
+            " Use pt in CtrlP for listing files. Lightning fast and respects .gitignore
+            let g:ctrlp_user_command += ['pt %s -l --nocolor --hidden -g ""']
+        elseif executable('ag')
             " Use ag over grep
             set grepprg=ag\ --nogroup\ --nocolor
 
             " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
             let g:ctrlp_user_command += ['ag %s -l --nocolor --hidden -g ""']
-
-            " ag is fast enough that CtrlP doesn't need to cache
-            let g:ctrlp_use_caching = 0
         endif
     " }
 
-    Plug 'scrooloose/nerdtree' " {
-        nnoremap <silent> <leader>ft :execute 'NERDTreeToggle ' projectroot#guess()<CR>
-        map <silent> <C-\> <leader>ft
-    " }
+    Plug 'scrooloose/nerdtree'
 
     Plug 'mbbill/undotree'
 
     Plug 'scrooloose/nerdcommenter' " {
+        let g:NERDCreateDefaultMappings = 0
         let g:NERDCustomDelimiters = {
             \ 'c': { 'leftAlt': '/*', 'rightAlt': '*/', 'left': '// '}
         \ }
     " }
 
     Plug 'editorconfig/editorconfig-vim'
+
+    "Plug 'pelodelfuego/vim-swoop' " {
+        "let g:swoopUseDefaultKeyMap = 0
+    "" }
+
+    Plug 'tpope/vim-fugitive'
+
+    Plug 'airblade/vim-gitgutter' " {
+        let g:gitgutter_map_keys = 0
+        let g:gitgutter_async=0
+    " }
 
     "
     " Key
@@ -611,8 +715,6 @@
 
     Plug 'chriskempson/vim-tomorrow-theme'
 
-    "Plug 'airblade/vim-gitgutter'
-
     "
     " Syntax
     "
@@ -625,7 +727,11 @@
 
     call plug#end()
 
-    colorscheme Tomorrow-Night
+    " Post Plugin {
+        colorscheme Tomorrow-Night
+        call leaderGuide#register_prefix_descriptions("<Space>", "g:leader")
+    " }
+
 " }
 
 " GUI Settings {
@@ -640,10 +746,11 @@
         set guioptions-=L
         set guioptions-=b
         set guioptions-=e
-        "set lines=48 columns=162
+        set lines=48 columns=80
         if LINUX()
             set guifont=Fira\ Code\ 11,Courier\ New\ Regular\ 18
         elseif OSX()
+            set macligatures
             set guifont=Fira\ Code:h14,Monaco:h11
         elseif WINDOWS()
             set guifont=Fira\ Code:h11,Consolas:h11
@@ -743,11 +850,35 @@
         vmap <kMultiply> *
         nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
                     \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
-        if !hasmapto("<Plug>VLToggle")
-            nmap <unique> <Leader>vl <Plug>VLToggle
-        endif
         let &cpo = s:save_cpo | unlet s:save_cpo
     " }
+
+    function! ProjectRootGrepInteractive()
+        call inputsave()
+        let pattern = input('Pattern:')
+        call inputrestore()
+        if pattern != ""
+            execute 'ProjectRootExe LAck! ' . pattern
+        endif
+    endfunction
+
+    function! ProjectRootMakeInteractive()
+        call inputsave()
+        let cmd = input('Command:')
+        call inputrestore()
+        if cmd != ""
+            let g:last_makeprg = 'cd ' . projectroot#guess() . ShellCommandAnd() . cmd
+            let &makeprg = g:last_makeprg
+            execute 'make'
+        endif
+    endfunction
+
+    function! RepeatCompile()
+        if exists('g:last_makeprg')
+            let &makeprg = g:last_makeprg
+            execute 'make'
+        endif
+    endfunction
 " }
 
 
