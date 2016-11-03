@@ -379,57 +379,57 @@
             let g:leader.q = { 'name': '+Quit' }
 
             nmap <silent> <leader>qq :xa<cr>
-            let g:leader.q.q = ['', 'Save and Quit']
+            let g:leader.q.q = ['xa', 'Save and Quit']
         " }
 
         " Window {
             let g:leader.w = { 'name': '+Windows' }
 
             nmap <silent> <leader>wv :wincmd v<cr>
-            let g:leader.w.v = ['', 'Split Right']
+            let g:leader.w.v = ['wincmd v', 'Split Right']
             nmap <silent> <leader>ws :wincmd s<cr>
-            let g:leader.w.s = ['', 'Split Below']
+            let g:leader.w.s = ['wincmd s', 'Split Below']
 
             nmap <silent> <leader>wm :only<cr>
-            let g:leader.w.m = ['', 'Maximize']
+            let g:leader.w.m = ['only', 'Maximize']
             nmap <silent> <leader>wd :wincmd c<cr>
-            let g:leader.w.d = ['', 'Delete']
+            let g:leader.w.d = ['wincmd c', 'Delete']
 
             nmap <silent> <leader>ww :wincmd w<cr>
-            let g:leader.w.w = ['', 'Other']
+            let g:leader.w.w = ['wincmd w', 'Other']
             nmap <silent> <leader>wh :wincmd h<cr>
-            let g:leader.w.h = ['', 'Left']
+            let g:leader.w.h = ['wincmd h', 'Left']
             nmap <silent> <leader>wj :wincmd j<cr>
-            let g:leader.w.j = ['', 'Down']
+            let g:leader.w.j = ['wincmd j', 'Down']
             nmap <silent> <leader>wk :wincmd k<cr>
-            let g:leader.w.k = ['', 'Up']
+            let g:leader.w.k = ['wincmd k', 'Up']
             nmap <silent> <leader>wl :wincmd l<cr>
-            let g:leader.w.l = ['', 'Right']
+            let g:leader.w.l = ['wincmd l', 'Right']
             nmap <silent> <leader>wH :wincmd H<cr>
-            let g:leader.w.H = ['', 'Move Left']
+            let g:leader.w.H = ['wincmd H', 'Move Left']
             nmap <silent> <leader>wJ :wincmd J<cr>
-            let g:leader.w.J = ['', 'Move Down']
+            let g:leader.w.J = ['wincmd J', 'Move Down']
             nmap <silent> <leader>wK :wincmd K<cr>
-            let g:leader.w.K = ['', 'Move Up']
+            let g:leader.w.K = ['wincmd K', 'Move Up']
             nmap <silent> <leader>wL :wincmd L<cr>
-            let g:leader.w.L = ['', 'Move Right']
+            let g:leader.w.L = ['wincmd L', 'Move Right']
 
             nmap <silent> <leader>w= :wincmd =<cr>
-            let g:leader.w['='] = ['', 'Balance']
+            let g:leader.w['='] = ['wincmd =', 'Balance']
         " }
 
         " Files {
             let g:leader.f = { 'name': '+Files' }
 
             nmap <silent> <leader>fs :w<cr>
-            let g:leader.f.s = ['', 'Save']
+            let g:leader.f.s = ['w', 'Save']
             nmap <silent> <leader>fS :wa<cr>
-            let g:leader.f.S = ['', 'Save All']
+            let g:leader.f.S = ['wa', 'Save All']
             nmap <silent> <leader>fr :CtrlPMRUFiles<cr>
-            let g:leader.f.r = ['', 'Recent']
+            let g:leader.f.r = ['CtrlPMRUFiles', 'Recent']
 
             nmap <silent> <leader>ft :NERDTree<cr>
-            let g:leader.f.t = ['', 'Tree']
+            let g:leader.f.t = ['NERDTree', 'Tree']
             map <silent> <C-\> <leader>ft
         " }
 
@@ -437,26 +437,29 @@
             let g:leader.b = { 'name': '+Buffers' }
 
             nmap <silent> <leader>bb :CtrlPBuffer<CR>
-            let g:leader.b.b = ['', 'List']
+            let g:leader.b.b = ['CtrlPBuffer', 'List']
 
             nmap <silent> <leader>bd :bd<CR>
-            let g:leader.b.d = ['', 'Delete']
+            let g:leader.b.d = ['bd', 'Delete']
         " }
 
         " Projects {
             let g:leader.p = { 'name': '+Projects' }
 
             noremap <silent> <leader>pf :CtrlP<CR>
-            let g:leader.p.f = ['', 'Find']
+            let g:leader.p.f = ['CtrlP', 'Find']
 
             nmap <silent> <leader>pt :ProjectRootExe NERDTree<cr>
-            let g:leader.p.t = ['', 'Tree']
+            let g:leader.p.t = ['ProjectRootExe NERDTree', 'Tree']
 
             nmap <silent> <leader>ps :call ProjectRootGrepInteractive()<cr>
-            let g:leader.p.s = ['', 'Search']
+            let g:leader.p.s = ['call ProjectRootGrepInteractive()', 'Search']
 
             nmap <silent> <leader>pc :call ProjectRootMakeInteractive()<cr>
-            let g:leader.p.c = ['', 'Compile']
+            let g:leader.p.c = ['call ProjectRootMakeInteractive()', 'Compile']
+
+            nmap <silent> <leader>pr :call ProjectRootRunInteractive()<cr>
+            let g:leader.p.r = ['call ProjectRootRunInteractive()', 'Run']
         " }
 
         " Search {
@@ -464,14 +467,14 @@
 
             nmap <leader>ss :call Swoop()<cr>
             vmap <leader>ss :call SwoopSelection()<cr>
-            let g:leader.s.s = ['', 'Swoop']
+            let g:leader.s.s = ['call Swoop()', 'Swoop']
         " }
 
         " Comment {
             let g:leader.c = { 'name': '+Compile' }
 
             nmap <silent> <leader>cr :call RepeatCompile()<cr>
-            let g:leader.c.r = ['', 'Repeat']
+            let g:leader.c.r = ['call RepeatCompile()', 'Repeat']
         " }
 
         " Toggle {
@@ -481,18 +484,18 @@
                 let g:leader.t.s = { 'name': '+Search' }
 
                 nmap <unique> <leader>tsl <Plug>VLToggle
-                let g:leader.t.s.l = ['', 'Very Literal']
+                let g:leader.t.s.l = ['call feedkeys("\<Plug>VLToggle")', 'Very Literal']
             " }
 
             nmap <leader>tc <Plug>NERDCommenterToggle
             vmap <leader>tc <Plug>NERDCommenterToggle
-            let g:leader.t.c = ['', 'Comment']
+            let g:leader.t.c = ['call feedkeys("\<Plug>NERDCommenterToggle")', 'Comment']
         " }
 
         " Misc {
             " Find merge conflict markers
             map <leader>m /\v^[<\|=>]{7}( .*\|$)<CR>
-            let g:leader.m = ['', 'Find Merge Conlict']
+            let g:leader.m = ['/\v^[<\|=>]{7}( .*\|$)', 'Find Merge Conlict']
         " }
     " }
 
@@ -854,21 +857,45 @@
 
     function! ProjectRootGrepInteractive()
         call inputsave()
-        let pattern = input('Pattern:')
+        if exists('g:project_root_grep_last_pattern')
+            let pattern = input('Pattern: ', g:project_root_grep_last_pattern)
+        else
+            let pattern = input('Pattern: ')
+        endif
         call inputrestore()
         if pattern != ""
-            execute 'ProjectRootExe LAck! ' . pattern
+            let g:project_root_grep_last_pattern = pattern
+            execute 'ProjectRootExe LAck! ' . g:project_root_grep_last_pattern
         endif
     endfunction
 
     function! ProjectRootMakeInteractive()
         call inputsave()
-        let cmd = input('Command:')
+        if exists('g:project_root_make_last_cmd')
+            let cmd = input('Command: ', g:project_root_make_last_cmd)
+        else
+            let cmd = input('Command: ')
+        endif
         call inputrestore()
         if cmd != ""
-            let g:last_makeprg = 'cd ' . projectroot#guess() . ShellCommandAnd() . cmd
+            let g:project_root_make_last_cmd = cmd
+            let g:last_makeprg = 'cd ' . projectroot#guess() . ShellCommandAnd() . g:project_root_make_last_cmd
             let &makeprg = g:last_makeprg
             execute 'make'
+        endif
+    endfunction
+
+    function! ProjectRootRunInteractive()
+        call inputsave()
+        if exists('g:project_root_run_last_cmd')
+            let cmd = input('Command: ', g:project_root_run_last_cmd)
+        else
+            let cmd = input('Command: ')
+        endif
+        call inputrestore()
+        if cmd != ""
+            let g:project_root_run_last_cmd = cmd
+            execute 'ProjectRootExe !Start ' . g:project_root_run_last_cmd
         endif
     endfunction
 
