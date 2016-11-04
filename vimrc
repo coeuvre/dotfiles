@@ -478,6 +478,9 @@
         " Toggle {
             let g:leader.t = { 'name': '+Toggle' }
 
+            nmap <leader>tt :NERDTreeToggle<cr>
+            let g:leader.t.t = ['NERDTreeToggle', 'Tree']
+
             " Search {
                 let g:leader.t.s = { 'name': '+Search' }
 
@@ -581,6 +584,10 @@
         " <TAB>: completion.
         inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
         inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+        inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+        inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-k>"
+
         " <C-h>, <BS>: close popup and delete backword char.
         "inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
         inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
