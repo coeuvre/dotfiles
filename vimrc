@@ -149,9 +149,9 @@
 " Vim UI {
 
     set tabpagemax=15               " Only show 15 tabs
-    set showmode                  " DO NOT display the current mode, we use airline
+    set showmode
 
-    set cursorline                  " Highlight current line
+    "set cursorline                  " Highlight current line
     "set colorcolumn=80
 
     " Highlight for GitGutter
@@ -366,7 +366,6 @@
     "map <leader>sa zg
     "map <leader>s= z=
 
-    nmap <silent> <tab> ==
     vmap <silent> <tab> =
 
     " Spacemacs like key-bindings {
