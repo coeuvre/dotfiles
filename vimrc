@@ -231,6 +231,8 @@
     set cindent                     " do C program indenting
     set cinoptions=l1,(0,W1s,m1     " set C indent options
 
+    set fileformats=unix,dos        " always create unix file
+
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
 
@@ -437,8 +439,11 @@
             nmap <silent> <leader>bb :CtrlPBuffer<CR>
             let g:leader.b.b = ['CtrlPBuffer', 'List']
 
-            nmap <silent> <leader>bd :bd<CR>
-            let g:leader.b.d = ['bd', 'Delete']
+            nmap <silent> <leader>bd :BD<CR>
+            let g:leader.b.d = ['BD', 'Delete']
+
+            nmap <silent> <leader>bd :BD<CR>
+            let g:leader.b.D = ['bufdo :BD', 'Delete All']
         " }
 
         " Projects {
@@ -498,8 +503,8 @@
             map <leader>m /\v^[<\|=>]{7}( .*\|$)<cr>
             let g:leader.m = ['/\v^[<\|=>]{7}( .*\|$)', 'Find Merge Conlict']
 
-            nmap <leader><tab> :b#<cr>
-            let g:leader['<C-I>'] = ['b#', 'Last Buffer']
+            nmap <leader><tab> :BA<cr>
+            let g:leader['<C-I>'] = ['BA', 'Switch Buffer']
         " }
     " }
 
@@ -676,11 +681,13 @@
         "let g:swoopUseDefaultKeyMap = 0
     "" }
 
-    Plug 'tpope/vim-fugitive'
+    "Plug 'tpope/vim-fugitive'
 
-    Plug 'airblade/vim-gitgutter' " {
-        let g:gitgutter_map_keys = 0
-    " }
+    "Plug 'airblade/vim-gitgutter' " {
+        "let g:gitgutter_map_keys = 0
+    "" }
+
+    Plug 'qpkorr/vim-bufkill'
 
     "
     " Key
@@ -932,4 +939,14 @@
     autocmd QuickFixCmdPost [^l]* nested botright cwindow
     autocmd QuickFixCmdPost    l* nested botright lwindow
     autocmd BufReadPost quickfix nnoremap <buffer> q <c-w>c
+
+    " Visual Studio {
+        " Compile
+        let &errorformat = '%f(%l): %trror C%n: %m'
+        let &errorformat .= ',%f(%l): fatal %trror C%n: %m'
+        let &errorformat .= ',%f(%l): %tarning C%n: %m'
+
+        " Link
+        let &errorformat .= ',%.%#%trror LNK%n: %m'
+    " }
 " }
