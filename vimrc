@@ -36,21 +36,19 @@
 
     " Basics {
         set nocompatible
-        if !WINDOWS()
-            set shell=/bin/sh
-        endif
-
-        " Directory that put all the vim data files.
-        let s:common_dir = escape($HOME . '/.cache/vim/', ' ')
     " }
 
     " Windows Compatible {
         " On Windows, also use '.vim' instead of 'vimfiles';
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
-            let $HOME = substitute($HOME, '/', '\\', 'g')
-            let s:common_dir = substitute(s:common_dir . 'windows/', '/', '\\', 'g')
-            set runtimepath=$HOME\\.vim,$VIM\\vimfiles,$VIMRUNTIME,$VIM\\vimfiles\\after,$HOME\\.vim\\after
+            let s:common_dir = $VIM . '\\cache\\'
+            set runtimepath=$VIM\\.vim,$VIM\\vimfiles,$VIMRUNTIME,$VIM\\vimfiles\\after,$VIM\\.vim\\after
+        else
+            set shell=/bin/sh
+
+            " Directory that put all the vim data files.
+            let s:common_dir = escape($HOME . '/.cache/vim/', ' ')
         endif
     " }
 
@@ -306,7 +304,7 @@
         "let g:airline_powerline_fonts = 1
     " }
 
-    Plug 'dracula/vim'
+    Plug 'chriskempson/base16-vim'
 
     "
     " Syntax
@@ -327,7 +325,7 @@
 " }
 
 " General {
-    colorscheme dracula
+    colorscheme base16-default-dark
 
     set background=dark         " Assume a dark background
 
@@ -378,7 +376,6 @@
         autocmd BufWinEnter * call ResCur()
     augroup END
 
-    set fileencoding=utf-8
     set noeb vb t_vb=           " Close error bells
     autocmd GUIEnter * set visualbell t_vb=
 
@@ -484,7 +481,7 @@
     set cindent                     " do C program indenting
     set cinoptions=l1,(0,W1s,m1     " set C indent options
 
-    set fileformats=unix,dos        " always create unix file
+    "set fileformats=unix,dos        " always create unix file
 
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
