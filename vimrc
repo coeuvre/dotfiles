@@ -42,7 +42,7 @@
         " On Windows, also use '.vim' instead of 'vimfiles';
         " this makes synchronization across (heterogeneous) systems easier.
         if WINDOWS()
-            let s:common_dir = $VIM . '\\cache\\'
+            let s:common_dir = $VIM . '\cache\'
             set runtimepath=$VIM\\.vim,$VIM\\vimfiles,$VIMRUNTIME,$VIM\\vimfiles\\after,$VIM\\.vim\\after
         else
             set shell=/bin/sh
@@ -803,12 +803,12 @@
             endif
 
             if WINDOWS()
-                let viminfo_filename = substitute(a:common_dir, '\\', '\\\\', 'g') . 'viminfo'
+                let g:viminfo_filename = substitute(a:common_dir, '\\', '\\\\', 'g') . 'viminfo'
             else
-                let viminfo_filename = a:common_dir . 'viminfo'
+                let g:viminfo_filename = a:common_dir . 'viminfo'
             endif
 
-            exec "set viminfo='100,n" . viminfo_filename
+            exec "set viminfo='100,n" . g:viminfo_filename
 
             for [dirname, settingname] in items(dir_list)
                 let directory = a:common_dir . dirname . '/'
