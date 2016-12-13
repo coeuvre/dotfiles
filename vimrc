@@ -72,13 +72,260 @@
 
 " }
 
+" Plugins {
+    call plug#begin()
+
+    "
+    " Core
+    "
+    Plug 'hecal3/vim-leader-guide'
+
+    Plug 'mhinz/vim-startify' " {
+        function! s:filter_header(lines) abort
+            let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
+            let centered_lines = map(copy(a:lines),
+                        \ 'repeat(" ", (80 / 2) - (longest_line / 2)) . v:val')
+            return centered_lines
+        endfunction
+
+        redir => s:startify_title
+        silent version
+        redir END
+        let s:startify_title = split(s:startify_title, '\n')[0]
+        let g:startify_custom_header = s:filter_header([s:startify_title])
+            \ + s:filter_header([
+            \ '',
+            \ '              -------------------------              ',
+            \ '             ( Gamer                   )             ',
+            \ '             (       ->                )             ',
+            \ '             (          Game Developer )             ',
+            \ '              -------------------------              ',
+            \ '                                 o                   ',
+            \ '                                  o  ^__^            ',
+            \ '                                     (oo)\_______    ',
+            \ '                                     (__)\       )\/\',
+            \ '                                         ||----w |   ',
+            \ '                                         ||     ||   ',
+            \ '',
+            \ ])
+    " }
+
+    Plug 'Shougo/neocomplete.vim' " {
+        let g:neocomplete#data_directory = s:common_dir . 'neocomplete'
+
+        " Disable AutoComplPop.
+        let g:acp_enableAtStartup = 0
+        " Use neocomplete.
+        let g:neocomplete#enable_at_startup = 1
+        " Use smartcase.
+        let g:neocomplete#enable_smart_case = 1
+        " Set minimum syntax keyword length.
+        let g:neocomplete#sources#syntax#min_keyword_length = 3
+        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+
+        " Define dictionary.
+        let g:neocomplete#sources#dictionary#dictionaries = {
+                    \ 'default' : '',
+                    \ 'vimshell' : $HOME.'/.vimshell_hist',
+                    \ 'scheme' : $HOME.'/.gosh_completions'
+                    \ }
+
+        " Define keyword.
+        if !exists('g:neocomplete#keyword_patterns')
+            let g:neocomplete#keyword_patterns = {}
+        endif
+        let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+        " Plugin key-mappings.
+        inoremap <expr><C-g>     neocomplete#undo_completion()
+        inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+        " Recommended key-mappings.
+        " <CR>: close popup and save indent.
+        inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+        function! s:my_cr_function()
+            return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+            " For no inserting <CR> key.
+            "return pumvisible() ? "\<C-y>" : "\<CR>"
+        endfunction
+        " <TAB>: completion.
+        inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+        inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+        inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
+        inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-k>"
+
+        " <C-h>, <BS>: close popup and delete backword char.
+        "inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+        inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+        " Close popup by <Space>.
+        "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+        " AutoComplPop like behavior.
+        "let g:neocomplete#enable_auto_select = 1
+
+        " Shell like behavior(not recommended).
+        "set completeopt+=longest
+        "let g:neocomplete#enable_auto_select = 1
+        "let g:neocomplete#disable_auto_complete = 1
+        "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+        " Enable omni completion.
+        autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+        autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+        autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+        autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+        " Enable heavy omni completion.
+        if !exists('g:neocomplete#sources#omni#input_patterns')
+            let g:neocomplete#sources#omni#input_patterns = {}
+        endif
+        "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+        "let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+        let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+        let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+    " }
+
+    Plug 'dbakker/vim-projectroot'
+
+    Plug 'mileszs/ack.vim' " {
+        if executable('pt')
+          let g:ackprg = 'pt --nogroup --column'
+        elseif executable('ag')
+          let g:ackprg = 'ag --vimgrep'
+        endif
+    " }
+
+    Plug 'mhinz/vim-grepper'
+
+    Plug 'ctrlpvim/ctrlp.vim' " {
+        let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
+
+        if WINDOWS()
+            set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+        else
+            set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+        endif
+
+        let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+        " The Silver Searcher
+        if executable('pt')
+            " Use pt over grep
+            set grepprg=pt\ --nogroup\ --nocolor
+
+            " Use pt in CtrlP for listing files. Lightning fast and respects .gitignore
+            let g:ctrlp_user_command += ['pt %s -l --nocolor --hidden -g ""']
+        elseif executable('ag')
+            " Use ag over grep
+            set grepprg=ag\ --nogroup\ --nocolor
+
+            " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+            let g:ctrlp_user_command += ['ag %s -l --nocolor --hidden -g ""']
+        endif
+    " }
+
+    Plug 'scrooloose/nerdtree'
+
+    Plug 'mbbill/undotree'
+
+    Plug 'scrooloose/nerdcommenter' " {
+        let g:NERDCreateDefaultMappings = 0
+        let g:NERDCustomDelimiters = {
+            \ 'c': { 'leftAlt': '/*', 'rightAlt': '*/', 'left': '// '}
+        \ }
+    " }
+
+    if executable('editorconfig')
+        Plug 'editorconfig/editorconfig-vim'
+    endif
+
+    "Plug 'pelodelfuego/vim-swoop' " {
+        "let g:swoopUseDefaultKeyMap = 0
+    "" }
+
+    "Plug 'tpope/vim-fugitive'
+
+    "Plug 'airblade/vim-gitgutter' " {
+        "let g:gitgutter_map_keys = 0
+    "" }
+
+    Plug 'qpkorr/vim-bufkill'
+
+    "
+    " Key
+    "
+    Plug 'terryma/vim-multiple-cursors'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-repeat'
+    Plug 'rhysd/clever-f.vim'
+    Plug 'haya14busa/incsearch.vim' " {
+        let g:incsearch#auto_nohlsearch = 1
+        " n and N directions are always forward and backward respectively even after performing <Plug>(incsearch-backward).
+        let g:incsearch#consistent_n_direction = 1
+
+        map /  <Plug>(incsearch-forward)
+        map ?  <Plug>(incsearch-backward)
+        map g/ <Plug>(incsearch-stay)
+        map n  <Plug>(incsearch-nohl-n)
+        map N  <Plug>(incsearch-nohl-N)
+        map *  <Plug>(incsearch-nohl-*)
+        map #  <Plug>(incsearch-nohl-#)
+        map g* <Plug>(incsearch-nohl-g*)
+        map g# <Plug>(incsearch-nohl-g#)
+    " }
+
+    "
+    " Visual
+    "
+    Plug 'bling/vim-airline' " {
+        let g:airline_left_sep=''
+        let g:airline_right_sep=''
+
+        "let g:airline#extensions#tabline#enabled = 1
+        "let g:airline#extensions#tabline#show_buffers = 0
+        "let g:airline#extensions#tabline#show_tabs = 1
+        "let g:airline#extensions#tabline#show_tab_nr = 0
+        "let g:airline#extensions#tabline#left_sep = ''
+        "let g:airline#extensions#tabline#_alt_sep = ''
+        "let g:airline#extensions#tabline#show_tab_type = 0
+
+        let g:airline#extensions#hunks#non_zero_only = 1
+
+        let g:airline_detect_iminsert=2
+        "let g:airline_powerline_fonts = 1
+    " }
+
+    Plug 'dracula/vim'
+
+    "
+    " Syntax
+    "
+    Plug 'rust-lang/rust.vim'
+    Plug 'tikhomirov/vim-glsl'
+    Plug 'tpope/vim-markdown'
+    Plug 'elzr/vim-json'
+    Plug 'cespare/vim-toml'
+    Plug 'jelera/vim-javascript-syntax'
+
+    call plug#end()
+
+    " Post Plugin {
+        call leaderGuide#register_prefix_descriptions("<Space>", "g:leader")
+    " }
+
+" }
+
 " General {
+    colorscheme dracula
 
     set background=dark         " Assume a dark background
 
     filetype plugin indent on   " Automatically detect file types
     syntax on                   " Syntax highlighting
-    set mouse=a                 " Automatically enable mouse usage
+    set mouse=                  " Dnable mouse usage
     set mousehide               " Hide the mouse cursor while typing
     scriptencoding utf-8
 
@@ -151,8 +398,8 @@
     set tabpagemax=15               " Only show 15 tabs
     set showmode
 
-    "set cursorline                  " Highlight current line
-    "set colorcolumn=80
+    set cursorline                  " Highlight current line
+    set colorcolumn=80
 
     " Highlight for GitGutter
     highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
@@ -186,9 +433,7 @@
         " Broken down into easily includeable segments
         set statusline=%<%f\                     " Filename
         set statusline+=%w%h%m%r                 " Options
-        if !exists('g:override_spf13_bundles')
-            set statusline+=%{fugitive#statusline()} " Git Hotness
-        endif
+        set statusline+=%{fugitive#statusline()} " Git Hotness
         set statusline+=\ [%{&ff}/%Y]            " Filetype
         set statusline+=\ [%{getcwd()}]          " Current dir
         set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
@@ -505,251 +750,6 @@
             nmap <leader><tab> :BA<cr>
             let g:leader['<C-I>'] = ['BA', 'Switch Buffer']
         " }
-    " }
-
-" }
-
-" Plugins {
-    call plug#begin()
-
-    "
-    " Core
-    "
-    Plug 'hecal3/vim-leader-guide'
-
-    Plug 'mhinz/vim-startify' " {
-        function! s:filter_header(lines) abort
-            let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
-            let centered_lines = map(copy(a:lines),
-                        \ 'repeat(" ", (80 / 2) - (longest_line / 2)) . v:val')
-            return centered_lines
-        endfunction
-
-        redir => s:startify_title
-        silent version
-        redir END
-        let s:startify_title = split(s:startify_title, '\n')[0]
-        let g:startify_custom_header = s:filter_header([s:startify_title])
-            \ + s:filter_header([
-            \ '',
-            \ '              -------------------------              ',
-            \ '             ( Gamer                   )             ',
-            \ '             (       ->                )             ',
-            \ '             (          Game Developer )             ',
-            \ '              -------------------------              ',
-            \ '                                 o                   ',
-            \ '                                  o  ^__^            ',
-            \ '                                     (oo)\_______    ',
-            \ '                                     (__)\       )\/\',
-            \ '                                         ||----w |   ',
-            \ '                                         ||     ||   ',
-            \ '',
-            \ ])
-    " }
-
-    Plug 'Shougo/neocomplete.vim' " {
-        let g:neocomplete#data_directory = s:common_dir . 'neocomplete'
-
-        " Disable AutoComplPop.
-        let g:acp_enableAtStartup = 0
-        " Use neocomplete.
-        let g:neocomplete#enable_at_startup = 1
-        " Use smartcase.
-        let g:neocomplete#enable_smart_case = 1
-        " Set minimum syntax keyword length.
-        let g:neocomplete#sources#syntax#min_keyword_length = 3
-        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-        " Define dictionary.
-        let g:neocomplete#sources#dictionary#dictionaries = {
-                    \ 'default' : '',
-                    \ 'vimshell' : $HOME.'/.vimshell_hist',
-                    \ 'scheme' : $HOME.'/.gosh_completions'
-                    \ }
-
-        " Define keyword.
-        if !exists('g:neocomplete#keyword_patterns')
-            let g:neocomplete#keyword_patterns = {}
-        endif
-        let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-        " Plugin key-mappings.
-        inoremap <expr><C-g>     neocomplete#undo_completion()
-        inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-        " Recommended key-mappings.
-        " <CR>: close popup and save indent.
-        inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-        function! s:my_cr_function()
-            return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-            " For no inserting <CR> key.
-            "return pumvisible() ? "\<C-y>" : "\<CR>"
-        endfunction
-        " <TAB>: completion.
-        inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-        inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-
-        inoremap <expr><C-j>  pumvisible() ? "\<C-n>" : "\<C-j>"
-        inoremap <expr><C-k>  pumvisible() ? "\<C-p>" : "\<C-k>"
-
-        " <C-h>, <BS>: close popup and delete backword char.
-        "inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-        inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-        " Close popup by <Space>.
-        "inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
-
-        " AutoComplPop like behavior.
-        "let g:neocomplete#enable_auto_select = 1
-
-        " Shell like behavior(not recommended).
-        "set completeopt+=longest
-        "let g:neocomplete#enable_auto_select = 1
-        "let g:neocomplete#disable_auto_complete = 1
-        "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-        " Enable omni completion.
-        autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-        autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-        autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-        autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-        " Enable heavy omni completion.
-        if !exists('g:neocomplete#sources#omni#input_patterns')
-            let g:neocomplete#sources#omni#input_patterns = {}
-        endif
-        "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-        "let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-        let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-        let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-    " }
-
-    Plug 'dbakker/vim-projectroot'
-
-    Plug 'mileszs/ack.vim' " {
-        if executable('pt')
-          let g:ackprg = 'pt --nogroup --column'
-        elseif executable('ag')
-          let g:ackprg = 'ag --vimgrep'
-        endif
-    " }
-
-    Plug 'ctrlpvim/ctrlp.vim' " {
-        let g:ctrlp_cache_dir = s:common_dir . 'ctrlp'
-
-        if WINDOWS()
-            set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
-        else
-            set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
-        endif
-
-        let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-
-        " The Silver Searcher
-        if executable('pt')
-            " Use pt over grep
-            set grepprg=pt\ --nogroup\ --nocolor
-
-            " Use pt in CtrlP for listing files. Lightning fast and respects .gitignore
-            let g:ctrlp_user_command += ['pt %s -l --nocolor --hidden -g ""']
-        elseif executable('ag')
-            " Use ag over grep
-            set grepprg=ag\ --nogroup\ --nocolor
-
-            " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-            let g:ctrlp_user_command += ['ag %s -l --nocolor --hidden -g ""']
-        endif
-    " }
-
-    Plug 'scrooloose/nerdtree'
-
-    Plug 'mbbill/undotree'
-
-    Plug 'scrooloose/nerdcommenter' " {
-        let g:NERDCreateDefaultMappings = 0
-        let g:NERDCustomDelimiters = {
-            \ 'c': { 'leftAlt': '/*', 'rightAlt': '*/', 'left': '// '}
-        \ }
-    " }
-
-    if executable('editorconfig')
-        Plug 'editorconfig/editorconfig-vim'
-    endif
-
-    "Plug 'pelodelfuego/vim-swoop' " {
-        "let g:swoopUseDefaultKeyMap = 0
-    "" }
-
-    "Plug 'tpope/vim-fugitive'
-
-    "Plug 'airblade/vim-gitgutter' " {
-        "let g:gitgutter_map_keys = 0
-    "" }
-
-    Plug 'qpkorr/vim-bufkill'
-
-    "
-    " Key
-    "
-    Plug 'terryma/vim-multiple-cursors'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-unimpaired'
-    Plug 'tpope/vim-repeat'
-    Plug 'rhysd/clever-f.vim'
-    Plug 'haya14busa/incsearch.vim' " {
-        let g:incsearch#auto_nohlsearch = 1
-        " n and N directions are always forward and backward respectively even after performing <Plug>(incsearch-backward).
-        let g:incsearch#consistent_n_direction = 1
-
-        map /  <Plug>(incsearch-forward)
-        map ?  <Plug>(incsearch-backward)
-        map g/ <Plug>(incsearch-stay)
-        map n  <Plug>(incsearch-nohl-n)
-        map N  <Plug>(incsearch-nohl-N)
-        map *  <Plug>(incsearch-nohl-*)
-        map #  <Plug>(incsearch-nohl-#)
-        map g* <Plug>(incsearch-nohl-g*)
-        map g# <Plug>(incsearch-nohl-g#)
-    " }
-
-    "
-    " Visual
-    "
-    Plug 'bling/vim-airline' " {
-        let g:airline_left_sep=''
-        let g:airline_right_sep=''
-
-        "let g:airline#extensions#tabline#enabled = 1
-        "let g:airline#extensions#tabline#show_buffers = 0
-        "let g:airline#extensions#tabline#show_tabs = 1
-        "let g:airline#extensions#tabline#show_tab_nr = 0
-        "let g:airline#extensions#tabline#left_sep = ''
-        "let g:airline#extensions#tabline#_alt_sep = ''
-        "let g:airline#extensions#tabline#show_tab_type = 0
-
-        let g:airline#extensions#hunks#non_zero_only = 1
-
-        let g:airline_detect_iminsert=2
-        "let g:airline_powerline_fonts = 1
-    " }
-
-    Plug 'chriskempson/vim-tomorrow-theme'
-
-    "
-    " Syntax
-    "
-    Plug 'rust-lang/rust.vim'
-    Plug 'tikhomirov/vim-glsl'
-    Plug 'tpope/vim-markdown'
-    Plug 'elzr/vim-json'
-    Plug 'cespare/vim-toml'
-    Plug 'jelera/vim-javascript-syntax'
-
-    call plug#end()
-
-    " Post Plugin {
-        colorscheme Tomorrow-Night
-        call leaderGuide#register_prefix_descriptions("<Space>", "g:leader")
     " }
 
 " }
