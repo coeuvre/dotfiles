@@ -305,6 +305,7 @@
     " }
 
     Plug 'chriskempson/base16-vim'
+    Plug 'chriskempson/vim-tomorrow-theme'
 
     "
     " Syntax
@@ -325,7 +326,11 @@
 " }
 
 " General {
-    colorscheme base16-default-dark
+    if has('gui_running')
+        colorscheme base16-default-dark
+    else
+        colorscheme Tomorrow-Night
+    endif
 
     set background=dark         " Assume a dark background
 
@@ -677,7 +682,7 @@
             nmap <silent> <leader>fr :CtrlPMRUFiles<cr>
             let g:leader.f.r = ['CtrlPMRUFiles', 'Recent']
 
-            nmap <silent> <leader>ft :NERDTree<cr>
+            nmap <silent> <leader>ft :NERDTreeToggle<cr>
             let g:leader.f.t = ['NERDTree', 'Tree']
             map <silent> <C-\> <leader>ft
         " }
@@ -743,7 +748,9 @@
             " }
 
             nmap <leader>tc <Plug>NERDCommenterToggle
+            nmap <silent> <C-_> <Plug>NERDCommenterToggle
             vmap <leader>tc <Plug>NERDCommenterToggle
+            vmap <silent> <C-_> <Plug>NERDCommenterToggle
             let g:leader.t.c = ['call feedkeys("\<Plug>NERDCommenterToggle")', 'Comment']
         " }
 
