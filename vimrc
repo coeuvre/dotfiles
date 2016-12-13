@@ -277,7 +277,15 @@
         map g# <Plug>(incsearch-nohl-g#)
     " }
 
-    "
+    Plug 'christoomey/vim-tmux-navigator' "{
+        let g:tmux_navigator_no_mappings = 1
+
+        nnoremap <silent> <ctrl-h> :TmuxNavigateLeft<cr>
+        nnoremap <silent> <ctrl-j> :TmuxNavigateDown<cr>
+        nnoremap <silent> <ctrl-k> :TmuxNavigateUp<cr>
+        nnoremap <silent> <ctrl-l> :TmuxNavigateRight<cr>
+    " }
+
     " Visual
     "
     Plug 'bling/vim-airline' " {
