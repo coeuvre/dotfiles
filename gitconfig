@@ -3,10 +3,11 @@
     name = Coeuvre Wong
 [core]
     editor = vim
+    eol = lf
+    autocrlf = false
+    safecrlf = true
 [color]
     ui = true
-[credential]
-	helper = cache --timeout 3600
 [merge]
     tool = vimdiff
 [mergetool]
