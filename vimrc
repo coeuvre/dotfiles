@@ -486,7 +486,7 @@
     set cindent                     " do C program indenting
     set cinoptions=l1,(0,W1s,m1     " set C indent options
 
-    "set fileformats=unix,dos        " always create unix file
+    set fileformats=unix,dos        " always create unix file
 
     " Remove trailing whitespaces and ^M chars
     autocmd BufWritePre * call StripTrailingWhitespace()
