@@ -2,142 +2,458 @@ if &compatible
   set nocompatible
 endif
 
-set runtimepath+=~/AppData/Local/nvim/dein/repos/github.com/Shougo/dein.vim
+" Identify platform {
+  silent function! OSX()
+    return has('macunix')
+  endfunction
 
-if dein#load_state('~/AppData/Local/nvim/dein')
-  call dein#begin('~/AppData/Local/nvim/dein')
+  silent function! LINUX()
+    return has('unix') && !has('macunix') && !has('win32unix')
+  endfunction
 
-  call dein#add('~/AppData/Local/nvim/dein/repos/github.com/Shougo/dein.vim')
+  silent function! WINDOWS()
+    return  has('win16') || has('win32') || has('win64')
+  endfunction
 
-  call dein#add('Shougo/deoplete.nvim')
-  call dein#add('Shougo/denite.nvim')
-  call dein#add('Shougo/neomru.vim')
+  silent function! MINGW()
+    return has('win32unix')
+  endfunction
 
-  call dein#add('mhinz/vim-startify')
+  silent function! UNIX()
+    return OSX() || LINUX()
+  endfunction
 
-  call dein#end()
-  call dein#save_state()
-endif
+  silent function! GUI()
+    return has('gui') || has('gui_vimr')
+  endfunction
 
-if dein#check_install()
-  call dein#install()
-endif
-
-filetype plugin indent on
-syntax enable
-
-" deoplete {
-  call deoplete#enable()
+  silent function! TMUX()
+    return !GUI() && exists('$TMUX')
+  endfunction
 " }
 
-" denite {
-  " Change file_rec command.
-  call denite#custom#var('file_rec', 'command',
-  \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
-  " For ripgrep
-  " Note: It is slower than ag
-  call denite#custom#var('file_rec', 'command',
-  \ ['rg', '--files', '--glob', '!.git', ''])
-  " For Pt(the platinum searcher)
-  " NOTE: It also supports windows.
-  call denite#custom#var('file_rec', 'command',
-  \ ['pt', '--follow', '--nocolor', '--nogroup',
-  \  (has('win32') ? '-g:' : '-g='), ''])
-  
-  " Change mappings.
-  call denite#custom#map(
-        \ 'insert',
-        \ '<C-j>',
-        \ '<denite:move_to_next_line>',
-        \ 'noremap'
-        \)
-  call denite#custom#map(
-        \ 'insert',
-        \ '<C-k>',
-        \ '<denite:move_to_previous_line>',
-        \ 'noremap'
-        \)
-  
-  " Change matchers.
-  "call denite#custom#source(
-  "\ 'file_mru', 'matchers', ['matcher_fuzzy', 'matcher_project_files'])
-  call denite#custom#source(
-  \ 'file_rec', 'matchers', ['matcher_cpsm'])
-  
-  " Change sorters.
-  call denite#custom#source(
-  \ 'file_rec', 'sorters', ['sorter_sublime'])
-  
-  " Add custom menus
-  let s:menus = {}
-  
-  let s:menus.zsh = {
-  	\ 'description': 'Edit your import zsh configuration'
-  	\ }
-  let s:menus.zsh.file_candidates = [
-  	\ ['zshrc', '~/.config/zsh/.zshrc'],
-  	\ ['zshenv', '~/.zshenv'],
-  	\ ]
-  
-  let s:menus.my_commands = {
-  	\ 'description': 'Example commands'
-  	\ }
-  let s:menus.my_commands.command_candidates = [
-  	\ ['Split the window', 'vnew'],
-  	\ ['Open zsh menu', 'Denite menu:zsh'],
-  	\ ]
-  
-  call denite#custom#var('menu', 'menus', s:menus)
-  
-  " Ag command on grep source
-  call denite#custom#var('grep', 'command', ['ag'])
-  call denite#custom#var('grep', 'default_opts', ['-i', '--vimgrep'])
-  call denite#custom#var('grep', 'recursive_opts', [])
-  call denite#custom#var('grep', 'pattern_opt', [])
-  call denite#custom#var('grep', 'separator', ['--'])
-  call denite#custom#var('grep', 'final_opts', [])
-  
-  " Ack command on grep source
-  call denite#custom#var('grep', 'command', ['ack'])
-  call denite#custom#var('grep', 'default_opts', ['--ackrc', $HOME.'/.ackrc', '-H', '--nopager', '--nocolor', '--nogroup', '--column'])
-  call denite#custom#var('grep', 'recursive_opts', [])
-  call denite#custom#var('grep', 'pattern_opt', ['--match'])
-  call denite#custom#var('grep', 'separator', ['--'])
-  call denite#custom#var('grep', 'final_opts', [])
-  
-  " Ripgrep command on grep source
-  call denite#custom#var('grep', 'command', ['rg'])
-  call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading'])
-  call denite#custom#var('grep', 'recursive_opts', [])
-  call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
-  call denite#custom#var('grep', 'separator', ['--'])
-  call denite#custom#var('grep', 'final_opts', [])
-  
-  " Pt command on grep source
-  call denite#custom#var('grep', 'command', ['pt'])
-  call denite#custom#var('grep', 'default_opts',
-  		\ ['--nogroup', '--nocolor', '--smart-case'])
-  call denite#custom#var('grep', 'recursive_opts', [])
-  call denite#custom#var('grep', 'pattern_opt', [])
-  call denite#custom#var('grep', 'separator', ['--'])
-  call denite#custom#var('grep', 'final_opts', [])
-  
-  " jvgrep command on grep source
-  call denite#custom#var('grep', 'command', ['jvgrep'])
-  call denite#custom#var('grep', 'default_opts', [])
-  call denite#custom#var('grep', 'recursive_opts', ['-R'])
-  call denite#custom#var('grep', 'pattern_opt', [])
-  call denite#custom#var('grep', 'separator', [])
-  call denite#custom#var('grep', 'final_opts', [])
-  
-  " Define alias
-  call denite#custom#alias('source', 'file_rec/git', 'file_rec')
-  call denite#custom#var('file_rec/git', 'command',
-        \ ['git', 'ls-files', '-co', '--exclude-standard'])
-  
-  " Change default prompt
-  call denite#custom#option('default', 'prompt', '>')
-  
-  " Change ignore_globs
-  call denite#custom#filter('matcher_ignore_globs', 'ignore_globs', ['.git/', '.ropeproject/', '__pycache__/', 'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
+if WINDOWS()
+  let $NVIM = expand('~/AppData/Local/nvim')
+  let $CACHE = expand('~/AppData/Local/nvim/cache')
+else
+  let $NVIM = expand('~/.config/nvim')
+  let $CACHE = expand('~/.cache/nvim')
+endif
+
+" Plugin {
+  set runtimepath+=$NVIM/dein/repos/github.com/Shougo/dein.vim
+
+  if dein#load_state('~/AppData/Local/nvim/dein')
+    call dein#begin('~/AppData/Local/nvim/dein')
+
+    call dein#add('~/AppData/Local/nvim/dein/repos/github.com/Shougo/dein.vim')
+
+    call dein#add('Shougo/deoplete.nvim')
+    call dein#add('Shougo/denite.nvim')
+    call dein#add('Shougo/neomru.vim')
+
+    call dein#add('mhinz/vim-startify')
+
+    call dein#add('vim-airline/vim-airline')
+
+    call dein#add('mbbill/undotree')
+
+    call dein#end()
+    call dein#save_state()
+
+    if dein#check_install()
+      call dein#install()
+    endif
+  endif
 " }
+
+" Gernal {
+  filetype plugin indent on   " Automatically detect file types
+  syntax on                   " Syntax highlighting
+  set mouse=a                 " Automatically enable mouse usage
+  set mousehide               " Hide the mouse cursor while typing
+  scriptencoding utf-8
+
+  if has('clipboard')
+      if has('unnamedplus') " When possible use + register for copy-paste
+          set clipboard=unnamed,unnamedplus
+      else
+          set clipboard=unnamed
+      endif
+  endif
+
+  " Always switch to the current file directory
+  autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+
+  set autowrite                       " Automatically write a file when leaving a modified buffer
+  set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
+  set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
+  set virtualedit=onemore             " Allow for cursor beyond last character
+  set history=1000                    " Store a ton of history (default is 20)
+  "set spell                           " Spell checking on
+  set hidden                          " Allow buffer switching without saving
+  set autoread
+  set iskeyword-=.                    " '.' is an end of word designator
+  set iskeyword-=#                    " '#' is an end of word designator
+  set iskeyword-=-                    " '-' is an end of word designator
+
+  " Instead of reverting the cursor to the last position in the buffer,
+  " we set it to the first line when editing a git commit message
+  au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+
+  " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+  " Restore cursor to file position in previous editing session
+  function! ResCur()
+      if line("'\"") <= line("$")
+          normal! g`"
+          return 1
+      endif
+  endfunction
+
+  augroup resCur
+      autocmd!
+      autocmd BufWinEnter * call ResCur()
+  augroup END
+
+  set fileencoding=utf-8
+  set noeb vb t_vb=           " Close error bells
+  autocmd GUIEnter * set visualbell t_vb=
+
+  set fileencodings=ucs-bom,utf-8,cp936,gb18030
+
+  " Setting up the directories {
+    set backup                      " Backups are nice ...
+    if has('persistent_undo')
+      set undofile                " So is persistent undo ...
+      set undolevels=1000         " Maximum number of changes that can be undone
+      set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
+    endif
+
+    " Add exclusions to mkview and loadview
+    " eg: *.*, svn-commit.tmp
+    let g:skipview_files = ['\[example pattern\]']
+  " }
+" }
+
+" Vim UI {
+  "colorscheme Tomorrow-Night
+
+  set tabpagemax=15               " Only show 15 tabs
+  set noshowmode                  " DO NOT display the current mode, we use airline
+
+  set cursorline                  " Highlight current line
+  "set colorcolumn=80
+
+  highlight clear CursorLineNr    " Remove highlight color from current line number
+
+  " Highlight for GitGutter
+  "highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
+  "highlight clear LineNr          " Current line number row will have same background color in relative mode
+
+  "highlight Search guibg=yellow gui=underline ctermbg=yellow cterm=underline
+
+  " Highlight task tags
+  "highlight Important ctermfg=Yellow cterm=underline,bold guifg=#FFFF00 gui=underline,bold
+  "autocmd WinEnter,Syntax * call matchadd('Important', '\W\zs\(IMPORTANT\|HACK\)')
+
+  "highlight Note ctermfg=Green cterm=underline,bold guifg=#00FF00 gui=underline,bold
+  "autocmd WinEnter,Syntax * call matchadd('Note', '\W\zs\(NOTE\|INFO\|IDEA\)')
+
+  "highlight clear Todo
+  "highlight Todo ctermfg=Red cterm=underline,bold guifg=#FF0000 gui=underline,bold
+  "autocmd WinEnter,Syntax * call matchadd('Todo', '\W\zs\(TODO\|FIXME\|CHANGED\|BUG\)')
+
+  if has('cmdline_info')
+    set ruler                   " Show the ruler
+    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
+    set showcmd                 " Show partial commands in status line and Selected characters/lines in visual mode
+  endif
+
+  if has('statusline')
+    set laststatus=2
+
+    " Broken down into easily includeable segments
+    set statusline=%<%f\                     " Filename
+    set statusline+=%w%h%m%r                 " Options
+    set statusline+=%{fugitive#statusline()} " Git Hotness
+    set statusline+=\ [%{&ff}/%Y]            " Filetype
+    set statusline+=\ [%{getcwd()}]          " Current dir
+    set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+
+    " for Syntastic
+    set statusline+=%#warningmsg#
+    set statusline+=%{SyntasticStatuslineFlag()}
+    set statusline+=%*
+  endif
+
+  set backspace=indent,eol,start  " Backspace for dummies
+  set linespace=0                 " No extra spaces between rows
+  "set nu                          " Line numbers on
+  set showmatch                   " Show matching brackets/parenthesis
+  set incsearch                   " Find as you type search
+  set hlsearch                    " Highlight search terms
+  set winminheight=0              " Windows can be 0 line high
+  set ignorecase                  " Case insensitive search
+  set smartcase                   " Case sensitive when uc present
+  set wildmenu                    " Show list instead of just completing
+  set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
+  set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
+  set scrolljump=5                " Lines to scroll when cursor leaves screen
+  set scrolloff=3                 " Minimum lines to keep above and below cursor
+  set foldenable                  " Auto fold code
+  set list
+  set listchars=tab:,.,trail:.,extends:>,precedes:<,nbsp:. " Highlight problematic whitespace
+" }
+
+" Formatting {
+  set nowrap                      " Do not wrap long lines
+  set autoindent                  " Indent at the same level of the previous line
+  set shiftwidth=0                " use 'ts' value
+  set expandtab                   " Tabs are spaces, not tabs
+  set tabstop=4                   " An indentation every four columns
+  set softtabstop=4               " Let backspace delete indent
+  set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+  set splitright                  " Puts new vsplit windows to the right of the current
+  set splitbelow                  " Puts new split windows to the bottom of the current
+  set matchpairs+=<:>             " Match, to be used with %
+  set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
+  set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
+  set cindent                     " do C program indenting
+  set cinoptions=l1,(0,W1s,m1     " set C indent options
+
+  " Remove trailing whitespaces and ^M chars
+  autocmd BufWritePre * call StripTrailingWhitespace()
+
+  autocmd FileType html,lua,vim setl sts=2 ts=2
+" }
+
+" Key Mappings {
+  let mapleader = "\<Space>"
+" }
+
+" Plugin deoplete {
+  " Use deoplete.
+  let g:deoplete#enable_at_startup = 1
+  " Use smartcase.
+  let g:deoplete#enable_smart_case = 1
+
+  " <BS>: close popup and delete backword char.
+  inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
+  inoremap <expr><C-g> deoplete#undo_completion()
+
+  " <TAB> completion
+  inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+  " <CR>: close popup and save indent.
+  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+  function! s:my_cr_function() abort
+    return deoplete#mappings#close_popup() . "\<CR>"
+  endfunction
+" }
+
+" Plugin vim-startify {
+  function! s:filter_header(lines) abort
+      let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
+      let centered_lines = map(copy(a:lines),
+                  \ 'repeat(" ", (80 / 2) - (longest_line / 2)) . v:val')
+      return centered_lines
+  endfunction
+
+  redir => s:startify_title
+  silent version
+  redir END
+  let s:startify_title = split(s:startify_title, '\n')[0]
+  let g:startify_custom_header = s:filter_header([s:startify_title])
+      \ + s:filter_header([
+      \ '',
+      \ '              -------------------------              ',
+      \ '             ( Gamer                   )             ',
+      \ '             (       ->                )             ',
+      \ '             (          Game Developer )             ',
+      \ '              -------------------------              ',
+      \ '                                 o                   ',
+      \ '                                  o  ^__^            ',
+      \ '                                     (oo)\_______    ',
+      \ '                                     (__)\       )\/\',
+      \ '                                         ||----w |   ',
+      \ '                                         ||     ||   ',
+      \ '',
+      \ ])
+" }
+
+" Plugin vim-airline {
+   let g:airline_left_sep=''
+   let g:airline_right_sep=''
+
+   "let g:airline#extensions#tabline#enabled = 1
+   "let g:airline#extensions#tabline#show_buffers = 0
+   "let g:airline#extensions#tabline#show_tabs = 1
+   "let g:airline#extensions#tabline#show_tab_nr = 0
+   "let g:airline#extensions#tabline#left_sep = ''
+   "let g:airline#extensions#tabline#_alt_sep = ''
+   "let g:airline#extensions#tabline#show_tab_type = 0
+
+   let g:airline#extensions#hunks#non_zero_only = 1
+
+   let g:airline_detect_iminsert=2
+   "let g:airline_powerline_fonts = 1
+" }
+
+
+"" denite {
+"  " Change file_rec command.
+"  call denite#custom#var('file_rec', 'command',
+"  \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
+"  " For ripgrep
+"  " Note: It is slower than ag
+"  call denite#custom#var('file_rec', 'command',
+"  \ ['rg', '--files', '--glob', '!.git', ''])
+"  " For Pt(the platinum searcher)
+"  " NOTE: It also supports windows.
+"  call denite#custom#var('file_rec', 'command',
+"  \ ['pt', '--follow', '--nocolor', '--nogroup',
+"  \  (has('win32') ? '-g:' : '-g='), ''])
+"
+"  " Change mappings.
+"  call denite#custom#map(
+"        \ 'insert',
+"        \ '<C-j>',
+"        \ '<denite:move_to_next_line>',
+"        \ 'noremap'
+"        \)
+"  call denite#custom#map(
+"        \ 'insert',
+"        \ '<C-k>',
+"        \ '<denite:move_to_previous_line>',
+"        \ 'noremap'
+"        \)
+"
+"  " Change matchers.
+"  "call denite#custom#source(
+"  "\ 'file_mru', 'matchers', ['matcher_fuzzy', 'matcher_project_files'])
+"  call denite#custom#source(
+"  \ 'file_rec', 'matchers', ['matcher_cpsm'])
+"
+"  " Change sorters.
+"  call denite#custom#source(
+"  \ 'file_rec', 'sorters', ['sorter_sublime'])
+"
+"  " Add custom menus
+"  let s:menus = {}
+"
+"  let s:menus.zsh = {
+"  	\ 'description': 'Edit your import zsh configuration'
+"  	\ }
+"  let s:menus.zsh.file_candidates = [
+"  	\ ['zshrc', '~/.config/zsh/.zshrc'],
+"  	\ ['zshenv', '~/.zshenv'],
+"  	\ ]
+"
+"  let s:menus.my_commands = {
+"  	\ 'description': 'Example commands'
+"  	\ }
+"  let s:menus.my_commands.command_candidates = [
+"  	\ ['Split the window', 'vnew'],
+"  	\ ['Open zsh menu', 'Denite menu:zsh'],
+"  	\ ]
+"
+"  call denite#custom#var('menu', 'menus', s:menus)
+"
+"  " Ag command on grep source
+"  call denite#custom#var('grep', 'command', ['ag'])
+"  call denite#custom#var('grep', 'default_opts', ['-i', '--vimgrep'])
+"  call denite#custom#var('grep', 'recursive_opts', [])
+"  call denite#custom#var('grep', 'pattern_opt', [])
+"  call denite#custom#var('grep', 'separator', ['--'])
+"  call denite#custom#var('grep', 'final_opts', [])
+"
+"  " Ack command on grep source
+"  call denite#custom#var('grep', 'command', ['ack'])
+"  call denite#custom#var('grep', 'default_opts', ['--ackrc', $HOME.'/.ackrc', '-H', '--nopager', '--nocolor', '--nogroup', '--column'])
+"  call denite#custom#var('grep', 'recursive_opts', [])
+"  call denite#custom#var('grep', 'pattern_opt', ['--match'])
+"  call denite#custom#var('grep', 'separator', ['--'])
+"  call denite#custom#var('grep', 'final_opts', [])
+"
+"  " Ripgrep command on grep source
+"  call denite#custom#var('grep', 'command', ['rg'])
+"  call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading'])
+"  call denite#custom#var('grep', 'recursive_opts', [])
+"  call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+"  call denite#custom#var('grep', 'separator', ['--'])
+"  call denite#custom#var('grep', 'final_opts', [])
+"
+"  " Pt command on grep source
+"  call denite#custom#var('grep', 'command', ['pt'])
+"  call denite#custom#var('grep', 'default_opts',
+"  		\ ['--nogroup', '--nocolor', '--smart-case'])
+"  call denite#custom#var('grep', 'recursive_opts', [])
+"  call denite#custom#var('grep', 'pattern_opt', [])
+"  call denite#custom#var('grep', 'separator', ['--'])
+"  call denite#custom#var('grep', 'final_opts', [])
+"
+"  " jvgrep command on grep source
+"  call denite#custom#var('grep', 'command', ['jvgrep'])
+"  call denite#custom#var('grep', 'default_opts', [])
+"  call denite#custom#var('grep', 'recursive_opts', ['-R'])
+"  call denite#custom#var('grep', 'pattern_opt', [])
+"  call denite#custom#var('grep', 'separator', [])
+"  call denite#custom#var('grep', 'final_opts', [])
+"
+"  " Define alias
+"  call denite#custom#alias('source', 'file_rec/git', 'file_rec')
+"  call denite#custom#var('file_rec/git', 'command',
+"        \ ['git', 'ls-files', '-co', '--exclude-standard'])
+"
+"  " Change default prompt
+"  call denite#custom#option('default', 'prompt', '>')
+"
+"  " Change ignore_globs
+"  call denite#custom#filter('matcher_ignore_globs', 'ignore_globs', ['.git/', '.ropeproject/', '__pycache__/', 'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
+"" }
+
+
+function! StripTrailingWhitespace()
+  " Preparation: save last search, and cursor position.
+  let _s=@/
+  let l = line(".")
+  let c = col(".")
+  " do the business:
+  %s/\s\+$//e
+  " clean up: restore previous search history, and cursor position
+  let @/=_s
+  call cursor(l, c)
+endfunction
+
+function! InitializeDirectories(common_dir)
+  " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
+  let dir_list = {
+        \ 'backup': 'backupdir',
+        \ 'views': 'viewdir',
+        \ 'swap': 'directory' }
+
+  if has('persistent_undo')
+    let dir_list['undo'] = 'undodir'
+  endif
+
+  exec "set viminfo='100,n" . a:common_dir . 'viminfo'
+
+  for [dirname, settingname] in items(dir_list)
+    let directory = a:common_dir . dirname . '/'
+    if exists("*mkdir")
+      if !isdirectory(directory)
+        call mkdir(directory, 'p')
+      endif
+    endif
+    if !isdirectory(directory)
+      echo "Warning: Unable to create backup directory: " . directory
+      echo "Try: mkdir -p " . directory
+    else
+      let directory = substitute(directory, " ", "\\\\ ", "g")
+      exec "set " . settingname . "=" . directory
+    endif
+  endfor
+endfunction
+
+call InitializeDirectories($CACHE . '/')
