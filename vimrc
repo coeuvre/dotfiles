@@ -56,7 +56,7 @@ endif
 
   Plug 'ctrlpvim/ctrlp.vim'
 
-  Plug 'mhinz/vim-startify'
+  "Plug 'mhinz/vim-startify'
 
   Plug 'vim-airline/vim-airline'
 
@@ -404,35 +404,35 @@ endif
   let g:grepper.switch = 0
 " }
 
-" Plugin vim-startify {
-  function! s:filter_header(lines) abort
-      let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
-      let centered_lines = map(copy(a:lines),
-                  \ 'repeat(" ", (80 / 2) - (longest_line / 2)) . v:val')
-      return centered_lines
-  endfunction
-
-  redir => s:startify_title
-  silent version
-  redir END
-  let s:startify_title = split(s:startify_title, '\n')[0]
-  let g:startify_custom_header = s:filter_header([s:startify_title])
-      \ + s:filter_header([
-      \ '',
-      \ '              -------------------------              ',
-      \ '             ( Gamer                   )             ',
-      \ '             (       ->                )             ',
-      \ '             (          Game Developer )             ',
-      \ '              -------------------------              ',
-      \ '                                 o                   ',
-      \ '                                  o  ^__^            ',
-      \ '                                     (oo)\_______    ',
-      \ '                                     (__)\       )\/\',
-      \ '                                         ||----w |   ',
-      \ '                                         ||     ||   ',
-      \ '',
-      \ ])
-" }
+"" Plugin vim-startify {
+"  function! s:filter_header(lines) abort
+"      let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
+"      let centered_lines = map(copy(a:lines),
+"                  \ 'repeat(" ", (80 / 2) - (longest_line / 2)) . v:val')
+"      return centered_lines
+"  endfunction
+"
+"  redir => s:startify_title
+"  silent version
+"  redir END
+"  let s:startify_title = split(s:startify_title, '\n')[0]
+"  let g:startify_custom_header = s:filter_header([s:startify_title])
+"      \ + s:filter_header([
+"      \ '',
+"      \ '              -------------------------              ',
+"      \ '             ( Gamer                   )             ',
+"      \ '             (       ->                )             ',
+"      \ '             (          Game Developer )             ',
+"      \ '              -------------------------              ',
+"      \ '                                 o                   ',
+"      \ '                                  o  ^__^            ',
+"      \ '                                     (oo)\_______    ',
+"      \ '                                     (__)\       )\/\',
+"      \ '                                         ||----w |   ',
+"      \ '                                         ||     ||   ',
+"      \ '',
+"      \ ])
+"" }
 
 " Plugin vim-airline {
    let g:airline_left_sep=''
