@@ -24,7 +24,7 @@ endif
   endfunction
 
   silent function! GUI()
-    return has('gui') || has('gui_vimr')
+    return has('gui')
   endfunction
 
   silent function! TMUX()
@@ -48,6 +48,10 @@ endif
 " Plugin {
   call plug#begin($MYPLUGGEDDIR)
 
+  Plug 'Valloric/YouCompleteMe'
+
+  Plug 'mhinz/vim-grepper'
+
   Plug 'skywind3000/asyncrun.vim'
 
   Plug 'ctrlpvim/ctrlp.vim'
@@ -59,16 +63,21 @@ endif
   Plug 'mbbill/undotree'
 
   Plug 'tpope/vim-fugitive'
+
   Plug 'airblade/vim-gitgutter'
 
   Plug 'hecal3/vim-leader-guide'
+
   Plug 'qpkorr/vim-bufkill'
 
   Plug 'scrooloose/nerdcommenter'
 
   Plug 'haya14busa/incsearch.vim'
+
   Plug 'tpope/vim-unimpaired'
+
   Plug 'tpope/vim-repeat'
+
   Plug 'rhysd/clever-f.vim'
 
   Plug 'chriskempson/vim-tomorrow-theme'
@@ -128,6 +137,7 @@ endif
       autocmd BufWinEnter * call ResCur()
   augroup END
 
+  set encoding=utf-8
   set fileencoding=utf-8
   set noeb vb t_vb=           " Close error bells
   autocmd GUIEnter * set visualbell t_vb=
@@ -388,6 +398,12 @@ endif
   vmap <silent> <tab> =
 " }
 
+" Plugin vim-grepper {
+  runtime plugin/grepper.vim    " initialize g:grepper with default values
+  let g:grepper.highlight = 1
+  let g:grepper.switch = 0
+" }
+
 " Plugin vim-startify {
   function! s:filter_header(lines) abort
       let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
@@ -504,6 +520,9 @@ endif
     nmap <silent> <leader>bb :CtrlPBuffer<CR>
     let g:leader.b.b = ['CtrlPBuffer', 'List']
 
+    nmap <silent> <leader>bg :Grepper -buffers<CR>
+    let g:leader.b.g = ['Grepper -buffers', 'Grep']
+
     nmap <silent> <leader>bd :BD<CR>
     let g:leader.b.d = ['BD', 'Delete']
 
@@ -517,8 +536,8 @@ endif
     noremap <silent> <leader>pf :CtrlP<CR>
     let g:leader.p.f = ['CtrlP', 'Find']
 
-    "nmap <silent> <leader>pg :DeniteProjectDir grep<cr>
-    "let g:leader.p.g = ['DeniteProjectDir grep', 'Grep']
+    nmap <silent> <leader>pg :Grepper -dir repo<cr>
+    let g:leader.p.g = ['Grepper -dir repo,cwd', 'Grep']
 
     nmap <silent> <leader>pb :call ProjectRootBuildInteractive()<cr>
     let g:leader.p.b = ['call ProjectRootBuildInteractive()', 'Build']
