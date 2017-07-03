@@ -281,6 +281,9 @@ endif
   " No need for ex mode
   nnoremap Q <nop>
 
+  nnoremap <C-Q> :call asyncrun#quickfix_toggle(8)<cr>
+
+
   " Wrapped lines goes down/up to next row, rather than next line in file.
   nnoremap j gj
   nnoremap k gk
@@ -720,9 +723,10 @@ endif
   " Note: Normally, :cwindow jumps to the quickfix window if the command opens it
   " (but not if it's already open). However, as part of the autocmd, this doesn't
   " seem to happen.
-  autocmd QuickFixCmdPost [^l]* nested botright cwindow
-  autocmd QuickFixCmdPost    l* nested botright lwindow
-  autocmd BufReadPost quickfix nnoremap <buffer> q <c-w>c
+  "autocmd QuickFixCmdPost [^l]* nested botright cwindow
+  "autocmd QuickFixCmdPost    l* nested botright lwindow
+  "autocmd BufReadPost quickfix nnoremap <buffer> q <c-w>c
+  autocmd QuickFixCmdPost * botright copen 8
 
   " Visual Studio {
     " Compile
