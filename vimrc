@@ -737,4 +737,10 @@ endif
     " Link
     let &errorformat .= ',%.%#%trror LNK%n: %m'
   " }
+
+  " Clang {
+    " Compile
+    let &errorformat .= ',%f:%l:%c: %trror: %m'
+    let &errorformat .= ',%f:%l:%c: %tarning: %m'
+  " }
 " }
