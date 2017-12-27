@@ -46,7 +46,7 @@ else
   let $DEINDIR = $HOME . '/.cache/dein'
 endif
 
-" Plugin {
+" Plugin Management {
   let $DEINREPODIR = $DEINDIR . '/repos/github.com/Shougo/dein.vim'
 
   " Required:
@@ -67,27 +67,7 @@ endif
     "" You can specify revision/branch/tag.
     "call dein#add('Shougo/deol.nvim', { 'rev': 'a1b5108fd' })
 
-    " deoplete {
-      " Use smartcase.
-      let g:deoplete#enable_smart_case = 1
-
-      " Use Tab to select completion
-      inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-      inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-      " <C-h>, <BS>: close popup and delete backword char.
-      inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
-      inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
-
-      " <CR>: close popup and save indent.
-      inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-      function! s:my_cr_function() abort
-	      return deoplete#close_popup() . "\<CR>"
-      endfunction
-
-      call dein#add('Shougo/deoplete.nvim')
-      call deoplete#enable()
-    " }
+    call dein#add('Shougo/deoplete.nvim')
   
     " Required:
     call dein#end()
@@ -102,4 +82,25 @@ endif
   if dein#check_install()
     call dein#install()
   endif
+" }
+
+" Plugin: deoplete {
+  " Use deoplete.
+  let g:deoplete#enable_at_startup = 1
+  " Use smartcase.
+  let g:deoplete#enable_smart_case = 1
+
+  " Use Tab to select completion
+  inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+  inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+  " <C-h>, <BS>: close popup and delete backword char.
+  inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+  inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
+
+  " <CR>: close popup and save indent.
+  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+  function! s:my_cr_function() abort
+          return deoplete#close_popup() . "\<CR>"
+  endfunction
 " }
