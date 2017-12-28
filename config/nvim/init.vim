@@ -66,13 +66,17 @@
     call dein#add('mbbill/undotree')
     call dein#add('vim-airline/vim-airline')
 
+    call dein#add('editorconfig/editorconfig-vim')
     call dein#add('wellle/targets.vim')
     call dein#add('tpope/vim-commentary')
     call dein#add('tpope/vim-unimpaired')
-    call dein#add('editorconfig/editorconfig-vim')
-    call dein#add('skywind3000/asyncrun.vim')
+    call dein#add('airblade/vim-rooter')
     call dein#add('airblade/vim-gitgutter')
-    call dein#add('chriskempson/vim-tomorrow-theme')
+    call dein#add('neomake/neomake')
+
+    call dein#add('rust-lang/rust.vim')
+
+    call dein#add('rakr/vim-one')
 
     " Required:
     call dein#end()
@@ -107,7 +111,7 @@
   endif
 
   " Always switch to the current file directory
-  autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+  "autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
 
   set autowrite                       " Automatically write a file when leaving a modified buffer
   set history=1000                    " Store a ton of history (default is 20)
@@ -134,6 +138,10 @@
   set undoreload=10000                " Maximum number lines to save for undo on a buffer reload
   set listchars=tab:,.,trail:.,extends:>,precedes:<,nbsp:. " Highlight problematic whitespace
   set noeb vb t_vb=                   " Close error bells
+  set ignorecase
+  set smartcase
+  set virtualedit=onemore             " Allow for cursor beyond last character
+
   autocmd GUIEnter * set visualbell t_vb=
 
   " Remove trailing whitespaces and ^M chars {
@@ -212,10 +220,14 @@
 " }
 
 " UI {
-  colorscheme Tomorrow
+  if has('termguicolors')
+    set termguicolors
+  endif
 
-  highlight clear CursorLine
-  highlight CursorLine gui=underline cterm=underline
+  set background=dark
+  let g:one_allow_italics = 1
+  let g:airline_theme='one'
+  colorscheme one
 
   if has('gui_running')
     set guioptions-=t
@@ -242,8 +254,23 @@
 " }
 
 " Key Mappings {
+  let mapleader = "\<Space>"
+
   " No need for ex mode
   nnoremap Q <nop>
+
+  nnoremap <C-H> <C-W>h
+  nnoremap <C-L> <C-W>l
+  nnoremap <C-J> <C-W>j
+  nnoremap <C-K> <C-W>k
+
+  tnoremap <Esc> <C-\><C-n>
+
+  nmap <Leader>mm :Denite menu<CR>
+  nmap <Leader>bb :Denite buffer<CR>
+  nmap <Leader>ff :Denite file_rec<CR>
+  nmap <Leader>fr :Denite file_old<CR>
+  nmap <Leader>fg :Denite grep<CR>
 
   " Search for selected text http://vim.wikia.com/wiki/VimTip171 {
     let s:save_cpo = &cpo | set cpo&vim
@@ -357,3 +384,12 @@
         \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
 " }
 
+" Plugin: vim-rooter {
+  let g:rooter_change_directory_for_non_project_files = 'current'
+  let g:rooter_silent_chdir = 1
+  let g:rooter_use_lcd = 1
+" }
+
+" Plugin: Neomake {
+  let g:neomake_open_list = 2
+" }
