@@ -36,6 +36,7 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
+     helm
      (auto-completion :variables
                       auto-completion-return-key-behavior nil
                       auto-completion-tab-key-behavior 'complete
@@ -50,15 +51,15 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     spell-checking
+     ;; spell-checking
      syntax-checking
-     version-control
-
+     (version-control :variables
+                      version-control-diff-tool 'diff-hl
+                      version-control-diff-side 'left
+                      version-control-global-margin t)
      (c-c++ :variables
             c-c++-enable-clang-support t)
-     html
      lua
-     javascript
      rust
      shell-scripts
      windows-scripts
@@ -68,7 +69,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(base16-theme)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -140,13 +141,14 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(sanityinc-tomorrow-day sanityinc-tomorrow-eighties)
+   dotspacemacs-themes '(base16-default-dark
+                         base16-default-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Fira Code"
-                               :size 13
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 16
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -314,10 +316,9 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq configuration-layer--elpa-archives
-        '(("melpa-cn" . "http://elpa.zilongshanren.com/melpa/")
-          ("org-cn"   . "http://elpa.zilongshanren.com/org/")
-          ("gnu-cn"   . "http://elpa.zilongshanren.com/gnu/")))
-  )
+        '(("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
+          ("org-cn"   . "http://elpa.emacs-china.org/org/")
+          ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/"))))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -327,26 +328,14 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  (setq-default truncate-lines t)
-
-  (setq-default tab-width 4
-                indent-tabs-mode nil)
-
-  (setq projectile-enable-caching t)
-
   (setq powerline-default-separator nil)
-  (spaceline-compile)
 
   ;; C/C++
-  (setq-default c-basic-offset 4)
-  (add-hook 'c-mode-common-hook (lambda ()
-                                  (modify-syntax-entry ?_ "w")
-                                  (c-set-offset 'case-label 4)
-                                  ))
-
-  ;; Company mode
-  (global-company-mode)
-  (setq-default company-idle-delay 0)
+  ;; (setq-default c-basic-offset 4)
+  ;; (add-hook 'c-mode-common-hook (lambda ()
+  ;;                                 (modify-syntax-entry ?_ "w")
+  ;;                                 (c-set-offset 'case-label 4)
+  ;;                                 ))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
