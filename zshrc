@@ -14,7 +14,6 @@ source ~/.zplug/init.zsh
 zplug "b4b4r07/enhancd", use:init.sh
 zplug "supercrabtree/k"
 
-zplug "plugins/git",   from:oh-my-zsh
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
@@ -48,7 +47,6 @@ export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30
 #####################################################################
 
 # Share zsh histories
-HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000
 SAVEHIST=50000
 setopt inc_append_history
