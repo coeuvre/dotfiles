@@ -47,6 +47,7 @@ export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30
 #####################################################################
 
 # Share zsh histories
+HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
 SAVEHIST=50000
 setopt inc_append_history
