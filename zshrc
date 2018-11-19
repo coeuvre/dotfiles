@@ -27,7 +27,7 @@ if [ -d "$HOME/.zplug" ]; then
 fi
 
 #####################################################################
-# environment
+# Environment
 #####################################################################
 export PATH=~/.cargo/bin:$PATH
 export EDITOR=vim
@@ -41,8 +41,26 @@ export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30
 export WORDCHARS=${WORDCHARS/\/}
 
 #####################################################################
-# alias
+# Key Binding
 #####################################################################
+
+# VIM style line editing
+bindkey -v
+export KEYTIMEOUT=1
+
+bindkey "^A" vi-beginning-of-line
+bindkey "^E" vi-end-of-line
+
+# backspace and ^h working even after
+# returning from command mode
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+
+
+#####################################################################
+# Alias
+#####################################################################
+
 if [ -x "$(command -v nvim)" ]; then
     alias vim=nvim
     alias vimdiff='nvim -d'
@@ -55,7 +73,7 @@ fi
 alias ll='ls -l'
 
 #####################################################################
-# others
+# Others
 #####################################################################
 
 # Share zsh histories
