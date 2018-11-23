@@ -170,8 +170,6 @@ nnoremap <Leader>ff :FZFFiles<CR>
 nnoremap <Leader>fr :FZFHistory<CR>
 nnoremap <Leader>fg :FZFRg<CR>
 
-nnoremap <C-w><C-c> <C-w>c
-
 tnoremap <Esc> <C-\><C-n>
 
 " incsearch.vim
