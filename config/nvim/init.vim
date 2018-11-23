@@ -8,11 +8,11 @@ silent function! WINDOWS()
 endfunction
 
 if WINDOWS()
-    let $PLUGDIR = '~\AppData\Local\nvim\plugged'
-    let $MYCACHEDIR = '~\AppData\Local\nvim\cache'
+    let $PLUGDIR = $HOME . '\AppData\Local\nvim\plugged'
+    let $MYCACHEDIR = $HOME . '\AppData\Local\nvim\cache'
 else
-    let $PLUGDIR = '~/.local/share/nvim/plugged'
-    let $MYCACHEDIR = '~/.cache/nvim'
+    let $PLUGDIR = $HOME . '/.local/share/nvim/plugged'
+    let $MYCACHEDIR = $HOME . '/.cache/nvim'
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -105,53 +105,72 @@ set ignorecase
 set smartcase
 set shellslash
 
-" Setup cache directories {
-    function! InitializeDirectories()
-      " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
-      let dir_list = {
-          \ 'backup': 'backupdir',
-          \ 'views': 'viewdir',
-          \ 'swap': 'directory',
-          \ 'undo': 'undodir' }
+" Instead of reverting the cursor to the last position in the buffer,
+" we set it to the first line when editing a git commit message
+au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
-      if WINDOWS()
+" Restore cursor to file position in previous editing session http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+function! ResCur()
+    if line("'\"") <= line("$")
+        normal! g`"
+        return 1
+    endif
+endfunction
+
+augroup resCur
+    autocmd!
+    autocmd BufWinEnter * call ResCur()
+augroup END
+
+" Setup cache directories
+function! InitializeDirectories()
+    " Specify a directory in which to place the vimbackup, vimviews, vimundo, and vimswap files/directories.
+    let dir_list = {
+                \ 'backup': 'backupdir',
+                \ 'views': 'viewdir',
+                \ 'swap': 'directory',
+                \ 'undo': 'undodir' }
+
+    if WINDOWS()
         let g:viminfo_filename = substitute($MYCACHEDIR, '\\', '\\\\', 'g') . '\\viminfo'
-      else
+    else
         let g:viminfo_filename = $MYCACHEDIR . '/viminfo'
-      endif
+    endif
 
-      exec "set viminfo='100,n" . g:viminfo_filename
+    exec "set viminfo='100,n" . g:viminfo_filename
 
-      for [dirname, settingname] in items(dir_list)
-          if WINDOWS()
-              let directory = $MYCACHEDIR . '\' . dirname
-          else
-              let directory = $MYCACHEDIR . '/' . dirname
-          endif
+    for [dirname, settingname] in items(dir_list)
+        if WINDOWS()
+            let directory = $MYCACHEDIR . '\' . dirname
+        else
+            let directory = $MYCACHEDIR . '/' . dirname
+        endif
+        let directory = substitute(directory, ' ', '\\\\ ', "g")
 
-          if exists("*mkdir")
-              if !isdirectory(directory)
+        if exists("*mkdir")
+            if !isdirectory(directory)
                 call mkdir(directory, 'p')
-              endif
-          endif
+            endif
+        endif
 
-          let directory = substitute(directory, ' ', '\\\\ ', "g")
-          exec 'set ' . settingname . '=' . directory
-      endfor
-  endfunction
+        exec 'set ' . settingname . '=' . directory
+    endfor
+endfunction
 
-  call InitializeDirectories()
-" }
+call InitializeDirectories()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key-Bindings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <C-P> :FZFFiles<CR>
+let mapleader = "\<Space>"
 
-nnoremap <C-H> <C-W>h
-nnoremap <C-L> <C-W>l
-nnoremap <C-J> <C-W>j
-nnoremap <C-K> <C-W>k
+nnoremap <C-p> :FZFFiles<CR>
+nnoremap <Leader>bb :FZFBuffers<CR>
+nnoremap <Leader>ff :FZFFiles<CR>
+nnoremap <Leader>fr :FZFHistory<CR>
+nnoremap <Leader>fg :FZFRg<CR>
+
+nnoremap <C-w><C-c> <C-w>c
 
 tnoremap <Esc> <C-\><C-n>
 
