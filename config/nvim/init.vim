@@ -78,11 +78,13 @@ Plug 'chriskempson/base16-vim'
 
 call plug#end()
 
-colorscheme base16-tomorrow-night
+set background=dark
+silent! colorscheme base16-tomorrow-night
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Editor
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set mouse=a
 set noshowmode                      " Use status line plugins to display mode
 set cursorline
 set hidden                          " Allow buffer switching without saving
