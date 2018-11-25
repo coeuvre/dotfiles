@@ -32,6 +32,10 @@ Plug 'ntpeters/vim-better-whitespace' " {
     let g:better_whitespace_enabled=1
     let g:strip_whitespace_on_save=1
 " }
+Plug 'skywind3000/asyncrun.vim' " {
+    let g:asyncrun_open=10
+    let g:asyncrun_save=2
+" }
 
 " Fuzzy Finder
 Plug 'airblade/vim-rooter'
@@ -59,7 +63,7 @@ Plug 'ncm2/ncm2' " {
     " When the <Enter> key is pressed while the popup menu is visible, it only
     " hides the menu. Use this mapping to close the menu and also start a new
     " line.
-    inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+    inoremap <expr> <cr> (pumvisible() ? "\<c-y>\<cr>" : "\<cr>")
 
     " Use <TAB> to select the popup menu:
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -71,6 +75,8 @@ Plug 'ncm2/ncm2' " {
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
+
+Plug 'rust-lang/rust.vim'
 
 " GUI
 Plug 'itchyny/lightline.vim'
@@ -161,18 +167,76 @@ endfunction
 
 call InitializeDirectories()
 
+" Search for selected text.
+" http://vim.wikia.com/wiki/VimTip171
+let s:save_cpo = &cpo | set cpo&vim
+if !exists('g:VeryLiteral')
+    let g:VeryLiteral = 0
+endif
+function! s:VSetSearch(cmd)
+    let old_reg = getreg('"')
+    let old_regtype = getregtype('"')
+    normal! gvy
+    if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
+        let @/ = @@
+    else
+        let pat = escape(@@, a:cmd.'\')
+        if g:VeryLiteral
+            let pat = substitute(pat, '\n', '\\n', 'g')
+        else
+            let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
+            let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
+            let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
+        endif
+        let @/ = '\V'.pat
+    endif
+    normal! gV
+    call setreg('"', old_reg, old_regtype)
+endfunction
+vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
+vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+vmap <kMultiply> *
+nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
+            \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
+if !hasmapto("<Plug>VLToggle")
+    nmap <unique> <Leader>vl <Plug>VLToggle
+endif
+let &cpo = s:save_cpo | unlet s:save_cpo
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key-Bindings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<Space>"
 
-nnoremap <C-p> :FZFFiles<CR>
-nnoremap <Leader>bb :FZFBuffers<CR>
-nnoremap <Leader>ff :FZFFiles<CR>
-nnoremap <Leader>fr :FZFHistory<CR>
-nnoremap <Leader>fg :FZFRg<CR>
+nnoremap <c-p> :FZFGFiles<cr>
 
-tnoremap <Esc> <C-\><C-n>
+nnoremap <c-h> <c-w>h
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-l> <c-w>l
+
+nnoremap <c-q> :copen<cr>
+nnoremap ]q :cnext<cr>
+nnoremap [q :cprev<cr>
+
+nnoremap <leader><tab> :b#<cr>
+nnoremap <leader>bb :FZFBuffers<cr>
+nnoremap <leader>ff :FZFFiles<cr>
+nnoremap <leader>fs :w<cr>
+nnoremap <leader>fr :FZFHistory<cr>
+nnoremap <leader>fg :FZFRg<cr>
+
+tnoremap <esc> <c-\><c-n>
+autocmd FileType fzf tnoremap <nowait><buffer> <esc> <c-g>
+autocmd FileType qf nnoremap <nowait><buffer> q <c-w>c
+
+function SetRustKeyBindings()
+    nnoremap <buffer> <leader>m :AsyncRun cargo build<cr>
+    nnoremap <buffer> <leader>r :AsyncRun cargo run<cr>
+    nnoremap <buffer> <leader>= :RustFmt<cr>
+endfunction
+
+autocmd FileType rust call SetRustKeyBindings()
 
 " incsearch.vim
 map / <Plug>(incsearch-forward)
