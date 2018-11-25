@@ -4,85 +4,124 @@
 set nocompatible
 
 silent function! WINDOWS()
-    return  has('win32') || has('win64')
+    return has('win32') || has('win64')
 endfunction
 
+let $MYVIMRCDIR = fnamemodify($MYVIMRC, ':p:h')
+
 if WINDOWS()
-    let $PLUGDIR = $HOME . '\AppData\Local\nvim\plugged'
-    let $MYCACHEDIR = $HOME . '\AppData\Local\nvim\cache'
+    let $MYCACHEDIR = $MYVIMRCDIR . '\cache'
+    let $DEINDIR = $MYVIMRCDIR . '\dein'
 else
-    let $PLUGDIR = $HOME . '/.local/share/nvim/plugged'
     let $MYCACHEDIR = $HOME . '/.cache/nvim'
+    let $DEINDIR = $MYCACHEDIR . '/dein'
 endif
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-call plug#begin($PLUGDIR)
+let $DEINREPODIR = $DEINDIR . '/repos/github.com/Shougo/dein.vim'
 
-" VIM Enhancements
-Plug 'tpope/vim-sensible'
-Plug 'machakann/vim-highlightedyank' " {
-    let g:highlightedyank_highlight_duration = 100
-" }
-Plug 'haya14busa/incsearch.vim' " {
-    let g:incsearch#auto_nohlsearch = 1
-" }
-Plug 'ntpeters/vim-better-whitespace' " {
-    let g:better_whitespace_enabled=1
-    let g:strip_whitespace_on_save=1
-" }
-Plug 'skywind3000/asyncrun.vim' " {
-    let g:asyncrun_open=10
-    let g:asyncrun_save=2
-" }
+execute 'set runtimepath+=' . $DEINREPODIR
+filetype off
 
-" Fuzzy Finder
-Plug 'airblade/vim-rooter'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim' " {
-    let g:fzf_command_prefix = 'FZF'
-" }
+if dein#load_state($DEINDIR)
+    call dein#begin($DEINDIR)
 
-" Completion
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2' " {
-    " enable ncm2 for all buffers
-    autocmd BufEnter * call ncm2#enable_for_buffer()
+    call dein#add($DEINREPODIR)
 
-    " IMPORTANTE: :help Ncm2PopupOpen for more information
-    set completeopt=noinsert,menuone,noselect
+    " VIM Enhancements
+    call dein#add('tpope/vim-sensible')
+    call dein#add('machakann/vim-highlightedyank') " {
+        let g:highlightedyank_highlight_duration = 100
+    " }
+    call dein#add('haya14busa/incsearch.vim') " {
+        let g:incsearch#auto_nohlsearch = 1
+    " }
+    call dein#add('ntpeters/vim-better-whitespace') " {
+        let g:better_whitespace_enabled=1
+        let g:strip_whitespace_on_save=1
+    " }
+    call dein#add('skywind3000/asyncrun.vim') " {
+        let g:asyncrun_open=10
+        let g:asyncrun_save=2
+    " }
+    call dein#add('airblade/vim-rooter')
 
-    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
-    " found' messages
-    set shortmess+=c
+    " Fuzzy Finder
+    call dein#add('Shougo/denite.nvim') " {
+        if executable('rg')
+            " For ripgrep
+            call denite#custom#var('file/rec', 'command', ['rg', '--files', '--glob', '!.git'])
 
-    " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
-    inoremap <c-c> <ESC>
+            call denite#custom#var('grep', 'command', ['rg'])
+            call denite#custom#var('grep', 'default_opts', ['--vimgrep', '--no-heading'])
+            call denite#custom#var('grep', 'recursive_opts', [])
+            call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+            call denite#custom#var('grep', 'separator', ['--'])
+            call denite#custom#var('grep', 'final_opts', [])
+        endif
 
-    " When the <Enter> key is pressed while the popup menu is visible, it only
-    " hides the menu. Use this mapping to close the menu and also start a new
-    " line.
-    inoremap <expr> <cr> (pumvisible() ? "\<c-y>\<cr>" : "\<cr>")
+        " Change mappings.
+        call denite#custom#map('insert', '<C-n>', '<denite:move_to_next_line>', 'noremap')
+        call denite#custom#map('insert', '<C-p>', '<denite:move_to_previous_line>', 'noremap')
 
-    " Use <TAB> to select the popup menu:
-    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"<Paste>
-" }
+        " Change matchers.
+        call denite#custom#source('file/mru', 'matchers', ['matcher_fuzzy', 'matcher_project_files'])
+        call denite#custom#source('file/rec', 'matchers', ['matcher_cpsm'])
 
-" NOTE: you need to install completion sources to get completions. Check
-" our wiki page for a list of sources: https://github.com/ncm2/ncm2/wiki
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-path'
+        " Change sorters.
+        call denite#custom#source('file/rec', 'sorters', ['sorter_sublime'])
 
-Plug 'rust-lang/rust.vim'
+        " Define alias
+        call denite#custom#alias('source', 'file/rec/git', 'file/rec')
+        call denite#custom#var('file/rec/git', 'command', ['git', 'ls-files', '-co', '--exclude-standard'])
 
-" GUI
-Plug 'itchyny/lightline.vim'
-Plug 'chriskempson/base16-vim'
+        " Change default prompt
+        call denite#custom#option('default', 'prompt', '>')
 
-call plug#end()
+        " Change ignore_globs
+        call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
+                    \ [ '.git/', '.ropeproject/', '__pycache__/',
+                    \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
+    " }
+
+    " Completion
+    call dein#add('Shougo/deoplete.nvim') " {
+        " Use deoplete.
+        let g:deoplete#enable_at_startup = 1
+        " Use smartcase.
+        let g:deoplete#enable_smart_case = 1
+
+        " Use Tab to select completion
+        inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+        inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+        " <C-h>, <BS>: close popup and delete backword char.
+        inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+        inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
+
+        " <CR>: close popup and save indent.
+        inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+        function! s:my_cr_function() abort
+            return deoplete#close_popup() . "\<CR>"
+        endfunction
+    " }
+
+    " Languages
+    call dein#add('rust-lang/rust.vim')
+
+    " GUI
+    call dein#add('itchyny/lightline.vim')
+    call dein#add('chriskempson/base16-vim')
+
+    call dein#end()
+    call dein#save_state()
+endif
+
+filetype plugin indent on
+syntax enable
 
 set background=dark
 silent! colorscheme base16-tomorrow-night
@@ -167,48 +206,12 @@ endfunction
 
 call InitializeDirectories()
 
-" Search for selected text.
-" http://vim.wikia.com/wiki/VimTip171
-let s:save_cpo = &cpo | set cpo&vim
-if !exists('g:VeryLiteral')
-    let g:VeryLiteral = 0
-endif
-function! s:VSetSearch(cmd)
-    let old_reg = getreg('"')
-    let old_regtype = getregtype('"')
-    normal! gvy
-    if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
-        let @/ = @@
-    else
-        let pat = escape(@@, a:cmd.'\')
-        if g:VeryLiteral
-            let pat = substitute(pat, '\n', '\\n', 'g')
-        else
-            let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
-            let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
-            let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
-        endif
-        let @/ = '\V'.pat
-    endif
-    normal! gV
-    call setreg('"', old_reg, old_regtype)
-endfunction
-vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
-vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
-vmap <kMultiply> *
-nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
-            \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
-if !hasmapto("<Plug>VLToggle")
-    nmap <unique> <Leader>vl <Plug>VLToggle
-endif
-let &cpo = s:save_cpo | unlet s:save_cpo
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key-Bindings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = "\<Space>"
 
-nnoremap <c-p> :FZFGFiles<cr>
+nnoremap <c-p> :Denite file/rec<cr>
 
 nnoremap <c-h> <c-w>h
 nnoremap <c-j> <c-w>j
@@ -220,11 +223,12 @@ nnoremap ]q :cnext<cr>
 nnoremap [q :cprev<cr>
 
 nnoremap <leader><tab> :b#<cr>
-nnoremap <leader>bb :FZFBuffers<cr>
-nnoremap <leader>ff :FZFFiles<cr>
 nnoremap <leader>fs :w<cr>
-nnoremap <leader>fr :FZFHistory<cr>
-nnoremap <leader>fg :FZFRg<cr>
+nnoremap <leader>mm :Denite menu<cr>
+nnoremap <leader>bb :Denite buffer<cr>
+nnoremap <leader>ff :Denite file/rec<cr>
+nnoremap <leader>fr :Denite file/old<cr>
+nnoremap <leader>fg :Denite grep<cr>
 
 tnoremap <esc> <c-\><c-n>
 autocmd FileType fzf tnoremap <nowait><buffer> <esc> <c-g>
