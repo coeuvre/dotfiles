@@ -140,7 +140,7 @@ set expandtab                       " Tabs are spaces, not tabs
 set tabstop=4                       " An indentation every four columns
 set softtabstop=4                   " Let backspace delete indent
 set cindent                         " do C program indenting
-set cinoptions=l1,(0,W1s,m1         " set C indent options
+set cinoptions=l1,(0,=0,W1s,m1,t0   " set C indent options
 set encoding=utf-8
 set fileencoding=utf-8
 set backup                          " Backups are nice ...
@@ -217,6 +217,8 @@ nnoremap <c-h> <c-w>h
 nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
+nnoremap L <c-w>L
+nnoremap H <c-w>H
 
 nnoremap <c-q> :copen<cr>
 nnoremap ]q :cnext<cr>
@@ -224,7 +226,6 @@ nnoremap [q :cprev<cr>
 
 nnoremap <leader><tab> :b#<cr>
 nnoremap <leader>fs :w<cr>
-nnoremap <leader>mm :Denite menu<cr>
 nnoremap <leader>bb :Denite buffer<cr>
 nnoremap <leader>ff :Denite file/rec<cr>
 nnoremap <leader>fr :Denite file/old<cr>
@@ -241,6 +242,13 @@ function SetRustKeyBindings()
 endfunction
 
 autocmd FileType rust call SetRustKeyBindings()
+
+function SetCppKeyBindings()
+    nnoremap <buffer> <leader>m :AsyncRun build<cr>
+    nnoremap <buffer> <leader>r :AsyncRun run<cr>
+endfunction
+
+autocmd FileType cpp call SetCppKeyBindings()
 
 " incsearch.vim
 map / <Plug>(incsearch-forward)
