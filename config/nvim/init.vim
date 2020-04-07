@@ -5,14 +5,20 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin(stdpath('data') . '/plugged')
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+let g:coc_global_extensions = [
+    \'coc-css',
+    \'coc-html',
+    \'coc-json', 
+    \'coc-rust-analyzer',
+    \'coc-git',
+    \'coc-yank',
+    \'coc-lists']
+
 Plug 'rakr/vim-one'
 
 Plug 'itchyny/lightline.vim'
-
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_global_extensions = ['coc-css', 'coc-html', 'coc-json', 
-            \ 'coc-lists', 'coc-git',
-            \'coc-clangd']
 
 call plug#end()
 
@@ -21,8 +27,6 @@ call plug#end()
 " General
 " 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-syntax enable
-
 " Use system clipboard
 set clipboard^=unnamed,unnamedplus
 
@@ -81,8 +85,8 @@ set background=dark " for the dark version
 "set background=light " for the light version
 
 " Set to auto read when a file is changed from the outside
-"set autoread
-"au FocusGained,BufEnter * checktime
+set autoread
+au FocusGained,BufEnter * checktime
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -157,11 +161,11 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+nmap <F2> <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+"xmap <leader>f  <Plug>(coc-format-selected)
+"nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
@@ -234,3 +238,4 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " turn terminal to normal mode with escape
 tnoremap <Esc> <C-\><C-n>
 
+nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
