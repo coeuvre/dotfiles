@@ -5,18 +5,29 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin(stdpath('data') . '/plugged')
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " {
+    let g:coc_global_extensions = [
+        \ 'coc-css',
+        \ 'coc-html',
+        \ 'coc-json',
+        \ 'coc-rust-analyzer',
+        \ 'coc-git',
+        \ 'coc-yank',
+        \ 'coc-pairs',
+        \ 'coc-highlight',
+        \ 'coc-tasks',
+        \ 'coc-lists']
+" }
 
-let g:coc_global_extensions = [
-    \'coc-css',
-    \'coc-html',
-    \'coc-json', 
-    \'coc-rust-analyzer',
-    \'coc-git',
-    \'coc-yank',
-    \'coc-lists']
+Plug 'skywind3000/asynctasks.vim' " {
+    let g:asyncrun_open = 6
+" }
 
-Plug 'rakr/vim-one'
+Plug 'skywind3000/asyncrun.vim' " {
+    let g:asynctasks_term_pos = 'tab'
+" }
+
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 Plug 'itchyny/lightline.vim'
 
@@ -39,18 +50,27 @@ set nowrap
 
 set cursorline
 
+" Set to auto read when a file is changed from the outside
+set autoread
+au FocusGained,BufEnter * checktime
+
+" Get correctly comment highlighting for json file
+autocmd FileType json syntax match Comment +\/\/.\+$+
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
 " Theme
 " 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Status line
-set noshowmode
-set laststatus=2
+colorscheme dracula
 
 if (has("termguicolors"))
     set termguicolors
 endif
+
+" Status line
+set noshowmode
+set laststatus=2
 
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
@@ -63,12 +83,13 @@ function! LightlineGitBlame() abort
 endfunction
 
 let g:lightline = {
-      \ 'colorscheme': 'one',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ],
+      \   'left': [
+      \      [ 'mode', 'paste' ],
+      \      [ 'cocstatus', 'git', 'readonly', 'filename', 'currentfunction', 'modified' ]
+      \   ],
       \   'right':[
-      \     [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
+      \     [ 'diagnostic', 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
       \     [ 'blame' ]
       \   ]
       \ },
@@ -79,15 +100,8 @@ let g:lightline = {
       \ },
       \ }
 
-let g:one_allow_italics = 1 " I love italic for comments
-colorscheme one
-set background=dark " for the dark version
-"set background=light " for the light version
-
-" Set to auto read when a file is changed from the outside
-set autoread
-au FocusGained,BufEnter * checktime
-
+" Use auocmd to force lightline update.
+autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
@@ -136,9 +150,9 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " position. Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" Use `[a` and `]a` to navigate diagnostics
+nmap <silent> [a <Plug>(coc-diagnostic-prev)
+nmap <silent> ]a <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
@@ -161,7 +175,7 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
-nmap <F2> <Plug>(coc-rename)
+nmap <f2> <Plug>(coc-rename)
 
 " Formatting selected code.
 "xmap <leader>f  <Plug>(coc-format-selected)
@@ -177,13 +191,13 @@ augroup end
 
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+"xmap <leader>a  <Plug>(coc-codeaction-selected)
+"nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying codeAction to the current line.
-nmap <leader>ac  <Plug>(coc-codeaction)
+"nmap <leader>ac  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+"nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Introduce function text object
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -195,8 +209,8 @@ omap af <Plug>(coc-funcobj-a)
 " Use <TAB> for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
 " coc-tsserver, coc-python are the examples of servers that support it.
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
+"nmap <silent> <TAB> <Plug>(coc-range-select)
+"xmap <silent> <TAB> <Plug>(coc-range-select)
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -210,7 +224,7 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+"set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings using CoCList:
 " Show all diagnostics.
@@ -239,3 +253,12 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 tnoremap <Esc> <C-\><C-n>
 
 nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
+nnoremap <silent> <space>g  :<C-u>CocList -I grep<cr>
+nnoremap <silent> <space>ff :<C-u>CocList files<cr>
+nnoremap <silent> <space>fr :<C-u>CocList mru<cr>
+nnoremap <silent> <space>bb :<C-u>CocList buffers<cr>
+nnoremap <silent> <space>t  :<C-u>CocList tasks<cr>
+
+
+nnoremap <silent> <f9> :AsyncTask build<cr>
+nnoremap <silent> <f5> :AsyncTask run<cr>
