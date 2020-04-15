@@ -31,6 +31,8 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 
 Plug 'itchyny/lightline.vim'
 
+Plug 'tpope/vim-commentary'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -72,32 +74,37 @@ endif
 set noshowmode
 set laststatus=2
 
-function! CocCurrentFunction()
+function! LightlineCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
 
-function! LightlineGitBlame() abort
-  let blame = get(b:, 'coc_git_blame', '')
-  " return blame
-  return winwidth(0) > 120 ? blame : ''
+function! LightlineGitStatus()
+    return get(g:, 'coc_git_status', '')
+endfunction
+
+function! LightlineFilename()
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  return filename . modified
 endfunction
 
 let g:lightline = {
       \ 'active': {
       \   'left': [
       \      [ 'mode', 'paste' ],
-      \      [ 'cocstatus', 'git', 'readonly', 'filename', 'currentfunction', 'modified' ]
+      \      [ 'git', 'filename', 'currentfunction', 'readonly' ],
+      \      [ 'cocstatus' ]
       \   ],
       \   'right':[
-      \     [ 'diagnostic', 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
-      \     [ 'blame' ]
+      \     [  'filetype', 'fileencoding', 'lineinfo', 'percent' ],
       \   ]
       \ },
       \ 'component_function': {
+      \   'git': 'LightlineGitStatus',
+      \   'filename': 'LightlineFilename',
       \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction',
-      \   'blame': 'LightlineGitBlame',
-      \ },
+      \   'currentfunction': 'LightlineCurrentFunction'
+      \ }
       \ }
 
 " Use auocmd to force lightline update.
