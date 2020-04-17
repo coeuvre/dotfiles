@@ -20,11 +20,12 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} " {
 " }
 
 Plug 'skywind3000/asynctasks.vim' " {
-    let g:asyncrun_open = 6
+    let g:asynctasks_term_pos = 'tab'
+    let g:asynctasks_system = 'macos'
 " }
 
 Plug 'skywind3000/asyncrun.vim' " {
-    let g:asynctasks_term_pos = 'tab'
+    let g:asyncrun_open = 6
 " }
 
 Plug 'dracula/vim', { 'as': 'dracula' }
@@ -269,3 +270,9 @@ nnoremap <silent> <space>t  :<C-u>CocList tasks<cr>
 
 nnoremap <silent> <f9> :AsyncTask build<cr>
 nnoremap <silent> <f5> :AsyncTask run<cr>
+
+" navigate chunks of current buffer
+nmap [g <Plug>(coc-git-prevchunk)
+nmap ]g <Plug>(coc-git-nextchunk)
+" show chunk diff at current position
+nmap gs <Plug>(coc-git-chunkinfo)
