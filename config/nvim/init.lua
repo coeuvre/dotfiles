@@ -265,7 +265,7 @@ local on_attach = function(_, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 
   vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
-  vim.cmd [[ autocmd BufWritePost * Format ]]
+  vim.cmd [[ autocmd BufWritePre * execute 'lua vim.lsp.buf.formatting_seq_sync()' ]]
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -357,27 +357,15 @@ local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local check_back_space = function()
-  local col = vim.fn.col '.' - 1
-  if col == 0 or vim.fn.getline('.'):sub(col, col):match '%s' then
-    return true
-  else
-    return false
-  end
-end
-
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
 local luasnip = require 'luasnip'
 
 _G.tab_complete = function()
-  if luasnip.expand_or_jumpable() then
+  if vim.fn.pumvisible() == 1 then
+    return vim.fn['compe#confirm']()
+  elseif luasnip.expand_or_jumpable() then
     return t '<Plug>luasnip-expand-or-jump'
-  elseif check_back_space() then
-    return t '<Tab>'
   else
-    return vim.fn['compe#confirm']('')
+    return t '<Tab>'
   end
 end
 
