@@ -197,7 +197,6 @@ require('lualine').setup {
 
 vim.g.nvim_tree_side = 'right'
 vim.g.nvim_tree_ignore = { '.git' }
-vim.g.nvim_tree_auto_open = 1 -- opens the tree when typing `nvim $DIR` or `nvim`
 vim.g.nvim_tree_auto_close = 1 -- closes the tree when it's the last window
 vim.g.nvim_tree_follow = 1 -- allows the cursor to be updated when entering a buffer
 vim.g.nvim_tree_indent_markers = 1 -- shows indent markers when folders are open
