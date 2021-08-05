@@ -206,6 +206,7 @@ vim.g.nvim_tree_highlight_opened_files = 1 -- enable folder and file icon highli
 vim.g.nvim_tree_group_empty = 1 -- compact folders that only contain a single folder into one node in the file tree
 vim.g.nvim_tree_lsp_diagnostics = 1 -- show lsp diagnostics in the signcolumn
 vim.g.nvim_tree_disable_window_picker = 1
+vim.g.nvim_tree_update_cwd = 1 -- will update the tree cwd when changing nvim's directory
 vim.g.nvim_tree_show_icons = {
   git = 0,
   folders = 0,
