@@ -232,7 +232,7 @@ vim.g.asyncrun_open = 8
 
 -- Shortcuts for build and run
 vim.api.nvim_set_keymap('n', '<F5>', ":AsyncTask project-run<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>cc', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<F7>', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
 
 _G.close_quickfix_if_no_error = function()
   local error_count = vim.api.nvim_eval [[ len(filter(getqflist(), { k,v -> v.bufnr != 0 })) ]]
