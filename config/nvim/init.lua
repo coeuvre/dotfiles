@@ -40,7 +40,7 @@ require('packer').startup(function()
   use 'joshdick/onedark.vim'
 
   -- Fancier statusline
-  use 'itchyny/lightline.vim'
+  use { 'hoob3rt/lualine.nvim' }
 
   -- Add git related info in the signs columns and popups
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
@@ -72,9 +72,6 @@ require('packer').startup(function()
   -- Highlight word under cursor
   use { 'yamatsum/nvim-cursorline' }
 
-  -- Change current working directory to 'project root'
-  use 'airblade/vim-rooter'
-
   -- async tasks
   use { 'skywind3000/asynctasks.vim' }
   use { 'skywind3000/asyncrun.vim' }
@@ -82,6 +79,8 @@ require('packer').startup(function()
   use { 'tpope/vim-unimpaired' }
 
   use { 'rust-lang/rust.vim' }
+
+  use { 'kyazdani42/nvim-tree.lua' }
 end)
 
 -------------------------------------------------------------------------------
@@ -128,13 +127,6 @@ vim.opt.signcolumn = 'yes'
 vim.opt.termguicolors = true
 vim.g.onedark_terminal_italics = 2
 vim.cmd [[colorscheme onedark]]
-
--- Set statusbar
-vim.g.lightline = {
-  colorscheme = 'onedark',
-  active = { left = { { 'mode', 'paste' }, { 'gitbranch', 'readonly', 'filename', 'modified' } } },
-  component_function = { gitbranch = 'fugitive#head' },
-}
 
 -- Set foldmethod
 vim.wo.foldmethod = 'indent'
@@ -187,6 +179,51 @@ vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = 
 
 
 -------------------------------------------------------------------------------
+-- Status line
+-------------------------------------------------------------------------------
+require('lualine').setup {
+  options = {
+    icons_enabled = false,
+    theme = 'onedark',
+    component_separators = '',
+    section_separators = '',
+  },
+  extensions = { 'fugitive', 'nvim-tree' },
+}
+
+-------------------------------------------------------------------------------
+-- Nvim Tree
+-------------------------------------------------------------------------------
+
+vim.g.nvim_tree_side = 'right'
+vim.g.nvim_tree_ignore = { '.git' }
+vim.g.nvim_tree_auto_open = 1 -- opens the tree when typing `nvim $DIR` or `nvim`
+vim.g.nvim_tree_auto_close = 1 -- closes the tree when it's the last window
+vim.g.nvim_tree_follow = 1 -- allows the cursor to be updated when entering a buffer
+vim.g.nvim_tree_indent_markers = 1 -- shows indent markers when folders are open
+vim.g.nvim_tree_git_hl = 1 -- enable file highlight for git attributes
+vim.g.nvim_tree_highlight_opened_files = 1 -- enable folder and file icon highlight for opened files/directories
+vim.g.nvim_tree_group_empty = 1 -- compact folders that only contain a single folder into one node in the file tree
+vim.g.nvim_tree_lsp_diagnostics = 1 -- show lsp diagnostics in the signcolumn
+vim.g.nvim_tree_disable_window_picker = 1
+vim.g.nvim_tree_show_icons = {
+  git = 0,
+  folders = 0,
+  files = 0,
+  folder_arrows = 0,
+}
+vim.g.nvim_tree_icons = {
+  lsp = {
+    hint = 'H',
+    info = 'I',
+    warning = 'W',
+    error = 'E',
+  }
+}
+
+vim.api.nvim_set_keymap('n', '<C-n>', ":NvimTreeToggle<CR>", { noremap = true, silent = true })
+
+-------------------------------------------------------------------------------
 -- Async tasks
 -------------------------------------------------------------------------------
 
@@ -194,7 +231,7 @@ vim.g.asyncrun_open = 8
 
 -- Shortcuts for build and run
 vim.api.nvim_set_keymap('n', '<F5>', ":AsyncTask project-run<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<F7>', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>cc', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
 
 _G.close_quickfix_if_no_error = function()
   local error_count = vim.api.nvim_eval [[ len(filter(getqflist(), { k,v -> v.bufnr != 0 })) ]]
@@ -209,13 +246,21 @@ vim.cmd [[
 -- Telescope
 -------------------------------------------------------------------------------
 
-require('telescope').setup()
+require('telescope').setup {
+  defaults = {
+    file_sorter = require('telescope.sorters').get_fzy_sorter,
+    file_ignore_patterns = { ".git" },
+    generic_sorter = require('telescope.sorters').get_fzy_sorter,
+  }
+}
 
 -- files
-vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>fg', [[<cmd>lua require('telescope.builtin').live_grep()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>f*', [[<cmd>lua require('telescope.builtin').grep_string()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>fr', [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-p>', [[<cmd>lua require('telescope.builtin').find_files { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>ft', [[<cmd>lua require('telescope.builtin').file_browser { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fg', [[<cmd>lua require('telescope.builtin').live_grep { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>f*', [[<cmd>lua require('telescope.builtin').grep_string { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fr', [[<cmd>lua require('telescope.builtin').oldfiles { cwd_only = true }<CR>]], { noremap = true, silent = true })
 
 -- buffers
 vim.api.nvim_set_keymap('n', '<leader>bb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
