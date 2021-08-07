@@ -75,6 +75,8 @@ require('packer').startup(function()
   use { 'rust-lang/rust.vim' }
 
   use { 'kyazdani42/nvim-tree.lua' }
+
+  use { 'windwp/nvim-autopairs' }
 end)
 
 -------------------------------------------------------------------------------
@@ -190,6 +192,28 @@ require('lualine').setup {
   },
   extensions = { 'fugitive', 'nvim-tree' },
 }
+
+-------------------------------------------------------------------------------
+-- Auto pairs
+-------------------------------------------------------------------------------
+local autopairs = require("nvim-autopairs")
+autopairs.setup{}
+
+require("nvim-autopairs.completion.compe").setup({
+  map_complete = true, -- it will auto insert `(` after select function or method item
+  map_cr = false, --  map <CR> on insert mode
+  auto_select = false,  -- auto select first item
+})
+
+-- Workaround to close completion menu after inserting '('
+-- See https://github.com/hrsh7th/nvim-compe/issues/436#issuecomment-888424461
+local parenthesis_rule = autopairs.get_rule("(")
+parenthesis_rule:with_pair(function()
+  if vim.fn.pumvisible() then
+    vim.cmd [[ call timer_start(0, { -> luaeval('require"compe"._close()') }) ]]
+  end
+  return true
+end)
 
 -------------------------------------------------------------------------------
 -- Nvim Tree
@@ -428,6 +452,7 @@ vim.opt.completeopt = 'menuone,noselect'
 
 -- Compe setup
 require('compe').setup {
+  min_length = 2,
   preselect = 'always',
   source = {
     path = true,
