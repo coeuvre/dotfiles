@@ -63,9 +63,6 @@ require('packer').startup(function()
   -- Snippets plugin
   use 'L3MON4D3/LuaSnip'
 
-  -- Display scrollbar
-  use 'dstein64/nvim-scrollview'
-
   -- Easy motion
   use { 'phaazon/hop.nvim' }
 
@@ -86,6 +83,7 @@ end)
 -------------------------------------------------------------------------------
 -- Options
 -------------------------------------------------------------------------------
+vim.opt.wrap = false
 
 -- Incremental live completion
 vim.opt.inccommand = 'nosplit'
@@ -226,21 +224,47 @@ vim.api.nvim_set_keymap('n', '<C-n>', ":NvimTreeToggle<CR>", { noremap = true, s
 -------------------------------------------------------------------------------
 -- Async tasks
 -------------------------------------------------------------------------------
-
-vim.g.asyncrun_open = 8
+if vim.fn.eval [[ has('win32') ]] == 1 then
+  vim.g.asyncrun_encs = 'gbk'
+end
 
 -- Shortcuts for build and run
 vim.api.nvim_set_keymap('n', '<F5>', ":AsyncTask project-run<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<F7>', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
 
-_G.close_quickfix_if_no_error = function()
-  local error_count = vim.api.nvim_eval [[ len(filter(getqflist(), { k,v -> v.bufnr != 0 })) ]]
-  if error_count == 0 then vim.cmd 'cclose' end
+_G.open_quickfix = function(opts)
+  local opts = opts or {}
+  local toggle = opts.toggle or false
+
+  local is_open = false
+  for _, wininfo in ipairs(vim.fn.getwininfo()) do
+    if wininfo.quickfix == 1 then
+      is_open = true
+      break
+    end
+  end
+
+  if is_open then
+    if toggle then
+      vim.cmd [[ cclose ]]
+    end
+  else
+    local winnr = vim.fn.winnr()
+    local view = vim.fn.winsaveview()
+    vim.cmd [[ copen ]]
+
+    -- restore old window view
+    vim.cmd( winnr .. ' ' .. [[ wincmd w ]])
+    vim.fn.winrestview(view)
+
+    -- switch to quickfix window
+    vim.cmd [[ copen ]]
+  end
 end
 
-vim.cmd [[
-  autocmd User AsyncRunStop silent! lua close_quickfix_if_no_error()
-]]
+vim.cmd [[ autocmd User AsyncRunStart lua open_quickfix() ]]
+
+vim.api.nvim_set_keymap('n', '<C-q>', [[<cmd>lua open_quickfix { toggle = true }<CR>]], { noremap = true, silent = true })
 
 -------------------------------------------------------------------------------
 -- Telescope
@@ -249,22 +273,40 @@ vim.cmd [[
 require('telescope').setup {
   defaults = {
     file_sorter = require('telescope.sorters').get_fzy_sorter,
-    file_ignore_patterns = { ".git" },
     generic_sorter = require('telescope.sorters').get_fzy_sorter,
+
+    file_ignore_patterns = { ".git" },
+
+    file_previewer   = require('telescope.previewers').vim_buffer_cat.new,
+    grep_previewer   = require('telescope.previewers').vim_buffer_vimgrep.new,
+    qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
+
+    mappings = {
+      i = {
+        ["<esc>"] = require('telescope.actions').close,
+        ["<C-q>"] = require('telescope.actions').send_to_qflist,
+      },
+    }
   }
 }
 
+
+_G.find_project_files = function(opts)
+  local ok = pcall(require'telescope.builtin'.git_files, opts)
+  if not ok then require'telescope.builtin'.find_files(opts) end
+end
+
 -- files
-vim.api.nvim_set_keymap('n', '<C-p>', [[<cmd>lua require('telescope.builtin').find_files { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-p>', [[<cmd>lua find_project_files { hidden = true }<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files { hidden = true }<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>ft', [[<cmd>lua require('telescope.builtin').file_browser { hidden = true }<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>fg', [[<cmd>lua require('telescope.builtin').live_grep { hidden = true }<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fs', [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.input("grep > ") }<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>f*', [[<cmd>lua require('telescope.builtin').grep_string { hidden = true }<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fr', [[<cmd>lua require('telescope.builtin').oldfiles { cwd_only = true }<CR>]], { noremap = true, silent = true })
 
 -- buffers
 vim.api.nvim_set_keymap('n', '<leader>bb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>bg', [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>bs', [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], { noremap = true, silent = true })
 
 
 -------------------------------------------------------------------------------
