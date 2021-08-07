@@ -60,9 +60,6 @@ require('packer').startup(function()
   -- Autocompletion plugin
   use 'hrsh7th/nvim-compe'
 
-  -- Snippets plugin
-  use 'L3MON4D3/LuaSnip'
-
   -- Easy motion
   use { 'phaazon/hop.nvim' }
 
@@ -136,6 +133,11 @@ vim.cmd [[
     autocmd!
     autocmd TextYankPost * silent! lua vim.highlight.on_yank()
   augroup end
+]]
+
+-- Restore last edit location
+vim.cmd [[
+  autocmd BufReadPost * if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit' | exe "normal! g`\"" | endif
 ]]
 
 require('gitsigns').setup {}
@@ -251,7 +253,7 @@ _G.open_quickfix = function(opts)
   else
     local winnr = vim.fn.winnr()
     local view = vim.fn.winsaveview()
-    vim.cmd [[ copen ]]
+    vim.cmd [[ bot copen ]]
 
     -- restore old window view
     vim.cmd( winnr .. ' ' .. [[ wincmd w ]])
@@ -342,6 +344,7 @@ local on_attach = function(_, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
@@ -356,7 +359,7 @@ local on_attach = function(_, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
+--capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- Enable the following language servers
 local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
@@ -413,7 +416,7 @@ require('lspconfig').sumneko_lua.setup {
 require('nvim-treesitter.configs').setup {
   ensure_installed = { 'c', 'cpp', 'rust' },
   highlight = { enable = true },
-  indent = { enable = true },
+  --indent = { enable = true },
 }
 
 -------------------------------------------------------------------------------
@@ -431,36 +434,23 @@ require('compe').setup {
     buffer = true,
     nvim_lsp = true,
     nvim_lua = true,
-    luasnip = true,
 
+    luasnip = false,
     calc = false,
     vsnip = false,
     ultisnips = false,
   },
 }
 
--- Utility functions for compe and luasnip
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local luasnip = require 'luasnip'
-
 _G.tab_complete = function()
   if vim.fn.pumvisible() == 1 then
     return vim.fn['compe#confirm']()
-  elseif luasnip.expand_or_jumpable() then
-    return t '<Plug>luasnip-expand-or-jump'
   else
     return t '<Tab>'
-  end
-end
-
-_G.s_tab_complete = function()
-  if luasnip.jumpable(-1) then
-    return t '<Plug>luasnip-jump-prev'
-  else
-    return t '<S-Tab>'
   end
 end
 
@@ -474,8 +464,5 @@ end
 
 vim.api.nvim_set_keymap('i', '<Tab>', 'v:lua.tab_complete()', {expr = true})
 vim.api.nvim_set_keymap('s', '<Tab>', 'v:lua.tab_complete()', {expr = true})
-vim.api.nvim_set_keymap('i', '<S-Tab>', 'v:lua.s_tab_complete()', {expr = true})
-vim.api.nvim_set_keymap('s', '<S-Tab>', 'v:lua.s_tab_complete()', {expr = true})
-
 vim.api.nvim_set_keymap('i', '<c-space>', 'compe#complete()', { expr = true })
 vim.api.nvim_set_keymap('i', '<cr>', 'v:lua.cr_complete()', { expr = true })
