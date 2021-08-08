@@ -289,6 +289,7 @@ _G.open_quickfix = function(opts)
 end
 
 vim.cmd [[ autocmd User AsyncRunStart lua open_quickfix() ]]
+vim.cmd [[ autocmd FileType qf nnoremap <buffer> <silent> <C-c> :cclose<CR> ]]
 
 vim.api.nvim_set_keymap('n', '<C-q>', [[<cmd>lua open_quickfix { toggle = true }<CR>]], { noremap = true, silent = true })
 
@@ -440,7 +441,7 @@ require('lspconfig').sumneko_lua.setup {
 require('nvim-treesitter.configs').setup {
   ensure_installed = { 'c', 'cpp', 'rust' },
   highlight = { enable = true },
-  --indent = { enable = true },
+  indent = { enable = true },
 }
 
 -------------------------------------------------------------------------------
