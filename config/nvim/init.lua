@@ -77,6 +77,8 @@ require('packer').startup(function()
   use { 'kyazdani42/nvim-tree.lua' }
 
   use { 'windwp/nvim-autopairs' }
+
+  use { 'christoomey/vim-tmux-navigator' }
 end)
 
 -------------------------------------------------------------------------------
@@ -169,12 +171,6 @@ vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 
 -- No need for ex mode
 vim.api.nvim_set_keymap('n', 'Q', '<Nop>', { noremap = true, silent = true })
-
--- Easy switch between windows
-vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-l>', '<C-w>l', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-k>', '<C-w>k', { noremap = true, silent = true })
 
 -- Exit terminal insert mode with <Esc>
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
@@ -368,7 +364,6 @@ local on_attach = function(_, bufnr)
 
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'i', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
