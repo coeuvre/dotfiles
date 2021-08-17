@@ -27,26 +27,20 @@ require('packer').startup(function()
   -- Magit clone in nvim
   use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
 
-  -- "gc" to comment visual regions/lines
-  use 'tpope/vim-commentary'
-
   -- Auto detect indentation
   use 'tpope/vim-sleuth'
 
   -- UI to select things (files, grep results, open buffers...)
-  use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } }
+  use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/plenary.nvim' } } }
 
   -- Theme inspired by Atom
   use 'joshdick/onedark.vim'
 
   -- Fancier statusline
-  use { 'hoob3rt/lualine.nvim' }
+  use 'hoob3rt/lualine.nvim'
 
   -- Add git related info in the signs columns and popups
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
-
-  -- Add indentation guides even on blank lines
-  use 'lukas-reineke/indent-blankline.nvim'
 
   -- Highlight, edit, and navigate code using a fast incremental parsing library
   use 'nvim-treesitter/nvim-treesitter'
@@ -61,24 +55,26 @@ require('packer').startup(function()
   use 'hrsh7th/nvim-compe'
 
   -- Easy motion
-  use { 'phaazon/hop.nvim' }
+  use 'phaazon/hop.nvim'
 
   -- Highlight word under cursor
-  use { 'yamatsum/nvim-cursorline' }
+  use 'yamatsum/nvim-cursorline'
 
   -- async tasks
-  use { 'skywind3000/asynctasks.vim' }
-  use { 'skywind3000/asyncrun.vim' }
+  use 'skywind3000/asynctasks.vim'
+  use 'skywind3000/asyncrun.vim'
 
-  use { 'tpope/vim-unimpaired' }
+  use 'tpope/vim-unimpaired'
 
-  use { 'rust-lang/rust.vim' }
+  use 'rust-lang/rust.vim'
 
-  use { 'kyazdani42/nvim-tree.lua' }
+  use 'kyazdani42/nvim-tree.lua'
 
-  use { 'windwp/nvim-autopairs' }
+  use 'windwp/nvim-autopairs'
 
-  use { 'christoomey/vim-tmux-navigator' }
+  use 'christoomey/vim-tmux-navigator'
+
+  use 'b3nj5m1n/kommentary'
 end)
 
 -------------------------------------------------------------------------------
@@ -145,11 +141,6 @@ vim.cmd [[
 ]]
 
 require('gitsigns').setup {}
-
-require("indent_blankline").setup {
-    filetype_exclude = { 'help', 'packer' },
-    buftype_exclude = { 'terminal', 'nofile' },
-}
 
 -------------------------------------------------------------------------------
 -- Key mappings
@@ -378,15 +369,11 @@ local on_attach = function(_, bufnr)
   vim.cmd [[ autocmd BufWritePre * execute 'lua vim.lsp.buf.formatting_seq_sync()' ]]
 end
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
---capabilities.textDocument.completion.completionItem.snippetSupport = true
-
 -- Enable the following language servers
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
+local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'gopls' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
-    capabilities = capabilities,
   }
 end
 
@@ -487,3 +474,10 @@ vim.api.nvim_set_keymap('i', '<Tab>', 'v:lua.tab_complete()', {expr = true})
 vim.api.nvim_set_keymap('s', '<Tab>', 'v:lua.tab_complete()', {expr = true})
 vim.api.nvim_set_keymap('i', '<c-space>', 'compe#complete()', { expr = true })
 vim.api.nvim_set_keymap('i', '<cr>', 'v:lua.cr_complete()', { expr = true })
+
+-------------------------------------------------------------------------------
+-- kommentary
+-------------------------------------------------------------------------------
+require('kommentary.config').configure_language("default", {
+    prefer_single_line_comments = true,
+})
