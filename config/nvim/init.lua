@@ -77,10 +77,25 @@ require("packer").startup {
     use {
       "nvim-lualine/lualine.nvim",
       config = function()
+        local lsp_status = function()
+          if #vim.lsp.get_active_clients() > 0 then
+            return require("lsp-status").status_progress()
+          end
+          return ""
+        end
+
         require("lualine").setup {
           options = {
             component_separators = "",
             section_separators = "",
+          },
+          sections = {
+            lualine_a = {'mode'},
+            lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_lsp', 'coc'}}},
+            lualine_c = {'filename', lsp_status },
+            lualine_x = {'encoding', 'fileformat', 'filetype'},
+            lualine_y = {'progress'},
+            lualine_z = {'location'}
           },
           extensions = { "fugitive" }
         }
@@ -98,43 +113,31 @@ require("packer").startup {
         local utils = require("telescope.utils")
         require("telescope").setup {
           defaults = {
-            preview = {
-              timeout = 500,
-              msg_bg_fillchar = "",
-            },
-            vimgrep_arguments = {
-              "rg",
-              "--color=never",
-              "--no-heading",
-              "--with-filename",
-              "--line-number",
-              "--column",
-              "--smart-case",
-              "--hidden",
-            },
+            preview = { timeout = 500, msg_bg_fillchar = "", },
+            vimgrep_arguments = { "rg", "--color=never", "--no-heading", "--with-filename", "--line-number", "--column", "--smart-case", "--hidden", },
             prompt_prefix = "❯ ",
             selection_caret = "❯ ",
             sorting_strategy = "ascending",
             color_devicons = true,
             layout_config = {
               prompt_position = "bottom",
-              horizontal = {
-                width_padding = 0.04,
-                height_padding = 0.1,
-                preview_width = 0.6,
-              },
-              vertical = {
-                width_padding = 0.05,
-                height_padding = 1,
-                preview_height = 0.5,
-              },
+              horizontal = { width_padding = 0.04, height_padding = 0.1, preview_width = 0.6, },
+              vertical = { width_padding = 0.05, height_padding = 1, preview_height = 0.5, },
             },
             dynamic_preview_title = true,
             winblend = 3,
           },
+          extensions = {
+            lsp_handlers = {
+              code_action = {
+                telescope = require("telescope.themes").get_dropdown(),
+              },
+            },
+          },
         }
       end,
     }
+    use { "gbrlsnchs/telescope-lsp-handlers.nvim", config = function() require("telescope").load_extension("lsp_handlers") end}
 
     -- nvim-treesitter
     use {
@@ -156,19 +159,52 @@ require("packer").startup {
     -- nvim-lsp
     use "neovim/nvim-lspconfig"
     use "nvim-lua/lsp-status.nvim"
-    use "onsails/lspkind-nvim"
+    use {
+      "onsails/lspkind-nvim",
+      config = function()
+      local lspkind = require("lspkind")
+      lspkind.init {
+        with_text = true,
+        symbol_map = {
+          Text = "",
+          Method = "ƒ",
+          Function = "ﬦ",
+          Constructor = "",
+          Variable = "",
+          Class = "",
+          Interface = "ﰮ",
+          Module = "",
+          Property = "",
+          Unit = "",
+          Value = "",
+          Enum = "了",
+          Keyword = "",
+          Snippet = "﬌",
+          Color = "",
+          File = "",
+          Folder = "",
+          EnumMember = "",
+          Constant = "",
+          Struct = "",
+        },
+      }
+      end
+    }
 
     -- nvim-cmp
     use {
       "hrsh7th/nvim-cmp",
       config = function()
+        local feedkey = function(key, mode)
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+        end
+
         local cmp = require("cmp")
         cmp.setup {
           completion = {
             completeopt = "menu,menuone,noinsert",
           },
           snippet = {
-            -- REQUIRED - you must specify a snippet engine
             expand = function(args)
               vim.fn["vsnip#anonymous"](args.body)
             end,
@@ -183,10 +219,6 @@ require("packer").startup {
             }),
             ["<CR>"] = cmp.mapping.confirm({ select = true }),
             ["<Tab>"] = cmp.mapping(function(fallback)
-              local feedkey = function(key, mode)
-                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-              end
-
               if cmp.visible() then
                 local entry = cmp.get_selected_entry()
                 if not entry then
@@ -198,14 +230,41 @@ require("packer").startup {
               else
                 fallback()
               end
-            end, { "i", "s", "c" }),
+            end, { "i", "s" }),
+            ["<S-Tab>"] = cmp.mapping(function()
+              if vim.fn["vsnip#jumpable"](-1) == 1 then
+                feedkey("<Plug>(vsnip-jump-prev)", "")
+              end
+            end, { "i", "s" }),
           },
           sources = cmp.config.sources({
             { name = "nvim_lsp" },
+            { name = "treesitter" },
             { name = "vsnip" },
           }, {
+            { name = "path" },
             { name = "buffer" },
+            { name = "spell" },
           }),
+          formatting = {
+            format = function(entry, vim_item)
+              vim_item.kind = string.format("%s %s", require("lspkind").presets.default[vim_item.kind], vim_item.kind)
+              vim_item.menu = ({
+                nvim_lsp = "ﲳ",
+                nvim_lua = "",
+                treesitter = "",
+                path = "ﱮ",
+                buffer = "﬘",
+                vsnip = "",
+                spell = "暈",
+              })[entry.source.name]
+
+              return vim_item
+            end,
+          },
+          documentation = {
+            border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+          },
           experimental = {
             ghost_text = true,
           },
@@ -230,36 +289,56 @@ require("packer").startup {
         -- Setup lspconfig.
         local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
         local lspconfig = require("lspconfig")
-        local servers = { "clangd", "rust_analyzer", "pyright", "tsserver", "gopls", "zls" }
-        for _, server in ipairs(servers) do
-          lspconfig[server].setup {
-            on_attach = function(client)
-              local key_map = vim.api.nvim_buf_set_keymap
 
-              local opts = { noremap = true, silent = true }
-              key_map(bufnr, "n", "gd", [[<cmd>lua require("telescope.builtin").lsp_definitions()<CR>]], opts)
-              key_map(bufnr, "n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-              key_map(bufnr, "n", "gi", [[<cmd>lua require("telescope.builtin").lsp_implementations()<CR>]], opts)
-              key_map(bufnr, "n", "gr", [[<cmd>lua require("telescope.builtin").lsp_references()<CR>]], opts)
-              key_map(bufnr, "n", "<space>ca", [[<cmd>lua require("telescope.builtin").lso_code_actions()<CR>]], opts)
+        local lsp_status = require('lsp-status')
+        lsp_status.register_progress()
+        capabilities = vim.tbl_extend('keep', capabilities or {}, lsp_status.capabilities)
 
-              key_map(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
-              key_map(bufnr, "i", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+        local on_attach = function(client)
+          local key_map = vim.api.nvim_buf_set_keymap
 
-              key_map(bufnr, "n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-              key_map(bufnr, "n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
-              key_map(bufnr, "n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+          local opts = { noremap = true, silent = true }
+          key_map(bufnr, "n", "gd", [[<cmd>lua vim.lsp.buf.definition()<CR>]], opts)
+          key_map(bufnr, "n", "gD", [[<cmd>lua vim.lsp.buf.declaration()<CR>]], opts)
+          key_map(bufnr, "n", "gi", [[<cmd>lua vim.lsp.buf.implementation()<CR>]], opts)
+          key_map(bufnr, "n", "gr", [[<cmd>lua vim.lsp.buf.references()<CR>]], opts)
+          key_map(bufnr, "n", "<space>ca", [[<cmd>lua vim.lsp.buf.code_action()<CR>]], opts)
 
-              key_map(bufnr, "n", "<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
-              key_map(bufnr, "n", "<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
-              key_map(bufnr, "n", "<leader>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
-              key_map(bufnr, "n", "<leader>wd", [[<cmd>lua require("telescope.builtin").lsp_workspace_diagnostics()<CR>]], opts)
+          key_map(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
+          key_map(bufnr, "i", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 
-              require("illuminate").on_attach(client)
-            end,
-            capabilities = capabilities,
-          }
+          key_map(bufnr, "n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+          key_map(bufnr, "n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
+          key_map(bufnr, "n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+
+          key_map(bufnr, "n", "<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
+          key_map(bufnr, "n", "<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
+          key_map(bufnr, "n", "<leader>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
+          key_map(bufnr, "n", "<leader>wd", [[<cmd>lua require("telescope.builtin").lsp_workspace_diagnostics()<CR>]], opts)
+
+          require("illuminate").on_attach(client)
+          lsp_status.on_attach(client)
         end
+
+        local servers = { "clangd", "rust_analyzer", "pyright", "tsserver", "gopls", "zls" }
+        lspconfig.clangd.setup {
+            on_attach = on_attach,
+            capabilities = capabilities,
+            handlers = lsp_status.extensions.clangd.setup(),
+            init_options = {
+              clangdFileStatus = true
+            },
+        }
+
+        lspconfig.rust_analyzer.setup {
+          on_attach = on_attach,
+          capabilities = capabilities
+        }
+
+        lspconfig.zls.setup {
+          on_attach = on_attach,
+          capabilities = capabilities
+        }
       end,
     }
     use "hrsh7th/cmp-nvim-lsp"
