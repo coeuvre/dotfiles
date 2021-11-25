@@ -31,7 +31,11 @@ vim.cmd [[
   set redrawtime=10000 " Allow more time for loading syntax on large files
 ]]
 
-vim.opt.backupdir = vim.fn.stdpath("data").."/backup//"
+local backupdir = vim.fn.stdpath("data").."/backup//"
+vim.opt.backupdir = backupdir
+if vim.fn.empty(vim.fn.glob(backupdir)) > 0 then
+  vim.cmd('call mkdir(&backupdir)')
+end
 
 ---------------------------------------------------------------------------
 -- Plugins
@@ -43,10 +47,11 @@ end
 
 require("packer").startup {
   function(use)
-    use 'wbthomason/packer.nvim'
+    use "wbthomason/packer.nvim"
     use "nvim-lua/plenary.nvim"
 
     -- Basic
+    use { "folke/which-key.nvim", config = function() require("which-key").setup() end }
     use "tpope/vim-unimpaired"
     use "tpope/vim-fugitive"
     use "tpope/vim-repeat"
@@ -59,7 +64,7 @@ require("packer").startup {
       "phaazon/hop.nvim",
       branch = "v1",
       config = function()
-        require("hop").setup { keys = 'etovxqpdygfblzhckisuran' }
+        require("hop").setup { keys = "etovxqpdygfblzhckisuran" }
       end,
     }
     use "christoomey/vim-tmux-navigator"
@@ -136,7 +141,7 @@ require("packer").startup {
       "nvim-treesitter/nvim-treesitter",
       run = ":TSUpdate",
       config = function()
-        require'nvim-treesitter.configs'.setup {
+        require("nvim-treesitter.configs").setup {
           matchup = {
             enable = true
           },
@@ -149,13 +154,130 @@ require("packer").startup {
     use { "lewis6991/spellsitter.nvim", config = function() require("spellsitter").setup() end }
 
     -- nvim-lsp
-    -- TODO
+    use "neovim/nvim-lspconfig"
     use "nvim-lua/lsp-status.nvim"
     use "onsails/lspkind-nvim"
 
     -- nvim-cmp
-    -- TODO
-    use { "windwp/nvim-autopairs", config = function() require('nvim-autopairs').setup() end }
+    use {
+      "hrsh7th/nvim-cmp",
+      config = function()
+        local cmp = require("cmp")
+        cmp.setup {
+          completion = {
+            completeopt = "menu,menuone,noinsert",
+          },
+          snippet = {
+            -- REQUIRED - you must specify a snippet engine
+            expand = function(args)
+              vim.fn["vsnip#anonymous"](args.body)
+            end,
+          },
+          mapping = {
+            ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
+            ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
+            ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+            ["<C-e>"] = cmp.mapping({
+              i = cmp.mapping.abort(),
+              c = cmp.mapping.close(),
+            }),
+            ["<CR>"] = cmp.mapping.confirm({ select = true }),
+            ["<Tab>"] = cmp.mapping(function(fallback)
+              local feedkey = function(key, mode)
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+              end
+
+              if cmp.visible() then
+                local entry = cmp.get_selected_entry()
+                if not entry then
+                  cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                end
+                cmp.confirm()
+              elseif vim.fn["vsnip#available"](1) == 1 then
+                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+              else
+                fallback()
+              end
+            end, { "i", "s", "c" }),
+          },
+          sources = cmp.config.sources({
+            { name = "nvim_lsp" },
+            { name = "vsnip" },
+          }, {
+            { name = "buffer" },
+          }),
+          experimental = {
+            ghost_text = true,
+          },
+        }
+
+        -- Use buffer source for / (if you enabled `native_menu`, this won't work anymore).
+        cmp.setup.cmdline("/", {
+          sources = {
+            { name = "buffer" }
+          }
+        })
+
+        -- Use cmdline & path source for : (if you enabled `native_menu`, this won't work anymore).
+        cmp.setup.cmdline(":", {
+          sources = cmp.config.sources({
+            { name = "path" }
+          }, {
+            { name = "cmdline" }
+          })
+        })
+
+        -- Setup lspconfig.
+        local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+        local lspconfig = require("lspconfig")
+        local servers = { "clangd", "rust_analyzer", "pyright", "tsserver", "gopls", "zls" }
+        for _, server in ipairs(servers) do
+          lspconfig[server].setup {
+            on_attach = function(client)
+              local key_map = vim.api.nvim_buf_set_keymap
+
+              local opts = { noremap = true, silent = true }
+              key_map(bufnr, "n", "gd", [[<cmd>lua require("telescope.builtin").lsp_definitions()<CR>]], opts)
+              key_map(bufnr, "n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
+              key_map(bufnr, "n", "gi", [[<cmd>lua require("telescope.builtin").lsp_implementations()<CR>]], opts)
+              key_map(bufnr, "n", "gr", [[<cmd>lua require("telescope.builtin").lsp_references()<CR>]], opts)
+              key_map(bufnr, "n", "<space>ca", [[<cmd>lua require("telescope.builtin").lso_code_actions()<CR>]], opts)
+
+              key_map(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
+              key_map(bufnr, "i", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+
+              key_map(bufnr, "n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+              key_map(bufnr, "n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
+              key_map(bufnr, "n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+
+              key_map(bufnr, "n", "<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
+              key_map(bufnr, "n", "<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
+              key_map(bufnr, "n", "<leader>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
+              key_map(bufnr, "n", "<leader>wd", [[<cmd>lua require("telescope.builtin").lsp_workspace_diagnostics()<CR>]], opts)
+
+              require("illuminate").on_attach(client)
+            end,
+            capabilities = capabilities,
+          }
+        end
+      end,
+    }
+    use "hrsh7th/cmp-nvim-lsp"
+    use "hrsh7th/cmp-buffer"
+    use "hrsh7th/cmp-path"
+    use "hrsh7th/cmp-cmdline"
+    use "hrsh7th/cmp-vsnip"
+    use "hrsh7th/vim-vsnip"
+    use {
+      "windwp/nvim-autopairs",
+      config = function()
+        require("nvim-autopairs").setup()
+
+        local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+        local cmp = require("cmp")
+        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({  map_char = { tex = "" } }))
+      end,
+    }
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
@@ -214,7 +336,7 @@ cmap w!! %!sudo tee > /dev/null %
 key_map(
   "n",
   "<leader>ff",
-  [[<cmd>lua require"telescope.builtin".file_browser({results_title="Browse Files"})<cr>]],
+  [[<cmd>lua require"telescope.builtin".file_browser({results_title="Browse Files"})<CR>]],
   { noremap = true, silent = true }
 )
 
@@ -222,7 +344,7 @@ key_map(
 key_map(
   "n",
   "<leader><leader>",
-  [[<cmd>lua require"telescope.builtin".find_files({results_title="Find Files"})<cr>]],
+  [[<cmd>lua require"telescope.builtin".find_files({results_title="Find Files"})<CR>]],
   { noremap = true, silent = true }
 )
 
@@ -230,7 +352,7 @@ key_map(
 key_map(
   "n",
   "<leader>fr",
-  [[<cmd>lua require"telescope.builtin".oldfiles({results_title="Recent Files"})<cr>]],
+  [[<cmd>lua require"telescope.builtin".oldfiles({results_title="Recent Files"})<CR>]],
   { noremap = true, silent = true }
 )
 
@@ -238,7 +360,7 @@ key_map(
 key_map(
   "n",
   "<leader>*",
-  [[<cmd>lua require"telescope.builtin".grep_string()<cr>]],
+  [[<cmd>lua require"telescope.builtin".grep_string()<CR>]],
   { noremap = true, silent = true }
 )
 
@@ -246,16 +368,12 @@ key_map(
 key_map(
   "n",
   "<leader>bb",
-  [[<cmd>lua require"telescope.builtin".buffers({results_title="Buffers"})<cr>]],
+  [[<cmd>lua require"telescope.builtin".buffers({results_title="Buffers"})<CR>]],
   { noremap = true, silent = true }
 )
 
 -- easy motion
-key_map("n", "f", [[<cmd>lua require"hop".hint_char1({ direction = require"hop.hint".HintDirection.AFTER_CURSOR, current_line_only = true })<cr>]], {})
-key_map("n", "F", [[<cmd>lua require"hop".hint_char1({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>]], {})
-key_map("o", "f", [[<cmd>lua require"hop".hint_char1({ direction = require"hop.hint".HintDirection.AFTER_CURSOR, current_line_only = true, inclusive_jump = true })<cr>]], {})
-key_map("o", "F", [[<cmd>lua require"hop".hint_char1({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR, current_line_only = true, inclusive_jump = true })<cr>]], {})
-key_map("", "t", [[<cmd>lua require"hop".hint_char1({ direction = require"hop.hint".HintDirection.AFTER_CURSOR, current_line_only = true })<cr>]], {})
-key_map("", "T", [[<cmd>lua require"hop".hint_char1({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>]], {})
-key_map("", "gsj", [[<cmd>lua require"hop".hint_lines({ direction = require"hop.hint".HintDirection.AFTER_CURSOR })<cr>]], {})
-key_map("", "gsk", [[<cmd>lua require"hop".hint_lines({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR })<cr>]], {})
+key_map("", "gsj", [[<cmd>lua require"hop".hint_lines({ direction = require"hop.hint".HintDirection.AFTER_CURSOR })<CR>]], {})
+key_map("", "gsk", [[<cmd>lua require"hop".hint_lines({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR })<CR>]], {})
+key_map("", "gsw", [[<cmd>lua require"hop".hint_words({ direction = require"hop.hint".HintDirection.AFTER_CURSOR })<CR>]], {})
+key_map("", "gsb", [[<cmd>lua require"hop".hint_words({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR })<CR>]], {})
