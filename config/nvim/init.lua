@@ -217,7 +217,7 @@ require("packer").startup {
               i = cmp.mapping.abort(),
               c = cmp.mapping.close(),
             }),
-            ["<CR>"] = cmp.mapping.confirm({ select = true }),
+            -- ["<CR>"] = cmp.mapping.confirm({ select = true }),
             ["<Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 local entry = cmp.get_selected_entry()
@@ -230,12 +230,12 @@ require("packer").startup {
               else
                 fallback()
               end
-            end, { "i", "s" }),
+            end, { "i", "c", "s" }),
             ["<S-Tab>"] = cmp.mapping(function()
               if vim.fn["vsnip#jumpable"](-1) == 1 then
                 feedkey("<Plug>(vsnip-jump-prev)", "")
               end
-            end, { "i", "s" }),
+            end, { "i", "c", "s" }),
           },
           sources = cmp.config.sources({
             { name = "nvim_lsp" },
@@ -320,7 +320,6 @@ require("packer").startup {
           lsp_status.on_attach(client)
         end
 
-        local servers = { "clangd", "rust_analyzer", "pyright", "tsserver", "gopls", "zls" }
         lspconfig.clangd.setup {
             on_attach = on_attach,
             capabilities = capabilities,
@@ -330,15 +329,13 @@ require("packer").startup {
             },
         }
 
-        lspconfig.rust_analyzer.setup {
-          on_attach = on_attach,
-          capabilities = capabilities
-        }
-
-        lspconfig.zls.setup {
-          on_attach = on_attach,
-          capabilities = capabilities
-        }
+        local other_servers = { "rust_analyzer", "zls", "jsonls" }
+        for _, server in ipairs(other_servers) do
+          lspconfig[server].setup {
+            on_attach = on_attach,
+            capabilities = capabilities
+          }
+        end
       end,
     }
     use "hrsh7th/cmp-nvim-lsp"
@@ -439,6 +436,14 @@ key_map(
   "n",
   "<leader>fr",
   [[<cmd>lua require"telescope.builtin".oldfiles({results_title="Recent Files"})<CR>]],
+  { noremap = true, silent = true }
+)
+
+-- live grep
+key_map(
+  "n",
+  "<leader>fg",
+  [[<cmd>lua require"telescope.builtin".live_grep()<CR>]],
   { noremap = true, silent = true }
 )
 
