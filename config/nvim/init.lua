@@ -419,6 +419,13 @@ key_map(
   { noremap = true, silent = true }
 )
 
+key_map(
+  "n",
+  "<leader>fF",
+  [[<cmd>lua require"telescope.builtin".find_files {results_title="Find All Files", hidden=true, no_ignore=true}<cr>]],
+  { noremap = true, silent = true }
+)
+
 -- find files
 key_map(
   "n",
