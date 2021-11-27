@@ -49,13 +49,20 @@ require("packer").startup {
   function(use)
     use "wbthomason/packer.nvim"
     use "nvim-lua/plenary.nvim"
+    use "sheerun/vim-polyglot"
+    use {
+      "ahmedkhalf/project.nvim",
+      config = function()
+        require("project_nvim").setup()
+        require("telescope").load_extension("projects")
+      end,
+    }
 
     -- Basic
     use { "folke/which-key.nvim", config = function() require("which-key").setup() end }
     use "tpope/vim-unimpaired"
     use "tpope/vim-fugitive"
     use "tpope/vim-repeat"
-    use "tpope/vim-sleuth"
     use "andymass/vim-matchup"
     use "pbrisbin/vim-mkdir"
     use { "luukvbaal/stabilize.nvim", config = function() require("stabilize").setup() end }
@@ -454,3 +461,6 @@ key_map("n", "<leader>hh", [[<Cmd>lua require"telescope.builtin".help_tags()<CR>
 
 -- key maps
 key_map("n", "<leader>hm", [[<Cmd>lua require"telescope.builtin".keymaps()<CR>]], { noremap = true, silent = true })
+
+-- projects
+key_map("n", "<leader>pp", [[<Cmd>lua require"telescope".extensions.projects.projects()<CR>]], { noremap = true, silent = true })
