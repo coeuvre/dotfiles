@@ -124,6 +124,7 @@ require("packer").startup {
               horizontal = { width_padding = 0.04, height_padding = 0.1, preview_width = 0.6, },
               vertical = { width_padding = 0.05, height_padding = 1, preview_height = 0.5, },
             },
+            mappings = { i = { ["<Esc>"] = actions.close } },
             dynamic_preview_title = true,
             winblend = 3,
           },
@@ -298,23 +299,23 @@ require("packer").startup {
           local key_map = vim.api.nvim_buf_set_keymap
 
           local opts = { noremap = true, silent = true }
-          key_map(bufnr, "n", "gd", [[<cmd>lua vim.lsp.buf.definition()<CR>]], opts)
-          key_map(bufnr, "n", "gD", [[<cmd>lua vim.lsp.buf.declaration()<CR>]], opts)
-          key_map(bufnr, "n", "gi", [[<cmd>lua vim.lsp.buf.implementation()<CR>]], opts)
-          key_map(bufnr, "n", "gr", [[<cmd>lua vim.lsp.buf.references()<CR>]], opts)
-          key_map(bufnr, "n", "<space>ca", [[<cmd>lua vim.lsp.buf.code_action()<CR>]], opts)
+          key_map(bufnr, "n", "gd", [[<Cmd>lua vim.lsp.buf.definition()<CR>]], opts)
+          key_map(bufnr, "n", "gD", [[<Cmd>lua vim.lsp.buf.declaration()<CR>]], opts)
+          key_map(bufnr, "n", "gi", [[<Cmd>lua vim.lsp.buf.implementation()<CR>]], opts)
+          key_map(bufnr, "n", "gr", [[<Cmd>lua vim.lsp.buf.references()<CR>]], opts)
+          key_map(bufnr, "n", "<space>ca", [[<Cmd>lua vim.lsp.buf.code_action()<CR>]], opts)
 
           key_map(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
-          key_map(bufnr, "i", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
+          key_map(bufnr, "i", "<C-k>", "<Cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 
-          key_map(bufnr, "n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-          key_map(bufnr, "n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
-          key_map(bufnr, "n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
+          key_map(bufnr, "n", "<F2>", "<Cmd>lua vim.lsp.buf.rename()<CR>", opts)
+          key_map(bufnr, "n", "[d", "<Cmd>lua vim.lsp.diagnostic.goto_prev()<CR>", opts)
+          key_map(bufnr, "n", "]d", "<Cmd>lua vim.lsp.diagnostic.goto_next()<CR>", opts)
 
-          key_map(bufnr, "n", "<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
-          key_map(bufnr, "n", "<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
-          key_map(bufnr, "n", "<leader>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
-          key_map(bufnr, "n", "<leader>wd", [[<cmd>lua require("telescope.builtin").lsp_workspace_diagnostics()<CR>]], opts)
+          key_map(bufnr, "n", "<leader>wa", "<Cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
+          key_map(bufnr, "n", "<leader>wr", "<Cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
+          key_map(bufnr, "n", "<leader>wl", "<Cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
+          key_map(bufnr, "n", "<leader>wd", [[<Cmd>lua require("telescope.builtin").lsp_workspace_diagnostics()<CR>]], opts)
 
           require("illuminate").on_attach(client)
           lsp_status.on_attach(client)
@@ -409,62 +410,47 @@ cmap w!! %!sudo tee > /dev/null %
 
 
 -- browse file
-key_map(
-  "n",
-  "<leader>ff",
-  [[<cmd>lua require"telescope.builtin".file_browser({results_title="Browse Files"})<CR>]],
-  { noremap = true, silent = true }
-)
-
-key_map(
-  "n",
-  "<leader>fF",
-  [[<cmd>lua require"telescope.builtin".find_files {results_title="Find All Files", hidden=true, no_ignore=true}<cr>]],
-  { noremap = true, silent = true }
-)
+key_map("n", "<leader>ff", [[<Cmd>lua require"telescope.builtin".file_browser()<CR>]], { noremap = true, silent = true })
 
 -- find files
-key_map(
-  "n",
-  "<leader><leader>",
-  [[<cmd>lua require"telescope.builtin".find_files({results_title="Find Files"})<CR>]],
-  { noremap = true, silent = true }
-)
+key_map("n", "<leader><leader>", [[<Cmd>lua require"telescope.builtin".find_files { hidden = true }<CR>]], { noremap = true, silent = true })
+key_map("n", "<leader>fF", [[<Cmd>lua require"telescope.builtin".find_files { hidden=true, no_ignore=true }<CR>]], { noremap = true, silent = true })
+
 
 -- recent files
-key_map(
-  "n",
-  "<leader>fr",
-  [[<cmd>lua require"telescope.builtin".oldfiles({results_title="Recent Files"})<CR>]],
-  { noremap = true, silent = true }
-)
+key_map("n", "<leader>fr", [[<Cmd>lua require"telescope.builtin".oldfiles()<CR>]], { noremap = true, silent = true })
 
 -- live grep
-key_map(
-  "n",
-  "<leader>fg",
-  [[<cmd>lua require"telescope.builtin".live_grep()<CR>]],
-  { noremap = true, silent = true }
-)
+key_map("n", "<leader>fg", [[<Cmd>lua require"telescope.builtin".live_grep()<CR>]], { noremap = true, silent = true })
 
 -- grep under cursor
-key_map(
-  "n",
-  "<leader>*",
-  [[<cmd>lua require"telescope.builtin".grep_string()<CR>]],
-  { noremap = true, silent = true }
-)
+key_map("n", "<leader>f*", [[<Cmd>lua require"telescope.builtin".grep_string()<CR>]], { noremap = true, silent = true })
 
 -- list buffers
 key_map(
   "n",
   "<leader>bb",
-  [[<cmd>lua require"telescope.builtin".buffers({results_title="Buffers"})<CR>]],
+  [[<Cmd>lua require"telescope.builtin".buffers({previewer = false, winblend = 2, layout_strategy = "vertical", layout_config = { width = 0.40, height = 0.55 }})<CR>]],
   { noremap = true, silent = true }
 )
 
 -- easy motion
-key_map("", "gsj", [[<cmd>lua require"hop".hint_lines({ direction = require"hop.hint".HintDirection.AFTER_CURSOR })<CR>]], {})
-key_map("", "gsk", [[<cmd>lua require"hop".hint_lines({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR })<CR>]], {})
-key_map("", "gsw", [[<cmd>lua require"hop".hint_words({ direction = require"hop.hint".HintDirection.AFTER_CURSOR })<CR>]], {})
-key_map("", "gsb", [[<cmd>lua require"hop".hint_words({ direction = require"hop.hint".HintDirection.BEFORE_CURSOR })<CR>]], {})
+key_map("", "gsj", [[<Cmd>lua require"hop".hint_lines { direction = require"hop.hint".HintDirection.AFTER_CURSOR }<CR>]], {})
+key_map("", "gsk", [[<Cmd>lua require"hop".hint_lines { direction = require"hop.hint".HintDirection.BEFORE_CURSOR }<CR>]], {})
+key_map("", "gsw", [[<Cmd>lua require"hop".hint_words { direction = require"hop.hint".HintDirection.AFTER_CURSOR }<CR>]], {})
+key_map("", "gsb", [[<Cmd>lua require"hop".hint_words { direction = require"hop.hint".HintDirection.BEFORE_CURSOR }<CR>]], {})
+
+-- git_branches
+key_map("n", "<leader>gb", [[<Cmd>lua require"telescope.builtin".git_branches()<CR>]], { noremap = true, silent = true })
+
+-- git_commits (log)
+key_map("n", "<leader>gl", [[<Cmd>lua require'telescope.builtin'.git_commits()<CR>]], { noremap = true, silent = true })
+
+-- git_status - <tab> to toggle staging
+key_map("n", "<leader>gs", [[<Cmd>lua require"telescope.builtin".git_status()<CR>]], { noremap = true, silent = true })
+
+-- help
+key_map("n", "<leader>hh", [[<Cmd>lua require"telescope.builtin".help_tags()<CR>]], { noremap = true, silent = true })
+
+-- key maps
+key_map("n", "<leader>hm", [[<Cmd>lua require"telescope.builtin".keymaps()<CR>]], { noremap = true, silent = true })
