@@ -59,6 +59,12 @@ require("packer").startup {
         require("telescope").load_extension("projects")
       end,
     }
+    use { 
+      "kyazdani42/nvim-tree.lua",
+      config = function()
+        require("nvim-tree").setup {}
+      end,
+    }
 
     -- Basic
     use { "folke/which-key.nvim", config = function() require("which-key").setup() end }
@@ -106,7 +112,7 @@ require("packer").startup {
             lualine_y = {'progress'},
             lualine_z = {'location'}
           },
-          extensions = { "fugitive" }
+          extensions = { "fugitive", "nvim-tree" }
         }
       end,
     }
@@ -485,9 +491,20 @@ key_map("n", "<leader>hm", [[<Cmd>lua require"telescope.builtin".keymaps()<CR>]]
 -- projects
 key_map("n", "<leader>pp", [[<Cmd>lua require"telescope".extensions.projects.projects()<CR>]], { noremap = true, silent = true })
 
+-- project recent files
+key_map("n", "<leader>pr", [[<Cmd>lua require"telescope.builtin".oldfiles { cwd_only = true }<CR>]], { noremap = true, silent = true })
+
+-- project buffers
+key_map(
+  "n",
+  "<leader>pb",
+  [[<Cmd>lua require"telescope.builtin".buffers { cwd_only = true, previewer = false, winblend = 2, layout_strategy = "vertical", layout_config = { width = 0.40, height = 0.55 }}<CR>]],
+  { noremap = true, silent = true }
+)
+
 -- async tasks
-key_map('n', '<leader>pr', ":AsyncTask project-run<CR>", { noremap = true, silent = true })
-key_map('n', '<leader>pb', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
+key_map('n', '<F5>', ":AsyncTask project-run<CR>", { noremap = true, silent = true })
+key_map('n', '<F9>', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
 
 _G.open_quickfix = function(opts)
   local opts = opts or {}
@@ -519,4 +536,8 @@ end
 vim.cmd [[ autocmd User AsyncRunStart lua open_quickfix() ]]
 --vim.cmd [[ autocmd FileType qf nnoremap <buffer> <silent> <C-c> :cclose<CR> ]]
 
-key_map('n', '<C-q>', [[<cmd>lua open_quickfix { toggle = true }<CR>]], { noremap = true, silent = true })
+key_map("n", "<C-q>", [[<cmd>lua open_quickfix { toggle = true }<CR>]], { noremap = true, silent = true })
+
+-- nvim-tree
+key_map("n", "<F1>", [[:NvimTreeFindFileToggle<CR>]], { noremap = true, silent = true })
+
