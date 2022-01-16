@@ -218,7 +218,7 @@ require("packer").startup {
         --     },
         -- }
 
-        local servers = { "rust_analyzer", "zls" }
+        local servers = { "rust_analyzer", "zls", "pyright" }
         for _, server in ipairs(servers) do
           lspconfig[server].setup {
             on_attach = on_attach,
