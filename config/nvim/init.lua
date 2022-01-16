@@ -106,7 +106,7 @@ require("packer").startup {
           },
           sections = {
             lualine_a = {'mode'},
-            lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_lsp', 'coc'}}},
+            lualine_b = {'branch', 'diff', {'diagnostics', sources={'nvim_diagnostic'}}},
             lualine_c = {'filename', lsp_status },
             lualine_x = {'encoding', 'fileformat', 'filetype'},
             lualine_y = {'progress'},
@@ -218,7 +218,7 @@ require("packer").startup {
         --     },
         -- }
 
-        local servers = { "rust_analyzer", "zls", "jsonls" }
+        local servers = { "rust_analyzer", "zls" }
         for _, server in ipairs(servers) do
           lspconfig[server].setup {
             on_attach = on_attach,
@@ -504,7 +504,7 @@ key_map(
 
 -- async tasks
 key_map('n', '<F5>', ":AsyncTask project-run<CR>", { noremap = true, silent = true })
-key_map('n', '<F9>', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
+key_map('n', '<F4>', ":AsyncTask project-build<CR>", { noremap = true, silent = true })
 
 _G.open_quickfix = function(opts)
   local opts = opts or {}
@@ -540,4 +540,6 @@ key_map("n", "<C-q>", [[<cmd>lua open_quickfix { toggle = true }<CR>]], { norema
 
 -- nvim-tree
 key_map("n", "<F1>", [[:NvimTreeFindFileToggle<CR>]], { noremap = true, silent = true })
+
+key_map("n", "<leader>`", "<C-^>", { noremap = true, silent = true })
 
