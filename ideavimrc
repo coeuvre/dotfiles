@@ -1,0 +1,7 @@
+set clipboard+=unnamed
+
+set ideajoin
+set number
+
+set visualbell
+set noerrorbells
