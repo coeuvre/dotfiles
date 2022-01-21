@@ -463,7 +463,7 @@ key_map("n", "<leader>f*", [[<Cmd>lua require"telescope.builtin".grep_string()<C
 key_map(
   "n",
   "<leader>bb",
-  [[<Cmd>lua require"telescope.builtin".buffers({previewer = false, winblend = 2, layout_strategy = "vertical", layout_config = { width = 0.40, height = 0.55 }})<CR>]],
+  [[<Cmd>lua require"telescope.builtin".buffers({previewer = false, winblend = 2, layout_strategy = "vertical", layout_config = { width = 0.8, height = 0.9 }})<CR>]],
   { noremap = true, silent = true }
 )
 
