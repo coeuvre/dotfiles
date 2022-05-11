@@ -2,6 +2,7 @@ nmap gs <Leader><Leader>
 
 set clipboard+=unnamed
 set ideajoin
+set incsearch
 set visualbell
 set noerrorbells
 set easymotion
