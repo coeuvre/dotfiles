@@ -11,7 +11,6 @@ return function(use)
         },
         highlight = {
           enable = true,
-          use_languagetree = true,
         },
       })
     end,

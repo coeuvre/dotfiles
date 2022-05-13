@@ -19,10 +19,3 @@ map("n", "<Esc>", "<cmd> :noh <CR>")
 -- get out of terminal mode
 map("t", "<Esc>", "<C-\\><C-n>")
 
-local M = {}
-
-M.nvimtree = function()
-   map("n", "<C-n>", "<cmd> :NvimTreeFocus <CR>")
-end
-
-return M

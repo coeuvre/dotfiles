@@ -1,10 +1,11 @@
 return function(use)
   use {
     "kyazdani42/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    after = "nvim-web-devicons",
 
     setup = function()
-      require("core.mappings").nvimtree()
+      local map = require("core.utils").map
+      map("n", "<C-n>", "<cmd> :NvimTreeFindFile <CR>")
     end,
 
     config = function()
@@ -66,6 +67,11 @@ return function(use)
           side = "left",
           width = 25,
           hide_root_folder = true,
+          mappings = {
+            list = {
+              { key = "<C-n>", action = "close" },
+            },
+          },
         },
         git = {
           enable = false,
