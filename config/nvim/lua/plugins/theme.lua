@@ -3,7 +3,10 @@ return function(use)
     "navarasu/onedark.nvim",
 
     config = function()
-      require('onedark').load()
+      require("onedark").setup({
+        style = "darker"
+      })
+      require("onedark").load()
     end,
   }
 end

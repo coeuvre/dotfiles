@@ -63,9 +63,6 @@ return function(use)
           { name = "nvim_lua" },
           { name = "path" },
         },
-        experimental = {
-          ghost_text = true,
-        },
       })
     end,
   }
