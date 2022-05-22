@@ -8,6 +8,9 @@ return function(use)
     setup = function()
       local map = require("core.utils").map
       map("n", "K", function() vim.lsp.buf.hover() end)
+      map("n", "<leader>ca", function() vim.lsp.buf.code_action() end)
+      map("n", "<leader>cr", function() vim.lsp.buf.rename() end)
+      map("n", "<leader>cf", function() vim.lsp.buf.formatting() end)
     end,
 
     config = function()
@@ -17,13 +20,13 @@ return function(use)
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
-      lspconfig.sumneko_lua.setup {
+      lspconfig.sumneko_lua.setup({
         capabilities = capabilities,
 
         settings = {
           Lua = {
             diagnostics = {
-              globals = {'vim'},
+              globals = { "vim" },
             },
             workspace = {
               library = vim.api.nvim_get_runtime_file("", true),
@@ -33,7 +36,9 @@ return function(use)
             },
           },
         },
-      }
+      })
+
+      lspconfig.clangd.setup({})
     end,
   }
 end
