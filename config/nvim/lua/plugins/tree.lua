@@ -5,7 +5,7 @@ return function(use)
 
     setup = function()
       local map = require("core.utils").map
-      map("n", "<C-n>", "<cmd> :NvimTreeFindFile <CR>")
+      map("n", "<C-n>", "<cmd> :NvimTreeToggle <CR>")
     end,
 
     config = function()
