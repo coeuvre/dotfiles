@@ -20,8 +20,26 @@ return function(use)
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
+      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+      local on_attach = function(client, bufnr)
+        require("illuminate").on_attach(client)
+
+        if client.supports_method("textDocument/formatting") then
+          vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            group = augroup,
+            buffer = bufnr,
+            callback = function()
+              -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
+              vim.lsp.buf.formatting_sync()
+            end,
+          })
+        end
+      end
+
       lspconfig.sumneko_lua.setup({
         capabilities = capabilities,
+        on_attach = on_attach,
 
         settings = {
           Lua = {
@@ -38,7 +56,10 @@ return function(use)
         },
       })
 
-      lspconfig.clangd.setup({})
+      lspconfig.clangd.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+      })
     end,
   }
 end

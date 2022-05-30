@@ -14,7 +14,6 @@ opt.laststatus = 3 -- global statusline
 opt.title = true
 opt.clipboard = "unnamedplus"
 opt.cmdheight = 1
-opt.cursorline = true
 opt.completeopt = "menuone,noselect"
 opt.wrap = false
 
