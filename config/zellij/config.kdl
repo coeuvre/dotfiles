@@ -2,7 +2,7 @@
 keybinds clear-defaults=true {
     renametab {
         bind "Ctrl c" { SwitchToMode "Normal"; }
-        bind "Esc" { UndoRenameTab; SwitchToMode "Tab"; }
+        bind "Esc" { UndoRenameTab; SwitchToMode "Normal"; }
     }
 
     renamepane {
@@ -31,6 +31,8 @@ keybinds clear-defaults=true {
         bind "k" "Up" { ScrollUp; }
         bind "Ctrl d" "PageDown" "Right" "l" { PageScrollDown; }
         bind "Ctrl u" "PageUp" "Left" "h" { PageScrollUp; }
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
         bind "c" { SearchToggleOption "CaseSensitivity"; }
         bind "w" { SearchToggleOption "Wrap"; }
         bind "o" { SearchToggleOption "WholeWord"; }
@@ -54,6 +56,7 @@ keybinds clear-defaults=true {
         bind "d" { Detach; }
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
         bind "f" "Ctrl f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
+        bind "/" { SwitchToMode "EnterSearch"; SearchInput 0; }
     }
 
     shared_except "normal" "locked" {
