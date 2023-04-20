@@ -1,8 +1,10 @@
 return {
   {
-    "williamboman/mason.nvim",
+    "neovim/nvim-lspconfig",
     opts = {
-      ensure_installed = {},
+      servers = {
+        jsonls = { mason = false },
+      },
     },
   },
 }
