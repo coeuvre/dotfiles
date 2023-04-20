@@ -1,6 +1,6 @@
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
+    "williamboman/mason.nvim",
     opts = {
       ensure_installed = {},
     },
