@@ -15,6 +15,8 @@ vim.o.splitright = true
 vim.o.termguicolors = true
 vim.o.wrap = false
 vim.o.laststatus = 3
+vim.o.number = true
+vim.o.cursorline = true
 
 -- disable netrw
 vim.g.loaded_netrw = 1
@@ -59,18 +61,31 @@ if not vim.g.vscode then
   plugins = {
     unpack(plugins),
 
+    {
+      "catppuccin/nvim",
+      name = "catppuccin",
+      priority = 1000,
+      config = function()
+        vim.cmd("colorscheme catppuccin")
+      end
+    },
     "nvim-tree/nvim-web-devicons",
     {
       "nvim-tree/nvim-tree.lua",
       config = function()
         require("nvim-tree").setup()
-        vim.keymap.set("n", "<C-\\>", ":NvimTreeToggle<CR>")
+        vim.keymap.set("n", "<C-b>", ":NvimTreeToggle<CR>")
       end
     },
     {
       "nvim-lualine/lualine.nvim",
       config = function()
-        require("lualine").setup()
+        require("lualine").setup({
+          options = {
+            component_separators = '',
+            section_separators = '',
+          }
+        })
       end,
     }
   }
