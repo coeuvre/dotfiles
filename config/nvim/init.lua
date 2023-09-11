@@ -2,6 +2,24 @@
 -- Settings
 -------------------------------------------------------------------------------
 vim.o.clipboard = "unnamedplus"
+vim.o.undofile = true
+
+vim.o.tabstop = 4
+vim.o.expandtab = true
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+
+vim.o.splitbelow = true
+vim.o.splitright = true
+
+vim.o.termguicolors = true
+vim.o.wrap = false
+vim.o.laststatus = 3
+
+-- disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.g.mapleader = " "
 
 -------------------------------------------------------------------------------
@@ -20,27 +38,42 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
+local plugins = {
   {
-    "phaazon/hop.nvim",
-    branch = "v2",
-    config = function()
-      local hop = require('hop')
-      hop.setup({ keys = 'etovxqpdygfblzhckisuran' })
-
-      local directions = require('hop.hint').HintDirection
-      vim.keymap.set('', 'gsj', function()
-        hop.hint_lines_skip_whitespace({ direction = directions.AFTER_CURSOR })
-      end, { remap = true })
-      vim.keymap.set('', 'gsk', function()
-        hop.hint_lines_skip_whitespace({ direction = directions.BEFORE_CURSOR })
-      end, { remap = true })
-      vim.keymap.set('', 'gsw', function()
-        hop.hint_words({ direction = directions.AFTER_CURSOR })
-      end, { remap = true })
-      vim.keymap.set('', 'gsb', function()
-        hop.hint_words({ direction = directions.BEFORE_CURSOR })
-      end, { remap = true })
-    end
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    ---@type Flash.Config
+    opts = {
+      modes = {
+        search = { enabled = false },
+        char = { keys = { "f", "F", "t", "T" } }
+      }
+    },
+    keys = {
+      { "s", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
+    },
   }
-})
+}
+
+if not vim.g.vscode then
+  plugins = {
+    unpack(plugins),
+
+    "nvim-tree/nvim-web-devicons",
+    {
+      "nvim-tree/nvim-tree.lua",
+      config = function()
+        require("nvim-tree").setup()
+        vim.keymap.set("n", "<C-\\>", ":NvimTreeToggle<CR>")
+      end
+    },
+    {
+      "nvim-lualine/lualine.nvim",
+      config = function()
+        require("lualine").setup()
+      end,
+    }
+  }
+end
+
+require("lazy").setup(plugins)
