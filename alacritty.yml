@@ -5,7 +5,8 @@ font:
   normal:
     family: JetBrainsMono NFM
   size: 11.0
-
+env:
+  TERM: xterm-256color
 # Colors (Catppuccin Mocha)
 colors:
     primary:

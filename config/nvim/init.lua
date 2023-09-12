@@ -74,7 +74,7 @@ if not vim.g.vscode then
       "nvim-tree/nvim-tree.lua",
       config = function()
         require("nvim-tree").setup()
-        vim.keymap.set("n", "<C-b>", ":NvimTreeToggle<CR>")
+        vim.keymap.set("n", "<C-\\>", ":NvimTreeToggle<CR>")
       end
     },
     {
@@ -89,7 +89,7 @@ if not vim.g.vscode then
       end,
     },
 
-    "christoomey/vim-tmux-navigator"
+    "christoomey/vim-tmux-navigator",
   }
 end
 
