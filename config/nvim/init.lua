@@ -87,7 +87,9 @@ if not vim.g.vscode then
           }
         })
       end,
-    }
+    },
+
+    "christoomey/vim-tmux-navigator"
   }
 end
 
