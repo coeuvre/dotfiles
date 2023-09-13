@@ -40,6 +40,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.g.tmux_navigator_no_mappings = 1
+
 local plugins = {
   {
     "folke/flash.nvim",
@@ -74,7 +76,7 @@ if not vim.g.vscode then
       "nvim-tree/nvim-tree.lua",
       config = function()
         require("nvim-tree").setup()
-        vim.keymap.set("n", "<C-\\>", ":NvimTreeToggle<CR>")
+        vim.keymap.set("n", "<C-b>", ":NvimTreeFindFileToggle<CR>", { silent = true })
       end
     },
     {
@@ -89,7 +91,15 @@ if not vim.g.vscode then
       end,
     },
 
-    "christoomey/vim-tmux-navigator",
+    {
+      "christoomey/vim-tmux-navigator",
+      config = function()
+        vim.keymap.set("n", "<C-h>", ":<C-U>TmuxNavigateLeft<CR>", { silent = true })
+        vim.keymap.set("n", "<C-j>", ":<C-U>TmuxNavigateDown<CR>", { silent = true })
+        vim.keymap.set("n", "<C-k>", ":<C-U>TmuxNavigateUp<CR>", { silent = true })
+        vim.keymap.set("n", "<C-l>", ":<C-U>TmuxNavigateRight<CR>", { silent = true })
+      end,
+    }
   }
 end
 
