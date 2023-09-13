@@ -3,7 +3,7 @@ window:
   startup_mode: Maximized
 font:
   normal:
-    family: JetBrainsMono NFM
+    family: JetBrainsMono Nerd Font
   size: 11.0
 env:
   TERM: xterm-256color
