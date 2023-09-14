@@ -121,15 +121,6 @@ if not vim.g.vscode then
             config = function()
                 local configs = require("nvim-treesitter.configs")
                 configs.setup({
-                    ensure_installed = {
-                        "c",
-                        "cpp",
-                        "lua",
-                        "vim",
-                        "vimdoc",
-                        "query",
-                        "zig",
-                    },
                     highlight = { enable = true },
                     indent = { enable = true },
                 })
@@ -144,25 +135,9 @@ if not vim.g.vscode then
             },
             config = function()
                 require("mason").setup()
-                require("mason-lspconfig").setup({
-                    ensure_installed = { "lua_ls" },
-                })
-
-                -- A workaround to ensure install non-lsp with Mason
-                --   https://github.com/williamboman/mason-lspconfig.nvim/issues/113#issuecomment-1471346816
-                local mason_ensure_installed = { "stylua" }
-                local registry = require("mason-registry")
-                for _, pkg_name in ipairs(mason_ensure_installed) do
-                    local ok, pkg = pcall(registry.get_package, pkg_name)
-                    if ok then
-                        if not pkg:is_installed() then
-                            pkg:install()
-                        end
-                    end
-                end
+                require("mason-lspconfig").setup()
 
                 local lspconfig = require("lspconfig")
-
                 lspconfig.lua_ls.setup({
                     on_init = function(client)
                         local path = client.workspace_folders[1].name
@@ -207,7 +182,7 @@ if not vim.g.vscode then
                         },
                     },
                 })
-                vim.keymap.set("n", "<C-s>", ":FormatWrite<CR>", { silent = true })
+                vim.keymap.set("n", "==", ":Format<CR>", { silent = true })
             end,
         },
     }
