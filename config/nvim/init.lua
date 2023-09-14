@@ -71,121 +71,154 @@ local plugins = {
             },
         },
     },
-}
 
-if not vim.g.vscode then
-    plugins = {
-        unpack(plugins),
+    -- auto detect shiftwidth, expandtab, etc.
+    "tpope/vim-sleuth",
 
-        {
-            "catppuccin/nvim",
-            name = "catppuccin",
-            priority = 1000,
-            config = function()
-                vim.cmd("colorscheme catppuccin")
-            end,
-        },
-        "nvim-tree/nvim-web-devicons",
-        {
-            "nvim-tree/nvim-tree.lua",
-            config = function()
-                require("nvim-tree").setup()
-                vim.keymap.set("n", "<C-b>", ":NvimTreeFindFileToggle<CR>", { silent = true })
-            end,
-        },
-        {
-            "nvim-lualine/lualine.nvim",
-            config = function()
-                require("lualine").setup({
-                    options = {
-                        component_separators = "",
-                        section_separators = "",
-                    },
-                })
-            end,
-        },
+    {
+        "okuuva/auto-save.nvim",
+        cmd = "ASToggle",
+        event = { "InsertLeave", "TextChanged" },
+        -- TODO: Cancel delayed save if buf is being formatted
+    },
 
-        {
-            "christoomey/vim-tmux-navigator",
-            config = function()
-                vim.keymap.set("n", "<C-h>", ":<C-U>TmuxNavigateLeft<CR>", { silent = true })
-                vim.keymap.set("n", "<C-j>", ":<C-U>TmuxNavigateDown<CR>", { silent = true })
-                vim.keymap.set("n", "<C-k>", ":<C-U>TmuxNavigateUp<CR>", { silent = true })
-                vim.keymap.set("n", "<C-l>", ":<C-U>TmuxNavigateRight<CR>", { silent = true })
-            end,
-        },
-
-        {
-            "nvim-treesitter/nvim-treesitter",
-            build = ":TSUpdate",
-            config = function()
-                local configs = require("nvim-treesitter.configs")
-                configs.setup({
-                    highlight = { enable = true },
-                    indent = { enable = true },
-                })
-            end,
-        },
-
-        {
-            "neovim/nvim-lspconfig",
-            dependencies = {
-                "williamboman/mason.nvim",
-                "williamboman/mason-lspconfig.nvim",
+    {
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
+        config = function()
+            vim.cmd("colorscheme catppuccin")
+        end,
+    },
+    "nvim-tree/nvim-web-devicons",
+    {
+        "nvim-tree/nvim-tree.lua",
+        opts = {},
+        keys = {
+            {
+                "<C-b>",
+                function()
+                    require("nvim-tree.api").tree.toggle({ find_file = true, focus = true })
+                end,
             },
-            config = function()
-                require("mason").setup()
-                require("mason-lspconfig").setup()
+        },
+    },
+    {
+        "nvim-lualine/lualine.nvim",
+        opts = {
+            options = {
+                component_separators = "",
+                section_separators = "",
+                global_status = true,
+            },
+            sections = {
+                lualine_b = { "diagnostics" },
+            },
+        },
+    },
 
-                local lspconfig = require("lspconfig")
-                lspconfig.lua_ls.setup({
-                    on_init = function(client)
-                        local path = client.workspace_folders[1].name
-                        if
-                            not vim.loop.fs_stat(path .. "/.luarc.json")
-                            and not vim.loop.fs_stat(path .. "/.luarc.jsonc")
-                        then
-                            client.config.settings = vim.tbl_deep_extend("force", client.config.settings, {
-                                Lua = {
-                                    runtime = {
-                                        -- Tell the language server which version of Lua you're using
-                                        -- (most likely LuaJIT in the case of Neovim)
-                                        version = "LuaJIT",
-                                    },
-                                    -- Make the server aware of Neovim runtime files
-                                    workspace = {
-                                        checkThirdParty = false,
-                                        library = {
-                                            vim.env.VIMRUNTIME,
-                                            -- "${3rd}/luv/library"
-                                            -- "${3rd}/busted/library",
-                                        },
-                                        -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-                                        -- library = vim.api.nvim_get_runtime_file("", true)
-                                    },
+    {
+        "christoomey/vim-tmux-navigator",
+        keys = {
+            {
+                "<C-h>",
+                function()
+                    vim.cmd("TmuxNavigateLeft")
+                end,
+            },
+            {
+                "<C-j>",
+                function()
+                    vim.cmd("TmuxNavigateDown")
+                end,
+            },
+            {
+                "<C-k>",
+                function()
+                    vim.cmd("TmuxNavigateUp")
+                end,
+            },
+            {
+                "<C-l>",
+                function()
+                    vim.cmd("TmuxNavigateRight")
+                end,
+            },
+        },
+    },
+
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        config = function()
+            local configs = require("nvim-treesitter.configs")
+            configs.setup({
+                highlight = { enable = true },
+                indent = { enable = true },
+            })
+        end,
+    },
+
+    {
+        "neovim/nvim-lspconfig",
+        dependencies = {
+            "williamboman/mason.nvim",
+            "williamboman/mason-lspconfig.nvim",
+        },
+        config = function()
+            require("mason").setup()
+            require("mason-lspconfig").setup()
+
+            local lspconfig = require("lspconfig")
+            lspconfig.lua_ls.setup({
+                on_init = function(client)
+                    local path = client.workspace_folders[1].name
+                    if
+                        not vim.loop.fs_stat(path .. "/.luarc.json")
+                        and not vim.loop.fs_stat(path .. "/.luarc.jsonc")
+                    then
+                        client.config.settings = vim.tbl_deep_extend("force", client.config.settings, {
+                            Lua = {
+                                runtime = {
+                                    -- Tell the language server which version of Lua you're using
+                                    -- (most likely LuaJIT in the case of Neovim)
+                                    version = "LuaJIT",
                                 },
-                            })
+                                -- Make the server aware of Neovim runtime files
+                                workspace = {
+                                    checkThirdParty = false,
+                                    library = {
+                                        vim.env.VIMRUNTIME,
+                                        -- "${3rd}/luv/library"
+                                        -- "${3rd}/busted/library",
+                                    },
+                                    -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+                                    -- library = vim.api.nvim_get_runtime_file("", true)
+                                },
+                            },
+                        })
 
-                            client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-                        end
-                    end,
-                })
-            end,
-        },
-        {
-            "mhartington/formatter.nvim",
-            config = function()
-                require("formatter").setup({
-                    filetype = {
-                        lua = {
-                            require("formatter.filetypes.lua").stylua,
-                        },
+                        client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+                    end
+                end,
+            })
+        end,
+    },
+    {
+        "mhartington/formatter.nvim",
+        config = function()
+            require("formatter").setup({
+                filetype = {
+                    lua = {
+                        require("formatter.filetypes.lua").stylua,
                     },
-                })
-                vim.keymap.set("n", "==", ":Format<CR>", { silent = true })
-            end,
-        },
-    }
-end
+                },
+            })
+            vim.keymap.set("n", "==", function()
+                vim.cmd("Format")
+            end)
+        end,
+    },
+}
 
 require("lazy").setup(plugins)
