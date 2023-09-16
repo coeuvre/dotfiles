@@ -74,6 +74,7 @@ local plugins = {
 
     -- auto detect shiftwidth, expandtab, etc.
     "tpope/vim-sleuth",
+    "farmergreg/vim-lastplace",
     {
         "lewis6991/gitsigns.nvim",
         opts = {},
@@ -165,7 +166,6 @@ local plugins = {
             })
         end,
     },
-
     {
         "neovim/nvim-lspconfig",
         dependencies = {
@@ -180,8 +180,12 @@ local plugins = {
                 callback = function(args)
                     vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf })
                     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
+                    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf })
                     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = args.buf })
                     vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = args.buf })
+                    vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, { buffer = args.buf })
+                    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { buffer = args.buf })
+                    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = args.buf })
                 end,
             })
 
@@ -217,6 +221,91 @@ local plugins = {
                         client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
                     end
                 end,
+            })
+        end,
+    },
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-buffer",
+
+            "L3MON4D3/LuaSnip",
+            "saadparwaiz1/cmp_luasnip",
+        },
+
+        config = function()
+            local luasnip = require("luasnip")
+            local cmp = require("cmp")
+            cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+                preselect = cmp.PreselectMode.Item,
+                mapping = {
+                    ["<C-p>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                            return
+                        end
+
+                        fallback()
+                    end, { "i", "s" }),
+
+                    ["<C-n>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                            return
+                        end
+
+                        fallback()
+                    end, { "i", "s" }),
+
+                    ["<Tab>"] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            local entry = cmp.get_selected_entry()
+                            if not entry then
+                                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                            end
+                            cmp.confirm()
+                            return
+                        end
+
+                        if luasnip.expand_or_locally_jumpable() then
+                            luasnip.expand_or_jump()
+                            return
+                        end
+
+                        fallback()
+                    end, { "i", "s" }),
+
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        if luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
+                            return
+                        end
+
+                        fallback()
+                    end, { "i", "s" }),
+                },
+                experimental = {
+                    ghost_text = true,
+                },
+                sources = cmp.config.sources({
+                    { name = "nvim_lsp" },
+                    { name = "luasnip" },
+                }, {
+                    { name = "buffer" },
+                }),
+            })
+
+            -- Set configuration for specific filetype.
+            cmp.setup.filetype("gitcommit", {
+                sources = cmp.config.sources({
+                    { name = "buffer" },
+                }),
             })
         end,
     },
