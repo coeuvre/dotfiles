@@ -192,6 +192,7 @@ local plugins = {
             configs.setup({
                 highlight = { enable = true },
                 indent = { enable = true },
+                matchup = { enable = true },
             })
         end,
     },
@@ -282,6 +283,12 @@ local plugins = {
         opts = {},
     },
     {
+        "andymass/vim-matchup",
+        config = function()
+            -- vim.g.matchup_matchparen_offscreen = { method = "popup" }
+        end,
+    },
+    {
         "hrsh7th/nvim-cmp",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
@@ -362,9 +369,6 @@ local plugins = {
 
                         fallback()
                     end, { "i", "s" }),
-                },
-                experimental = {
-                    ghost_text = true,
                 },
                 sources = cmp.config.sources({
                     { name = "copilot" },
