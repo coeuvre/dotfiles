@@ -17,6 +17,7 @@ vim.o.wrap = false
 vim.o.laststatus = 3
 vim.o.number = true
 vim.o.cursorline = true
+vim.o.signcolumn = "yes"
 
 -- disable netrw
 vim.g.loaded_netrw = 1
@@ -86,8 +87,15 @@ local plugins = {
         event = { "InsertLeave", "TextChanged" },
         opts = {
             debounce_delay = 300,
+            condition = function()
+                -- don't save for special-buffers
+                if vim.bo.buftype ~= "" then
+                    return false
+                end
+
+                return vim.bo.modifiable
+            end,
         },
-        -- TODO: Cancel delayed save if buf is being formatted
     },
 
     {
@@ -156,6 +164,20 @@ local plugins = {
     },
 
     {
+        "nvim-telescope/telescope.nvim",
+        branch = "0.1.x",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("telescope").setup()
+
+            local builtin = require("telescope.builtin")
+            vim.keymap.set("n", "<C-p>", builtin.find_files, {})
+            vim.keymap.set("n", "g/", builtin.live_grep, {})
+            vim.keymap.set("n", "g*", builtin.grep_string, {})
+        end,
+    },
+
+    {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
         config = function()
@@ -178,11 +200,12 @@ local plugins = {
 
             vim.api.nvim_create_autocmd("LspAttach", {
                 callback = function(args)
+                    local builtin = require("telescope.builtin")
                     vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf })
-                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
-                    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf })
-                    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = args.buf })
-                    vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = args.buf })
+                    vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = args.buf })
+                    vim.keymap.set("n", "gD", builtin.lsp_type_definitions, { buffer = args.buf })
+                    vim.keymap.set("n", "gi", builtin.lsp_implementations, { buffer = args.buf })
+                    vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = args.buf })
                     vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, { buffer = args.buf })
                     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { buffer = args.buf })
                     vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = args.buf })
@@ -222,6 +245,8 @@ local plugins = {
                     end
                 end,
             })
+
+            lspconfig.clangd.setup({})
         end,
     },
     {
@@ -232,19 +257,31 @@ local plugins = {
 
             "L3MON4D3/LuaSnip",
             "saadparwaiz1/cmp_luasnip",
+
+            "onsails/lspkind.nvim",
         },
 
         config = function()
             local luasnip = require("luasnip")
             local cmp = require("cmp")
+            local lspkind = require("lspkind")
             cmp.setup({
                 snippet = {
                     expand = function(args)
                         luasnip.lsp_expand(args.body)
                     end,
                 },
+                formatting = {
+                    format = lspkind.cmp_format({
+                        mode = "symbol",
+                        maxwidth = 50,
+                        ellipsis_char = "...",
+                    }),
+                },
                 preselect = cmp.PreselectMode.Item,
                 mapping = {
+                    ["<C-e>"] = cmp.mapping.abort(),
+
                     ["<C-p>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item()
@@ -312,15 +349,20 @@ local plugins = {
     {
         "mhartington/formatter.nvim",
         config = function()
+            local clangforamt = require("formatter.defaults.clangformat")
+
             require("formatter").setup({
                 filetype = {
                     lua = {
                         require("formatter.filetypes.lua").stylua,
                     },
+                    c = { clangforamt },
+                    cpp = { clangforamt },
                 },
             })
             vim.keymap.set("n", "<leader>f", function()
-                vim.cmd("Format")
+                vim.cmd(":silent! write") -- Cancel pending auto-save
+                vim.cmd("FormatWrite")
             end)
         end,
     },
