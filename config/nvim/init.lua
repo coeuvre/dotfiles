@@ -106,6 +106,12 @@ local plugins = {
             vim.cmd("colorscheme catppuccin")
         end,
     },
+    {
+        "RRethy/vim-illuminate",
+        config = function()
+            require("illuminate").configure({})
+        end,
+    },
     "nvim-tree/nvim-web-devicons",
     {
         "nvim-tree/nvim-tree.lua",
@@ -128,7 +134,8 @@ local plugins = {
                 global_status = true,
             },
             sections = {
-                lualine_b = { "diagnostics" },
+                lualine_b = { "diagnostics", "filename" },
+                lualine_c = { { "navic", color_correction = "static" } },
             },
         },
     },
@@ -189,28 +196,42 @@ local plugins = {
         end,
     },
     {
+        "SmiteshP/nvim-navic",
+        opts = {
+            highlight = true,
+        },
+    },
+    {
         "neovim/nvim-lspconfig",
         dependencies = {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
+
+            "SmiteshP/nvim-navic",
         },
         config = function()
             require("mason").setup()
             require("mason-lspconfig").setup()
 
-            vim.api.nvim_create_autocmd("LspAttach", {
-                callback = function(args)
-                    local builtin = require("telescope.builtin")
-                    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf })
-                    vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = args.buf })
-                    vim.keymap.set("n", "gD", builtin.lsp_type_definitions, { buffer = args.buf })
-                    vim.keymap.set("n", "gi", builtin.lsp_implementations, { buffer = args.buf })
-                    vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = args.buf })
-                    vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, { buffer = args.buf })
-                    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { buffer = args.buf })
-                    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = args.buf })
-                end,
-            })
+            local navic = require("nvim-navic")
+
+            local on_attach = function(client, bufnr)
+                local builtin = require("telescope.builtin")
+                vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
+                vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = bufnr })
+                vim.keymap.set("n", "gD", builtin.lsp_type_definitions, { buffer = bufnr })
+                vim.keymap.set("n", "gi", builtin.lsp_implementations, { buffer = bufnr })
+                vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = bufnr })
+                vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, { buffer = bufnr })
+                vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { buffer = bufnr })
+                vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = bufnr })
+                vim.keymap.set("n", "<A-cr>", vim.lsp.buf.code_action, { buffer = bufnr })
+                vim.keymap.set("i", "<C-Space>", vim.lsp.buf.signature_help, { buffer = bufnr })
+
+                if client.server_capabilities.documentSymbolProvider then
+                    navic.attach(client, bufnr)
+                end
+            end
 
             local lspconfig = require("lspconfig")
             lspconfig.lua_ls.setup({
@@ -244,16 +265,30 @@ local plugins = {
                         client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
                     end
                 end,
+                on_attach = on_attach,
             })
 
-            lspconfig.clangd.setup({})
+            lspconfig.clangd.setup({
+                capabilities = {
+                    offsetEncoding = "utf-16",
+                },
+                on_attach = on_attach,
+            })
         end,
+    },
+    {
+        "windwp/nvim-autopairs",
+        event = "InsertEnter",
+        opts = {},
     },
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
+
+            "zbirenbaum/copilot.lua",
+            "zbirenbaum/copilot-cmp",
 
             "L3MON4D3/LuaSnip",
             "saadparwaiz1/cmp_luasnip",
@@ -276,6 +311,7 @@ local plugins = {
                         mode = "symbol",
                         maxwidth = 50,
                         ellipsis_char = "...",
+                        symbol_map = { Copilot = "" },
                     }),
                 },
                 preselect = cmp.PreselectMode.Item,
@@ -331,6 +367,7 @@ local plugins = {
                     ghost_text = true,
                 },
                 sources = cmp.config.sources({
+                    { name = "copilot" },
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
                 }, {
@@ -344,6 +381,9 @@ local plugins = {
                     { name = "buffer" },
                 }),
             })
+
+            local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+            cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
         end,
     },
     {
@@ -373,3 +413,11 @@ local plugins = {
 }
 
 require("lazy").setup(plugins)
+
+vim.api.nvim_create_user_command("LoadCopilot", function()
+    require("copilot").setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+    })
+    require("copilot_cmp").setup()
+end, {})
