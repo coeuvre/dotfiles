@@ -74,11 +74,18 @@ local plugins = {
 
     -- auto detect shiftwidth, expandtab, etc.
     "tpope/vim-sleuth",
+    {
+        "lewis6991/gitsigns.nvim",
+        opts = {},
+    },
 
     {
         "okuuva/auto-save.nvim",
         cmd = "ASToggle",
         event = { "InsertLeave", "TextChanged" },
+        opts = {
+            debounce_delay = 300,
+        },
         -- TODO: Cancel delayed save if buf is being formatted
     },
 
@@ -169,6 +176,15 @@ local plugins = {
             require("mason").setup()
             require("mason-lspconfig").setup()
 
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = args.buf })
+                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf })
+                    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = args.buf })
+                    vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = args.buf })
+                end,
+            })
+
             local lspconfig = require("lspconfig")
             lspconfig.lua_ls.setup({
                 on_init = function(client)
@@ -214,10 +230,14 @@ local plugins = {
                     },
                 },
             })
-            vim.keymap.set("n", "==", function()
+            vim.keymap.set("n", "<leader>f", function()
                 vim.cmd("Format")
             end)
         end,
+    },
+    {
+        "numToStr/Comment.nvim",
+        opts = {},
     },
 }
 
