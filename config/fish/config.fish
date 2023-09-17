@@ -1,4 +1,5 @@
 set -x PATH ~/bin ~/.cargo/bin $PATH
+set -x EDITOR nvim
 
 # Colorful ls on macOS
 set -x CLICOLOR 1
