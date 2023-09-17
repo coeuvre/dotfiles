@@ -478,6 +478,20 @@ local plugins = {
         "numToStr/Comment.nvim",
         opts = {},
     },
+
+    {
+        "voldikss/vim-floaterm",
+        keys = {
+            {
+                "<C-Space>",
+                mode = { "n", "t" },
+                function()
+                    vim.cmd("FloatermToggle")
+                end,
+                desc = "Floaterm",
+            },
+        },
+    },
 }
 
 require("lazy").setup(plugins)
