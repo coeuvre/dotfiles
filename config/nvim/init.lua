@@ -16,6 +16,7 @@ vim.o.termguicolors = true
 vim.o.wrap = false
 vim.o.laststatus = 3
 vim.o.number = true
+vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 
@@ -24,6 +25,13 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.g.mapleader = " "
+
+vim.keymap.set("n", "]b", function()
+    vim.cmd("bnext")
+end, {})
+vim.keymap.set("n", "[b", function()
+    vim.cmd("bprev")
+end, {})
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -78,7 +86,45 @@ local plugins = {
     "farmergreg/vim-lastplace",
     {
         "lewis6991/gitsigns.nvim",
-        opts = {},
+        config = function()
+            require("gitsigns").setup({
+                on_attach = function(bufnr)
+                    local gs = package.loaded.gitsigns
+
+                    local function map(mode, l, r, opts)
+                        opts = opts or {}
+                        opts.buffer = bufnr
+                        vim.keymap.set(mode, l, r, opts)
+                    end
+
+                    -- Navigation
+                    map("n", "]c", function()
+                        if vim.wo.diff then
+                            return "]c"
+                        end
+                        vim.schedule(function()
+                            gs.next_hunk()
+                        end)
+                        return "<Ignore>"
+                    end, { expr = true })
+
+                    map("n", "[c", function()
+                        if vim.wo.diff then
+                            return "[c"
+                        end
+                        vim.schedule(function()
+                            gs.prev_hunk()
+                        end)
+                        return "<Ignore>"
+                    end, { expr = true })
+
+                    map("n", "<leader>hd", gs.preview_hunk)
+                    map("n", "<leader>hb", function()
+                        gs.blame_line({ full = true })
+                    end)
+                end,
+            })
+        end,
     },
 
     {
@@ -126,6 +172,28 @@ local plugins = {
         },
     },
     {
+        "akinsho/bufferline.nvim",
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
+        opts = {
+            options = {
+                offsets = {
+                    {
+                        filetype = "NvimTree",
+                        text = "File Explorer",
+                        highlight = "Directory",
+                    },
+                    {
+                        filetype = "DiffviewFiles",
+                        text = "Source Control",
+                        highlight = "Directory",
+                    },
+                },
+            },
+        },
+    },
+    {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
@@ -134,8 +202,16 @@ local plugins = {
                 global_status = true,
             },
             sections = {
-                lualine_b = { "diagnostics", "filename" },
+                lualine_b = {},
+                lualine_c = {},
+            },
+            winbar = {
                 lualine_c = { { "navic", color_correction = "static" } },
+                lualine_x = { "filename" },
+            },
+            inactive_winbar = {
+                lualine_c = { { "navic", color_correction = "static" } },
+                lualine_x = { "filename" },
             },
         },
     },
@@ -179,6 +255,7 @@ local plugins = {
 
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
+            vim.keymap.set("n", "<leader><leader>", builtin.buffers, {})
             vim.keymap.set("n", "g/", builtin.live_grep, {})
             vim.keymap.set("n", "g*", builtin.grep_string, {})
         end,
