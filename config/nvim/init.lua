@@ -118,8 +118,8 @@ local plugins = {
                         return "<Ignore>"
                     end, { expr = true })
 
-                    map("n", "<leader>hd", gs.preview_hunk)
-                    map("n", "<leader>hb", function()
+                    map("n", "<leader>gd", gs.preview_hunk)
+                    map("n", "<leader>gb", function()
                         gs.blame_line({ full = true })
                     end)
                 end,
@@ -172,28 +172,6 @@ local plugins = {
         },
     },
     {
-        "akinsho/bufferline.nvim",
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-        },
-        opts = {
-            options = {
-                offsets = {
-                    {
-                        filetype = "NvimTree",
-                        text = "File Explorer",
-                        highlight = "Directory",
-                    },
-                    {
-                        filetype = "DiffviewFiles",
-                        text = "Source Control",
-                        highlight = "Directory",
-                    },
-                },
-            },
-        },
-    },
-    {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
@@ -203,15 +181,17 @@ local plugins = {
             },
             sections = {
                 lualine_b = {},
-                lualine_c = {},
-            },
-            winbar = {
-                lualine_c = { { "navic", color_correction = "static" } },
-                lualine_x = { "filename" },
-            },
-            inactive_winbar = {
-                lualine_c = { { "navic", color_correction = "static" } },
-                lualine_x = { "filename" },
+                lualine_c = {
+                    {
+                        "filename",
+                        file_status = false,
+                        path = 1,
+                    },
+                    {
+                        "navic",
+                        color_correction = "static",
+                    },
+                },
             },
         },
     },
@@ -352,6 +332,10 @@ local plugins = {
                 },
                 on_attach = on_attach,
             })
+
+            require("lspconfig").tsserver.setup({
+                on_attach = on_attach,
+            })
         end,
     },
     {
@@ -471,6 +455,7 @@ local plugins = {
         "mhartington/formatter.nvim",
         config = function()
             local clangforamt = require("formatter.defaults.clangformat")
+            local prettier = require("formatter.defaults.prettier")
 
             require("formatter").setup({
                 filetype = {
@@ -479,6 +464,8 @@ local plugins = {
                     },
                     c = { clangforamt },
                     cpp = { clangforamt },
+                    javascript = { prettier },
+                    typescript = { prettier },
                 },
             })
             vim.keymap.set("n", "<leader>f", function()
