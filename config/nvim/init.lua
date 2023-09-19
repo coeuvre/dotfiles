@@ -33,6 +33,8 @@ vim.keymap.set("n", "[b", function()
     vim.cmd("bprev")
 end, {})
 
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
+
 -------------------------------------------------------------------------------
 -- Plugins
 -------------------------------------------------------------------------------
@@ -235,7 +237,7 @@ local plugins = {
 
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
-            vim.keymap.set("n", "<leader><leader>", builtin.buffers, {})
+            vim.keymap.set("n", "<A-p>", builtin.buffers, {})
             vim.keymap.set("n", "g/", builtin.live_grep, {})
             vim.keymap.set("n", "g*", builtin.grep_string, {})
         end,
@@ -491,6 +493,10 @@ local plugins = {
                 desc = "Floaterm",
             },
         },
+        config = function()
+            vim.g.floaterm_width = 0.9
+            vim.g.floaterm_height = 0.9
+        end,
     },
 }
 
