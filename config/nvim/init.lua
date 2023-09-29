@@ -2,6 +2,9 @@
 -- Settings
 -------------------------------------------------------------------------------
 vim.o.clipboard = "unnamedplus"
+
+vim.o.swapfile = false
+vim.o.backup = false
 vim.o.undofile = true
 
 vim.o.tabstop = 4
@@ -34,6 +37,8 @@ vim.keymap.set("n", "[b", function()
 end, {})
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
+vim.keymap.set("x", "<leader>p", '"_dP')
+vim.keymap.set("n", "Q", "<nop>")
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -52,6 +57,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 vim.g.tmux_navigator_no_mappings = 1
+vim.g.zig_fmt_autosave = 0
 
 local plugins = {
     {
@@ -86,6 +92,7 @@ local plugins = {
     -- auto detect shiftwidth, expandtab, etc.
     "tpope/vim-sleuth",
     "farmergreg/vim-lastplace",
+    "mbbill/undotree",
     {
         "lewis6991/gitsigns.nvim",
         config = function()
@@ -151,13 +158,7 @@ local plugins = {
         name = "catppuccin",
         priority = 1000,
         config = function()
-            vim.cmd("colorscheme catppuccin")
-        end,
-    },
-    {
-        "RRethy/vim-illuminate",
-        config = function()
-            require("illuminate").configure({})
+            vim.cmd.colorscheme("catppuccin")
         end,
     },
     "nvim-tree/nvim-web-devicons",
@@ -188,10 +189,6 @@ local plugins = {
                         "filename",
                         file_status = false,
                         path = 1,
-                    },
-                    {
-                        "navic",
-                        color_correction = "static",
                     },
                 },
             },
@@ -244,36 +241,36 @@ local plugins = {
     },
 
     {
+        "windwp/nvim-autopairs",
+        event = "InsertEnter",
+        opts = {},
+    },
+    {
+        "andymass/vim-matchup",
+        opts = {},
+    },
+    {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
         config = function()
             local configs = require("nvim-treesitter.configs")
             configs.setup({
-                highlight = { enable = true },
+                highlight = { enable = true, additional_vim_regex_highlighting = false },
                 indent = { enable = true },
                 matchup = { enable = true },
             })
         end,
     },
-    {
-        "SmiteshP/nvim-navic",
-        opts = {
-            highlight = true,
-        },
-    },
+
     {
         "neovim/nvim-lspconfig",
         dependencies = {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
-
-            "SmiteshP/nvim-navic",
         },
         config = function()
             require("mason").setup()
             require("mason-lspconfig").setup()
-
-            local navic = require("nvim-navic")
 
             local on_attach = function(client, bufnr)
                 local builtin = require("telescope.builtin")
@@ -287,10 +284,6 @@ local plugins = {
                 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = bufnr })
                 vim.keymap.set("n", "<A-cr>", vim.lsp.buf.code_action, { buffer = bufnr })
                 vim.keymap.set("i", "<C-Space>", vim.lsp.buf.signature_help, { buffer = bufnr })
-
-                if client.server_capabilities.documentSymbolProvider then
-                    navic.attach(client, bufnr)
-                end
             end
 
             local lspconfig = require("lspconfig")
@@ -335,20 +328,13 @@ local plugins = {
                 on_attach = on_attach,
             })
 
-            require("lspconfig").tsserver.setup({
+            lspconfig.tsserver.setup({
                 on_attach = on_attach,
             })
-        end,
-    },
-    {
-        "windwp/nvim-autopairs",
-        event = "InsertEnter",
-        opts = {},
-    },
-    {
-        "andymass/vim-matchup",
-        config = function()
-            -- vim.g.matchup_matchparen_offscreen = { method = "popup" }
+
+            lspconfig.zls.setup({
+                on_attach = on_attach,
+            })
         end,
     },
     {
@@ -385,6 +371,9 @@ local plugins = {
                     }),
                 },
                 preselect = cmp.PreselectMode.Item,
+                completion = {
+                    completeopt = "menu,menuone,noinsert",
+                },
                 mapping = {
                     ["<C-e>"] = cmp.mapping.abort(),
 
@@ -409,10 +398,11 @@ local plugins = {
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             local entry = cmp.get_selected_entry()
-                            if not entry then
+                            if entry then
+                                cmp.confirm()
+                            else
                                 cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                             end
-                            cmp.confirm()
                             return
                         end
 
@@ -468,6 +458,7 @@ local plugins = {
                     cpp = { clangforamt },
                     javascript = { prettier },
                     typescript = { prettier },
+                    zig = { require("formatter.filetypes.zig").zigfmt },
                 },
             })
             vim.keymap.set("n", "<leader>f", function()
