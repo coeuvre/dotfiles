@@ -59,6 +59,9 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.tmux_navigator_no_mappings = 1
 vim.g.zig_fmt_autosave = 0
 
+vim.g.copilot_enabled = false
+vim.g.copilot_assume_mapped = true
+
 local plugins = {
     {
         "folke/flash.nvim",
@@ -282,8 +285,14 @@ local plugins = {
                 vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, { buffer = bufnr })
                 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { buffer = bufnr })
                 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = bufnr })
-                vim.keymap.set("n", "<A-cr>", vim.lsp.buf.code_action, { buffer = bufnr })
+                vim.keymap.set("n", "<A-Cr>", vim.lsp.buf.code_action, { buffer = bufnr })
                 vim.keymap.set("i", "<C-Space>", vim.lsp.buf.signature_help, { buffer = bufnr })
+
+                if vim.lsp.buf.range_code_action then
+                    vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.range_code_action)
+                else
+                    vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.code_action)
+                end
             end
 
             local lspconfig = require("lspconfig")
@@ -337,14 +346,14 @@ local plugins = {
             })
         end,
     },
+
+    { "github/copilot.vim" },
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
-
-            "zbirenbaum/copilot.lua",
-            "zbirenbaum/copilot-cmp",
+            "hrsh7th/cmp-path",
 
             "L3MON4D3/LuaSnip",
             "saadparwaiz1/cmp_luasnip",
@@ -398,11 +407,10 @@ local plugins = {
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             local entry = cmp.get_selected_entry()
-                            if entry then
-                                cmp.confirm()
-                            else
+                            if not entry then
                                 cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                             end
+                            cmp.confirm()
                             return
                         end
 
@@ -429,13 +437,7 @@ local plugins = {
                     { name = "luasnip" },
                 }, {
                     { name = "buffer" },
-                }),
-            })
-
-            -- Set configuration for specific filetype.
-            cmp.setup.filetype("gitcommit", {
-                sources = cmp.config.sources({
-                    { name = "buffer" },
+                    { name = "path" },
                 }),
             })
 
@@ -493,10 +495,3 @@ local plugins = {
 
 require("lazy").setup(plugins)
 
-vim.api.nvim_create_user_command("LoadCopilot", function()
-    require("copilot").setup({
-        suggestion = { enabled = false },
-        panel = { enabled = false },
-    })
-    require("copilot_cmp").setup()
-end, {})
