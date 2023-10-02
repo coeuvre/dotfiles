@@ -29,13 +29,6 @@ vim.g.loaded_netrwPlugin = 1
 
 vim.g.mapleader = " "
 
-vim.keymap.set("n", "]b", function()
-    vim.cmd("bnext")
-end, {})
-vim.keymap.set("n", "[b", function()
-    vim.cmd("bprev")
-end, {})
-
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("x", "<leader>p", '"_dP')
 vim.keymap.set("n", "Q", "<nop>")
@@ -231,15 +224,29 @@ local plugins = {
     {
         "nvim-telescope/telescope.nvim",
         branch = "0.1.x",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "folke/trouble.nvim",
+        },
         config = function()
-            require("telescope").setup()
+            local trouble = require("trouble.providers.telescope")
+            require("telescope").setup({
+                defaults = {
+                    mappings = {
+                        i = {
+                            ["<Esc>"] = require("telescope.actions").close,
+                            ["<C-Space>"] = require("telescope.actions").close,
+                            ["<C-q>"] = trouble.open_with_trouble,
+                        },
+                    },
+                },
+            })
 
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
             vim.keymap.set("n", "<C-e>", builtin.buffers, {})
-            vim.keymap.set("n", "g/", builtin.live_grep, {})
-            vim.keymap.set("n", "g*", builtin.grep_string, {})
+            vim.keymap.set("n", "<leader>/", builtin.live_grep, {})
+            vim.keymap.set({ "n", "x" }, "<leader>*", builtin.grep_string, {})
         end,
     },
 
@@ -473,25 +480,49 @@ local plugins = {
         "numToStr/Comment.nvim",
         opts = {},
     },
-
     {
-        "voldikss/vim-floaterm",
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            local trouble = require("trouble")
+            vim.keymap.set("n", "<leader>xx", function()
+                trouble.open()
+            end)
+            vim.keymap.set("n", "<leader>xw", function()
+                trouble.open("workspace_diagnostics")
+            end)
+            vim.keymap.set("n", "<leader>xd", function()
+                trouble.open("document_diagnostics")
+            end)
+            vim.keymap.set("n", "<leader>xq", function()
+                trouble.open("quickfix")
+            end)
+            vim.keymap.set("n", "<leader>xl", function()
+                trouble.open("loclist")
+            end)
+        end,
+    },
+    {
+        "numtostr/FTerm.nvim",
         keys = {
             {
                 "<C-Space>",
                 mode = { "n", "t" },
                 function()
-                    vim.cmd("FloatermToggle")
+                    require("FTerm").toggle()
                 end,
                 desc = "Floaterm",
             },
         },
         config = function()
-            vim.g.floaterm_width = 0.9
-            vim.g.floaterm_height = 0.9
+            require("FTerm").setup({
+                dimensions = {
+                    width = 0.95,
+                    height = 0.95,
+                },
+            })
         end,
     },
 }
 
 require("lazy").setup(plugins)
-
