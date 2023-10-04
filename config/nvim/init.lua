@@ -24,7 +24,6 @@ vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 
 vim.o.guifont = "JetBrainsMono NF:h11"
-vim.g.neovide_cursor_animation_length = 0
 
 -- disable netrw
 vim.g.loaded_netrw = 1
