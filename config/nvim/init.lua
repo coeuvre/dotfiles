@@ -23,6 +23,9 @@ vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 
+vim.o.guifont = "JetBrainsMono NF:h11"
+vim.g.neovide_cursor_animation_length = 0
+
 -- disable netrw
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -515,7 +518,19 @@ local plugins = {
             },
         },
         config = function()
+            ---@type nil|string|table
+            local cmd = os.getenv("SHELL")
+            if vim.fn.has("win32") then
+                cmd = {
+                    "C:\\msys64\\usr\\bin\\fish.exe",
+                    "--login",
+                    "-i",
+                }
+                vim.env.CHERE_INVOKING = "1"
+                vim.env.MSYS2_PATH_TYPE = "inherit"
+            end
             require("FTerm").setup({
+                cmd = cmd,
                 dimensions = {
                     width = 0.95,
                     height = 0.95,
