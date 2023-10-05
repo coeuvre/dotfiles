@@ -286,7 +286,8 @@ local plugins = {
 
             local on_attach = function(client, bufnr)
                 local builtin = require("telescope.builtin")
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
+                vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+                vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
                 vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = bufnr })
                 vim.keymap.set("n", "gD", builtin.lsp_type_definitions, { buffer = bufnr })
                 vim.keymap.set("n", "gi", builtin.lsp_implementations, { buffer = bufnr })
@@ -352,6 +353,21 @@ local plugins = {
 
             lspconfig.zls.setup({
                 on_attach = on_attach,
+            })
+        end,
+    },
+    {
+        "lewis6991/hover.nvim",
+        config = function()
+            require("hover").setup({
+                init = function()
+                    require("hover.providers.lsp")
+                end,
+                preview_opts = {
+                    border = nil,
+                },
+                preview_window = true,
+                title = true,
             })
         end,
     },
