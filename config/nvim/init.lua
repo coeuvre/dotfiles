@@ -237,7 +237,7 @@ local plugins = {
                     mappings = {
                         i = {
                             ["<Esc>"] = require("telescope.actions").close,
-                            ["<C-Space>"] = require("telescope.actions").close,
+                            ["<C-x>"] = require("telescope.actions").close,
                             ["<C-q>"] = trouble.open_with_trouble,
                         },
                     },
@@ -246,7 +246,6 @@ local plugins = {
 
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
-            vim.keymap.set("n", "<C-e>", builtin.buffers, {})
             vim.keymap.set("n", "<leader>/", builtin.live_grep, {})
             vim.keymap.set({ "n", "x" }, "<leader>*", builtin.grep_string, {})
         end,
@@ -367,7 +366,7 @@ local plugins = {
                     border = nil,
                 },
                 preview_window = true,
-                title = true,
+                title = false,
             })
         end,
     },
@@ -524,7 +523,7 @@ local plugins = {
         "numtostr/FTerm.nvim",
         keys = {
             {
-                "<C-Space>",
+                "<C-x>",
                 mode = { "n", "t" },
                 function()
                     require("FTerm").toggle()
@@ -535,7 +534,7 @@ local plugins = {
         config = function()
             ---@type nil|string|table
             local cmd = os.getenv("SHELL")
-            if vim.fn.has("win32") then
+            if vim.fn.has("win32") ~= 0 then
                 cmd = {
                     "C:\\msys64\\usr\\bin\\fish.exe",
                     "--login",
