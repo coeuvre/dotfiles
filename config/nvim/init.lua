@@ -520,35 +520,18 @@ local plugins = {
         end,
     },
     {
-        "numtostr/FTerm.nvim",
-        keys = {
-            {
-                "<C-x>",
-                mode = { "n", "t" },
-                function()
-                    require("FTerm").toggle()
-                end,
-                desc = "Floaterm",
-            },
-        },
+        "akinsho/toggleterm.nvim",
         config = function()
             ---@type nil|string|table
-            local cmd = os.getenv("SHELL")
+            local shell = vim.o.shell
             if vim.fn.has("win32") ~= 0 then
-                cmd = {
-                    "C:\\msys64\\usr\\bin\\fish.exe",
-                    "--login",
-                    "-i",
-                }
+                shell = "C:\\msys64\\usr\\bin\\fish.exe --login -i"
                 vim.env.CHERE_INVOKING = "1"
                 vim.env.MSYS2_PATH_TYPE = "inherit"
             end
-            require("FTerm").setup({
-                cmd = cmd,
-                dimensions = {
-                    width = 0.95,
-                    height = 0.95,
-                },
+            require("toggleterm").setup({
+                open_mapping = "<C-x>",
+                shell = shell,
             })
         end,
     },
