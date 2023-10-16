@@ -225,7 +225,6 @@ local plugins = {
 
     {
         "nvim-telescope/telescope.nvim",
-        branch = "0.1.x",
         dependencies = {
             "nvim-lua/plenary.nvim",
             "folke/trouble.nvim",
@@ -247,7 +246,7 @@ local plugins = {
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
             vim.keymap.set("n", "<leader>/", builtin.live_grep, {})
-            vim.keymap.set({ "n", "x" }, "<leader>*", builtin.grep_string, {})
+            vim.keymap.set({ "n", "v" }, "<leader>*", builtin.grep_string, {})
         end,
     },
 
@@ -340,6 +339,7 @@ local plugins = {
             })
 
             lspconfig.clangd.setup({
+                autostart = false,
                 capabilities = {
                     offsetEncoding = "utf-16",
                 },
