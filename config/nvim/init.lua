@@ -528,15 +528,15 @@ local plugins = {
         "akinsho/toggleterm.nvim",
         config = function()
             ---@type nil|string|table
-            local shell = vim.o.shell
             if vim.fn.has("win32") ~= 0 then
-                shell = "C:\\msys64\\usr\\bin\\fish.exe --login -i"
+                vim.o.shell= "C:\\msys64\\usr\\bin\\fish.exe"
+                vim.o.shellcmdflag = "--login -i"
                 vim.env.CHERE_INVOKING = "1"
                 vim.env.MSYS2_PATH_TYPE = "inherit"
             end
             require("toggleterm").setup({
                 open_mapping = "<C-x>",
-                shell = shell,
+                direction = "float",
             })
         end,
     },
