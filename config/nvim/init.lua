@@ -236,7 +236,6 @@ local plugins = {
                     mappings = {
                         i = {
                             ["<Esc>"] = require("telescope.actions").close,
-                            ["<C-x>"] = require("telescope.actions").close,
                             ["<C-q>"] = trouble.open_with_trouble,
                         },
                     },
@@ -245,6 +244,7 @@ local plugins = {
 
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
+            vim.keymap.set("n", "<leader><leader>", builtin.buffers, {})
             vim.keymap.set("n", "<leader>/", builtin.live_grep, {})
             vim.keymap.set({ "n", "v" }, "<leader>*", builtin.grep_string, {})
         end,
@@ -528,7 +528,7 @@ local plugins = {
         "numtostr/FTerm.nvim",
         keys = {
             {
-                "<C-x>",
+                "<A-j>",
                 mode = { "n", "t" },
                 function()
                     require("FTerm").toggle()
