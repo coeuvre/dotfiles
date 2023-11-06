@@ -236,6 +236,7 @@ local plugins = {
                     mappings = {
                         i = {
                             ["<Esc>"] = require("telescope.actions").close,
+                            ["<C-x>"] = require("telescope.actions").close,
                             ["<C-q>"] = trouble.open_with_trouble,
                         },
                     },
@@ -528,7 +529,7 @@ local plugins = {
         "numtostr/FTerm.nvim",
         keys = {
             {
-                "<A-j>",
+                "<C-x>",
                 mode = { "n", "t" },
                 function()
                     require("FTerm").toggle()
