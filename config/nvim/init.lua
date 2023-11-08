@@ -22,6 +22,7 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
+vim.o.ignorecase = true
 
 vim.o.guifont = "JetBrainsMono NF:h11"
 
