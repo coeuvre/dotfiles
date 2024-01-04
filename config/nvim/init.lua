@@ -19,7 +19,6 @@ vim.o.termguicolors = true
 vim.o.wrap = false
 vim.o.laststatus = 3
 vim.o.number = true
-vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 vim.o.ignorecase = true
@@ -35,6 +34,9 @@ vim.g.mapleader = " "
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("x", "<leader>p", '"_dP')
 vim.keymap.set("n", "Q", "<nop>")
+vim.keymap.set("n", "<F5>", ":make<CR>")
+vim.keymap.set("n", "]c", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "[c", "<cmd>cprev<CR>zz")
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -104,27 +106,6 @@ local plugins = {
                         opts.buffer = bufnr
                         vim.keymap.set(mode, l, r, opts)
                     end
-
-                    -- Navigation
-                    map("n", "]c", function()
-                        if vim.wo.diff then
-                            return "]c"
-                        end
-                        vim.schedule(function()
-                            gs.next_hunk()
-                        end)
-                        return "<Ignore>"
-                    end, { expr = true })
-
-                    map("n", "[c", function()
-                        if vim.wo.diff then
-                            return "[c"
-                        end
-                        vim.schedule(function()
-                            gs.prev_hunk()
-                        end)
-                        return "<Ignore>"
-                    end, { expr = true })
 
                     map("n", "<leader>gd", gs.preview_hunk)
                     map("n", "<leader>gb", function()
@@ -228,17 +209,14 @@ local plugins = {
         "nvim-telescope/telescope.nvim",
         dependencies = {
             "nvim-lua/plenary.nvim",
-            "folke/trouble.nvim",
         },
         config = function()
-            local trouble = require("trouble.providers.telescope")
             require("telescope").setup({
                 defaults = {
                     mappings = {
                         i = {
                             ["<Esc>"] = require("telescope.actions").close,
                             ["<C-x>"] = require("telescope.actions").close,
-                            ["<C-q>"] = trouble.open_with_trouble,
                         },
                     },
                 },
@@ -296,7 +274,6 @@ local plugins = {
                 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { buffer = bufnr })
                 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { buffer = bufnr })
                 vim.keymap.set("n", "<A-Cr>", vim.lsp.buf.code_action, { buffer = bufnr })
-                vim.keymap.set("i", "<C-Space>", vim.lsp.buf.signature_help, { buffer = bufnr })
 
                 if vim.lsp.buf.range_code_action then
                     vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.range_code_action)
@@ -380,6 +357,7 @@ local plugins = {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
+            "hrsh7th/cmp-nvim-lsp-signature-help",
 
             "L3MON4D3/LuaSnip",
             "saadparwaiz1/cmp_luasnip",
@@ -465,6 +443,7 @@ local plugins = {
                 sources = cmp.config.sources({
                     { name = "copilot" },
                     { name = "nvim_lsp" },
+                    { name = 'nvim_lsp_signature_help' },
                     { name = "luasnip" },
                 }, {
                     { name = "buffer" },
@@ -503,28 +482,6 @@ local plugins = {
     {
         "numToStr/Comment.nvim",
         opts = {},
-    },
-    {
-        "folke/trouble.nvim",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
-        config = function()
-            local trouble = require("trouble")
-            vim.keymap.set("n", "<leader>xx", function()
-                trouble.open()
-            end)
-            vim.keymap.set("n", "<leader>xw", function()
-                trouble.open("workspace_diagnostics")
-            end)
-            vim.keymap.set("n", "<leader>xd", function()
-                trouble.open("document_diagnostics")
-            end)
-            vim.keymap.set("n", "<leader>xq", function()
-                trouble.open("quickfix")
-            end)
-            vim.keymap.set("n", "<leader>xl", function()
-                trouble.open("loclist")
-            end)
-        end,
     },
     {
         "numtostr/FTerm.nvim",
