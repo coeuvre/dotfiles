@@ -1,4 +1,5 @@
 local wezterm = require("wezterm")
+local act = wezterm.action
 
 local config = {}
 
@@ -18,6 +19,23 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
         ["MSYSTEM"] = "UCRT64",
         ["MSYS2_PATH_TYPE"] = "inherit",
     }
+
+    config.keys = {
+        {
+            key = 't',
+            mods = 'ALT',
+            action = act.SpawnTab 'CurrentPaneDomain',
+        },
+    }
+
+    for i = 1, 8 do
+      -- CTRL+ALT + number to activate that tab
+      table.insert(config.keys, {
+        key = tostring(i),
+        mods = 'ALT',
+        action = act.ActivateTab(i - 1),
+      })
+    end
 end
 
 return config

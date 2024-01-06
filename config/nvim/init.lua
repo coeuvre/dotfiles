@@ -34,9 +34,29 @@ vim.g.mapleader = " "
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("x", "<leader>p", '"_dP')
 vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("n", "<F5>", ":make<CR>")
-vim.keymap.set("n", "]c", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "[c", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<C-q>", ":cwindow<cr>")
+vim.keymap.set("n", "<F5>", ":make<cr>")
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+vim.keymap.set("n", "]q", ":cnext<CR>zz")
+vim.keymap.set("n", "[q", ":cprev<CR>zz")
+
+vim.keymap.set("n", "]t", ":tabn<CR>zz")
+vim.keymap.set("n", "[t", ":tabp<CR>zz")
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "qf",
+    callback = function()
+        vim.keymap.set("n", "q", ":cclose<cr>", { buffer = true })
+    end,
+})
+
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+    pattern = "[^l]*",
+    command = "cwindow",
+    nested = true,
+})
 
 -------------------------------------------------------------------------------
 -- Plugins
@@ -107,6 +127,26 @@ local plugins = {
                         vim.keymap.set(mode, l, r, opts)
                     end
 
+                    map("n", "]c", function()
+                        if vim.wo.diff then
+                            return "]c"
+                        end
+                        vim.schedule(function()
+                            gs.next_hunk()
+                        end)
+                        return "<Ignore>"
+                    end, { expr = true })
+
+                    map("n", "[c", function()
+                        if vim.wo.diff then
+                            return "[c"
+                        end
+                        vim.schedule(function()
+                            gs.prev_hunk()
+                        end)
+                        return "<Ignore>"
+                    end, { expr = true })
+
                     map("n", "<leader>gd", gs.preview_hunk)
                     map("n", "<leader>gb", function()
                         gs.blame_line({ full = true })
@@ -115,6 +155,7 @@ local plugins = {
             })
         end,
     },
+    "sindrets/diffview.nvim",
 
     {
         "okuuva/auto-save.nvim",
@@ -443,7 +484,7 @@ local plugins = {
                 sources = cmp.config.sources({
                     { name = "copilot" },
                     { name = "nvim_lsp" },
-                    { name = 'nvim_lsp_signature_help' },
+                    { name = "nvim_lsp_signature_help" },
                     { name = "luasnip" },
                 }, {
                     { name = "buffer" },
@@ -516,6 +557,6 @@ local plugins = {
 
 require("lazy").setup(plugins, {
     git = {
-        url_format = "git@github.com:%s.git"
+        url_format = "git@github.com:%s.git",
     },
 })
