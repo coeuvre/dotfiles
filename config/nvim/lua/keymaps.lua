@@ -31,15 +31,15 @@ return {
             local opts = { buffer = e.buf }
             vim.keymap.set("n", "gd", builtin.lsp_definitions, opts)
             vim.keymap.set("n", "gr", builtin.lsp_references, opts)
-            vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-            vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, opts)
+            vim.keymap.set("n", "K", require("hover").hover, opts)
+            vim.keymap.set("n", "<F2>", ":IncRename ", opts)
             vim.keymap.set("n", "<A-Cr>", vim.lsp.buf.code_action, opts)
             if vim.lsp.buf.range_code_action then
                 vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.range_code_action)
             else
                 vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.code_action)
             end
-            vim.keymap.set("i", "<C-Space>", vim.lsp.buf.signature_help, opts)
+            vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
         end,
     },
 }

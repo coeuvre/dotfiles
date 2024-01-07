@@ -213,34 +213,4 @@ return {
             vim.keymap.set({ "n", "v" }, "<leader>*", builtin.grep_string, {})
         end,
     },
-
-    {
-        "numtostr/FTerm.nvim",
-        keys = {
-            {
-                "<C-x>",
-                mode = { "n", "t" },
-                function()
-                    require("FTerm").toggle()
-                end,
-                desc = "Floaterm",
-            },
-        },
-        config = function()
-            ---@type nil|string|table
-            local cmd = os.getenv("SHELL")
-            if vim.fn.has("win32") ~= 0 then
-                cmd = {
-                    "C:\\msys64\\usr\\bin\\fish.exe",
-                    "--login",
-                    "-i",
-                }
-                vim.env.CHERE_INVOKING = "1"
-                vim.env.MSYS2_PATH_TYPE = "inherit"
-            end
-            require("FTerm").setup({
-                cmd = cmd,
-            })
-        end,
-    },
 }

@@ -6,11 +6,32 @@ return {
     dependencies = {
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
+
+        "j-hui/fidget.nvim",
+        "smjonas/inc-rename.nvim",
+
+        "lewis6991/hover.nvim",
+        "ray-x/lsp_signature.nvim",
     },
 
     config = function()
-        require("mason").setup()
-        require("mason-lspconfig").setup()
+        require("mason").setup({})
+        require("mason-lspconfig").setup({})
+        require("inc_rename").setup({})
+        require("fidget").setup({})
+        require("lsp_signature").setup({
+            hint_enable = false,
+        })
+        require("hover").setup {
+            init = function()
+                require("hover.providers.lsp")
+            end,
+            preview_opts = {
+                border = 'single'
+            },
+            preview_window = false,
+            title = false,
+        }
 
         local lspconfig = require("lspconfig")
         lspconfig.lua_ls.setup({
