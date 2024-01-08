@@ -12,95 +12,100 @@ config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.hide_tab_bar_if_only_one_tab = true
 config.font = wezterm.font("JetBrainsMono NF")
 
+local mods = "CTRL|ALT"
+if string.find(wezterm.target_triple, "apple") ~= nil then
+	mods = "CTRL|CMD"
+end
+
 config.keys = {
 	{
 		key = "h",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivatePaneDirection("Left"),
 	},
 	{
 		key = "l",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivatePaneDirection("Right"),
 	},
 	{
 		key = "j",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivatePaneDirection("Down"),
 	},
 	{
 		key = "k",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivatePaneDirection("Up"),
 	},
 	{
 		key = "v",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		key = "s",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		key = "t",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.SpawnTab("CurrentPaneDomain"),
 	},
 	{
 		key = "1",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(0),
 	},
 	{
 		key = "2",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(1),
 	},
 	{
 		key = "3",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(2),
 	},
 	{
 		key = "4",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(3),
 	},
 	{
 		key = "5",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(4),
 	},
 	{
 		key = "6",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(5),
 	},
 	{
 		key = "7",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(6),
 	},
 	{
 		key = "8",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(7),
 	},
 	{
 		key = "9",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTab(-1),
 	},
 	{
 		key = "[",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTabRelative(-1),
 	},
 	{
 		key = "]",
-		mods = "CTRL|ALT",
+		mods = mods,
 		action = act.ActivateTabRelative(1),
 	},
 }
