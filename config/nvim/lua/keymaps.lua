@@ -15,6 +15,10 @@ vim.keymap.set("n", "[t", ":tabp<CR>zz")
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
+vim.keymap.set({ "n", "v" }, "<leader>f", function()
+    require("conform").format({})
+end)
+
 return {
     quickfix = {
         setup = function(e)
@@ -32,7 +36,9 @@ return {
             vim.keymap.set("n", "gd", builtin.lsp_definitions, opts)
             vim.keymap.set("n", "gr", builtin.lsp_references, opts)
             vim.keymap.set("n", "K", require("hover").hover, opts)
-            vim.keymap.set("n", "<F2>", ":IncRename ", opts)
+            vim.keymap.set("n", "<F2>", function()
+                return ":IncRename " .. vim.fn.expand("<cword>")
+            end, vim.tbl_extend("error", opts, { expr = true }))
             vim.keymap.set("n", "<A-Cr>", vim.lsp.buf.code_action, opts)
             if vim.lsp.buf.range_code_action then
                 vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.range_code_action)
