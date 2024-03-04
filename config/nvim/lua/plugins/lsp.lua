@@ -75,5 +75,6 @@ return {
 
         lspconfig.tsserver.setup({})
         lspconfig.zls.setup({})
+        lspconfig.rust_analyzer.setup({})
     end,
 }

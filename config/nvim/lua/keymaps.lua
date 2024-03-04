@@ -39,11 +39,11 @@ return {
             vim.keymap.set("n", "<F2>", function()
                 return ":IncRename " .. vim.fn.expand("<cword>")
             end, vim.tbl_extend("error", opts, { expr = true }))
-            vim.keymap.set("n", "<A-Cr>", vim.lsp.buf.code_action, opts)
+            vim.keymap.set("n", "<leader>.", vim.lsp.buf.code_action, opts)
             if vim.lsp.buf.range_code_action then
-                vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.range_code_action)
+                vim.keymap.set("x", "<leader>.", vim.lsp.buf.range_code_action)
             else
-                vim.keymap.set("x", "<A-Cr>", vim.lsp.buf.code_action)
+                vim.keymap.set("x", "<leader>.", vim.lsp.buf.code_action)
             end
             vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
         end,
