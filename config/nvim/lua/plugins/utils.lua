@@ -176,8 +176,11 @@ return {
                 section_separators = "",
                 globalstatus = true,
             },
-            tabline = {
-                lualine_b = { "buffers" },
+            sections = {
+
+                lualine_c = {
+                    { "filename", path = 1 },
+                },
             },
         },
     },

@@ -60,6 +60,8 @@ return {
             mapping = {
                 ["<C-e>"] = cmp.mapping.abort(),
 
+                ["<C-u>"] = cmp.mapping.scroll_docs(-4),
+                ["<C-d>"] = cmp.mapping.scroll_docs(4),
                 ["<C-p>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
                         cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
