@@ -14,7 +14,6 @@ vim.o.splitright = true
 
 vim.o.termguicolors = true
 vim.o.wrap = false
-vim.o.laststatus = 3
 vim.o.number = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"

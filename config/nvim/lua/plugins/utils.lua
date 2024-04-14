@@ -174,17 +174,10 @@ return {
             options = {
                 component_separators = "",
                 section_separators = "",
-                global_status = true,
+                globalstatus = true,
             },
-            sections = {
-                lualine_b = {},
-                lualine_c = {
-                    {
-                        "filename",
-                        file_status = false,
-                        path = 1,
-                    },
-                },
+            tabline = {
+                lualine_b = { "buffers" },
             },
         },
     },
@@ -200,13 +193,13 @@ return {
                     mappings = {
                         i = {
                             ["<Esc>"] = require("telescope.actions").close,
-                            ["<C-x>"] = require("telescope.actions").close,
                         },
                     },
                 },
             })
 
             local builtin = require("telescope.builtin")
+            vim.keymap.set("n", "<leader>h", builtin.help_tags, {})
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
             vim.keymap.set("n", "<leader><leader>", builtin.buffers, {})
             vim.keymap.set("n", "<leader>/", builtin.live_grep, {})
