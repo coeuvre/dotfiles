@@ -1,7 +1,5 @@
 vim.o.clipboard = "unnamedplus"
 
-vim.cmd.syntax("off")
-
 vim.o.swapfile = false
 vim.o.backup = false
 vim.o.undofile = true
