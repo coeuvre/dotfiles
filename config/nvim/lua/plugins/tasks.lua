@@ -5,6 +5,6 @@ return {
     },
     config = function()
         vim.g.asyncrun_open = 6
-        vim.g.asyncrun_bell = 1
+        vim.g.asyncrun_auto = "make"
     end,
 }
