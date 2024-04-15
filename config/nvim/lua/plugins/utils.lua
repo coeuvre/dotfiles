@@ -1,6 +1,13 @@
 vim.g.tmux_navigator_no_mappings = 1
 
 return {
+    {
+        "LunarVim/bigfile.nvim",
+        config = function()
+            require("bigfile").setup({})
+        end,
+    },
+
     -- auto detect shiftwidth, expandtab, etc.
     "tpope/vim-sleuth",
     "farmergreg/vim-lastplace",
@@ -28,6 +35,13 @@ return {
     {
         "andymass/vim-matchup",
         opts = {},
+    },
+
+    {
+        "RRethy/vim-illuminate",
+        config = function()
+            require("illuminate").configure({})
+        end,
     },
 
     {
