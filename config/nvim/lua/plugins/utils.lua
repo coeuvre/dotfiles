@@ -4,7 +4,9 @@ return {
     {
         "LunarVim/bigfile.nvim",
         config = function()
-            require("bigfile").setup({})
+            require("bigfile").setup({
+                filesize = 100,
+            })
         end,
     },
 
@@ -35,13 +37,6 @@ return {
     {
         "andymass/vim-matchup",
         opts = {},
-    },
-
-    {
-        "RRethy/vim-illuminate",
-        config = function()
-            require("illuminate").configure({})
-        end,
     },
 
     {
