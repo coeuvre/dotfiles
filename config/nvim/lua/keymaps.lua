@@ -16,6 +16,10 @@ vim.keymap.set("n", "[t", ":tabp<CR>zz")
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
+-- highlight but don't jump
+vim.cmd([[nnoremap <silent> * :let @/= '\<' . expand('<cword>') . '\>' <bar> set hls <cr>]])
+vim.cmd([[nnoremap <silent> g* :let @/=expand('<cword>') <bar> set hls <cr>]])
+
 vim.keymap.set({ "n", "v" }, "<leader>f", function()
     require("conform").format({})
 end)
