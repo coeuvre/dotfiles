@@ -1,7 +1,7 @@
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("x", "<leader>p", '"_dP')
 vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("n", "<C-q>", ":call asyncrun#quickfix_toggle(6)<cr>", { silent = true })
+vim.keymap.set("n", "<leader>q", ":call asyncrun#quickfix_toggle(6)<cr>", { silent = true })
 vim.keymap.set("n", "<leader>b", ":AsyncTask build<cr>")
 vim.keymap.set("n", "<leader>r", ":AsyncTask run<cr>")
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")

@@ -17,9 +17,7 @@ return {
     config = function()
         require("mason").setup({})
         require("mason-lspconfig").setup({})
-        require("inc_rename").setup({
-            input_buffer_type = "dressing",
-        })
+        require("inc_rename").setup({})
         require("fidget").setup({})
         require("lsp_signature").setup({
             hint_enable = false,

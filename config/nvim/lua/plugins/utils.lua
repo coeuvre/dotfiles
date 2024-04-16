@@ -1,15 +1,6 @@
 vim.g.tmux_navigator_no_mappings = 1
 
 return {
-    {
-        "LunarVim/bigfile.nvim",
-        config = function()
-            require("bigfile").setup({
-                filesize = 100,
-            })
-        end,
-    },
-
     -- auto detect shiftwidth, expandtab, etc.
     "tpope/vim-sleuth",
     "farmergreg/vim-lastplace",
@@ -198,20 +189,53 @@ return {
         "nvim-telescope/telescope.nvim",
         dependencies = {
             "nvim-lua/plenary.nvim",
+            {
+                "nvim-telescope/telescope-fzf-native.nvim",
+                build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+            },
         },
         config = function()
-            require("telescope").setup({
-                defaults = {
-                    mappings = {
-                        i = {
-                            ["<Esc>"] = require("telescope.actions").close,
-                        },
+            local telescope = require("telescope")
+            telescope.setup({
+                pickers = {
+                    help_tags = {
+                        theme = "ivy",
+                        previewer = false,
+                    },
+                    quickfix = {
+                        theme = "ivy",
+                        previewer = false,
+                    },
+                    find_files = {
+                        theme = "ivy",
+                        previewer = false,
+                    },
+                    buffers = {
+                        theme = "ivy",
+                        previewer = false,
+                    },
+                    live_grep = {
+                        theme = "ivy",
+                        previewer = false,
+                    },
+                    grep_string = {
+                        theme = "ivy",
+                        previewer = false,
+                    },
+                },
+                extensions = {
+                    fzf = {
+                        fuzzy = true,
+                        override_generic_sorter = true,
+                        override_file_sorter = true,
                     },
                 },
             })
+            telescope.load_extension("fzf")
 
             local builtin = require("telescope.builtin")
             vim.keymap.set("n", "<leader>h", builtin.help_tags, {})
+            vim.keymap.set("n", "<C-q>", builtin.quickfix, {})
             vim.keymap.set("n", "<C-p>", builtin.find_files, {})
             vim.keymap.set("n", "<leader><leader>", builtin.buffers, {})
             vim.keymap.set("n", "<leader>/", builtin.live_grep, {})
