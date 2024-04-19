@@ -152,7 +152,6 @@ return {
             })
         end,
     },
-    "sindrets/diffview.nvim",
 
     "nvim-tree/nvim-web-devicons",
     {

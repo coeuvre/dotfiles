@@ -1,7 +1,7 @@
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", {})
 vim.keymap.set("x", "<leader>p", '"_dP')
 vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("n", "<C-q>", ":call asyncrun#quickfix_toggle(10)<cr>", { silent = true })
+vim.keymap.set("n", "<C-q>", ":ToggleQuickfix<cr>", { silent = true })
 vim.keymap.set("n", "<leader>b", ":AsyncTask build<cr>")
 vim.keymap.set("n", "<F5>", ":AsyncTask run<cr>")
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -38,8 +38,15 @@ return {
             -- Buffer local mappings.
             -- See `:help vim.lsp.*` for documentation on any of the below functions
             local opts = { buffer = e.buf }
-            vim.keymap.set("n", "gd", fzf.lsp_definitions, opts)
-            vim.keymap.set("n", "gr", fzf.lsp_references, opts)
+            vim.keymap.set("n", "gd", function()
+                fzf.lsp_definitions({ jump_to_single_result = true })
+            end, opts)
+            vim.keymap.set("n", "gr", function()
+                fzf.lsp_references({
+                    ignore_current_line = true,
+                    jump_to_single_result = true,
+                })
+            end, opts)
             vim.keymap.set("n", "K", require("hover").hover, opts)
             vim.keymap.set("n", "<F2>", function()
                 return ":IncRename " .. vim.fn.expand("<cword>")

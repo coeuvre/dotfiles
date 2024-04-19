@@ -4,6 +4,9 @@ return {
         "skywind3000/asyncrun.vim",
     },
     config = function()
+        vim.api.nvim_create_user_command("ToggleQuickfix", function()
+            vim.cmd("call asyncrun#quickfix_toggle(10)")
+        end, {})
         vim.api.nvim_create_user_command("CNextOrClose", function()
             local list = vim.fn.getqflist()
             for _, entry in ipairs(list) do
@@ -12,7 +15,7 @@ return {
                     return
                 end
             end
-            vim.cmd("cclose")
+            vim.cmd("ToggleQuickfix")
         end, {})
         vim.g.asyncrun_open = 10
         vim.g.asyncrun_auto = "make"
