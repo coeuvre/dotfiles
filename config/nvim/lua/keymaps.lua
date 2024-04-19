@@ -34,23 +34,31 @@ return {
 
     lsp = {
         setup = function(e)
-            local builtin = require("telescope.builtin")
+            local fzf = require("fzf-lua")
             -- Buffer local mappings.
             -- See `:help vim.lsp.*` for documentation on any of the below functions
             local opts = { buffer = e.buf }
-            vim.keymap.set("n", "gd", builtin.lsp_definitions, opts)
-            vim.keymap.set("n", "gr", builtin.lsp_references, opts)
+            vim.keymap.set("n", "gd", fzf.lsp_definitions, opts)
+            vim.keymap.set("n", "gr", fzf.lsp_references, opts)
             vim.keymap.set("n", "K", require("hover").hover, opts)
             vim.keymap.set("n", "<F2>", function()
                 return ":IncRename " .. vim.fn.expand("<cword>")
             end, vim.tbl_extend("error", opts, { expr = true }))
-            vim.keymap.set("n", "<leader>.", vim.lsp.buf.code_action, opts)
-            if vim.lsp.buf.range_code_action then
-                vim.keymap.set("x", "<leader>.", vim.lsp.buf.range_code_action)
-            else
-                vim.keymap.set("x", "<leader>.", vim.lsp.buf.code_action)
-            end
-            vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
+            vim.keymap.set("n", "<leader>.", fzf.lsp_code_actions, opts)
+        end,
+    },
+
+    fzf = {
+        setup = function()
+            local fzf = require("fzf-lua")
+            vim.keymap.set("n", "<leader>r", fzf.resume, {})
+            vim.keymap.set("n", "<leader>h", fzf.helptags, {})
+            vim.keymap.set("n", "<leader>q", fzf.quickfix, {})
+            vim.keymap.set("n", "<C-p>", fzf.files, {})
+            vim.keymap.set("n", "<leader><leader>", fzf.buffers, {})
+            vim.keymap.set("n", "<leader>/", fzf.live_grep, {})
+            vim.keymap.set("n", "<leader>*", fzf.grep_cword, {})
+            vim.keymap.set("v", "<leader>*", fzf.grep_visual, {})
         end,
     },
 }
