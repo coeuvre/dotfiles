@@ -7,11 +7,16 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- vim.api.nvim_create_autocmd("QuickFixCmdPost", {
---     pattern = "[^l]*",
---     command = "cnext",
---     nested = true,
--- })
+vim.api.nvim_create_autocmd("User", {
+    pattern = "AsyncRunStop",
+    callback = function()
+        if vim.g.asyncrun_code == 0 then
+            vim.cmd("ToggleQuickfix")
+            return
+        end
+        vim.cmd("silent! cnext")
+    end,
+})
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(e)
