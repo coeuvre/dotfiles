@@ -20,6 +20,6 @@ vim.api.nvim_create_autocmd("User", {
 
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(e)
-        keymaps.lsp.setup(e)
+        keymaps.lsp_attach.setup(e)
     end,
 })

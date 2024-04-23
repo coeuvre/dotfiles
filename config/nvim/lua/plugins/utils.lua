@@ -153,17 +153,13 @@ return {
         end,
     },
 
-    "nvim-tree/nvim-web-devicons",
     {
-        "nvim-tree/nvim-tree.lua",
-        opts = {},
-        keys = {
-            {
-                "<C-b>",
-                function()
-                    require("nvim-tree.api").tree.toggle({ find_file = true, focus = true })
-                end,
-            },
+        "nvim-neo-tree/neo-tree.nvim",
+        branch = "v3.x",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-tree/nvim-web-devicons",
+            "MunifTanjim/nui.nvim",
         },
     },
 
@@ -171,14 +167,16 @@ return {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
+                theme = "catppuccin",
                 component_separators = "",
                 section_separators = "",
                 globalstatus = true,
             },
             sections = {
-
+                lualine_b = {},
                 lualine_c = {
                     { "filename", path = 1 },
+                    { "navic" },
                 },
             },
         },

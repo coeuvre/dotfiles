@@ -1,3 +1,4 @@
+local keymaps = require("keymaps")
 vim.g.zig_fmt_autosave = 0
 
 return {
@@ -12,6 +13,8 @@ return {
 
         "lewis6991/hover.nvim",
         "ray-x/lsp_signature.nvim",
+
+        "SmiteshP/nvim-navic",
     },
 
     config = function()
@@ -29,8 +32,12 @@ return {
             preview_opts = {
                 border = "single",
             },
-            preview_window = false,
             title = false,
+        })
+        require("nvim-navic").setup({
+            lsp = {
+                auto_attach = true,
+            },
         })
 
         local lspconfig = require("lspconfig")
@@ -74,5 +81,7 @@ return {
         lspconfig.tsserver.setup({})
         lspconfig.zls.setup({})
         lspconfig.rust_analyzer.setup({})
+
+        keymaps.lsp.setup()
     end,
 }

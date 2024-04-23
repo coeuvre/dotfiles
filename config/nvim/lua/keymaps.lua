@@ -24,6 +24,8 @@ vim.keymap.set({ "n", "v" }, "<leader>f", function()
     require("conform").format({})
 end)
 
+vim.keymap.set("n", "<C-b>", ":Neotree float reveal toggle<cr>", { silent = true })
+
 return {
     quickfix = {
         setup = function(e)
@@ -33,6 +35,12 @@ return {
     },
 
     lsp = {
+        setup = function()
+            vim.keymap.set("n", "K", require("hover").hover)
+        end,
+    },
+
+    lsp_attach = {
         setup = function(e)
             local fzf = require("fzf-lua")
             -- Buffer local mappings.
@@ -47,7 +55,6 @@ return {
                     jump_to_single_result = true,
                 })
             end, opts)
-            vim.keymap.set("n", "K", require("hover").hover, opts)
             vim.keymap.set("n", "<F2>", function()
                 return ":IncRename " .. vim.fn.expand("<cword>")
             end, vim.tbl_extend("error", opts, { expr = true }))
@@ -61,6 +68,7 @@ return {
             vim.keymap.set("n", "<leader>r", fzf.resume, {})
             vim.keymap.set("n", "<leader>h", fzf.helptags, {})
             vim.keymap.set("n", "<leader>q", fzf.quickfix, {})
+            vim.keymap.set("n", "<leader>s", fzf.lsp_document_symbols, {})
             vim.keymap.set("n", "<C-p>", fzf.files, {})
             vim.keymap.set("n", "<leader><leader>", fzf.buffers, {})
             vim.keymap.set("n", "<leader>/", fzf.live_grep, {})
