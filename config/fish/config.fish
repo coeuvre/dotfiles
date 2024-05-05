@@ -10,4 +10,8 @@ if type -q fzf
     fzf --fish | source
 end
 
+if type -q zoxide
+    zoxide init fish | source
+end
+
 test -e ~/.config/fish/config.local.fish && source ~/.config/fish/config.local.fish
