@@ -3,7 +3,6 @@ vim.g.tmux_navigator_no_mappings = 1
 return {
     -- auto detect shiftwidth, expandtab, etc.
     "tpope/vim-sleuth",
-    "farmergreg/vim-lastplace",
     "mbbill/undotree",
 
     {
@@ -154,13 +153,8 @@ return {
     },
 
     {
-        "nvim-neo-tree/neo-tree.nvim",
-        branch = "v3.x",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-tree/nvim-web-devicons",
-            "MunifTanjim/nui.nvim",
-        },
+        "stevearc/oil.nvim",
+        opts = {},
     },
 
     {
