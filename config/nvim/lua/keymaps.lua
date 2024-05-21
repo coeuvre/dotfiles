@@ -11,9 +11,6 @@ vim.keymap.set("n", "[q", ":cprev<CR>zz")
 vim.keymap.set("n", "]t", ":tabn<CR>zz")
 vim.keymap.set("n", "[t", ":tabp<CR>zz")
 
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
-
 vim.keymap.set({ "n", "v" }, "<leader>f", function()
     require("conform").format({})
 end)
@@ -25,12 +22,6 @@ return {
         setup = function(e)
             local opts = { buffer = e.buf }
             vim.keymap.set("n", "q", ":cclose<cr>", opts)
-        end,
-    },
-
-    lsp = {
-        setup = function()
-            vim.keymap.set("n", "K", require("hover").hover)
         end,
     },
 
