@@ -55,7 +55,6 @@ return {
         })
 
         lspconfig.clangd.setup({
-            autostart = false,
             capabilities = {
                 offsetEncoding = "utf-16",
             },
