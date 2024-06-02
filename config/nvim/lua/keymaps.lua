@@ -40,9 +40,7 @@ return {
                     jump_to_single_result = true,
                 })
             end, opts)
-            vim.keymap.set("n", "<F2>", function()
-                return ":IncRename " .. vim.fn.expand("<cword>")
-            end, vim.tbl_extend("error", opts, { expr = true }))
+            vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, opts)
             vim.keymap.set("n", "<leader>.", fzf.lsp_code_actions, opts)
         end,
     },
