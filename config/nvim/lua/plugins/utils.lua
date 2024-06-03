@@ -6,27 +6,6 @@ return {
     "mbbill/undotree",
 
     {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = {
-            "andymass/vim-matchup",
-        },
-        build = ":TSUpdate",
-        config = function()
-            local configs = require("nvim-treesitter.configs")
-            configs.setup({
-                highlight = { enable = true, additional_vim_regex_highlighting = false },
-                matchup = { enable = true },
-            })
-        end,
-    },
-
-    {
-        "windwp/nvim-autopairs",
-        event = "InsertEnter",
-        opts = {},
-    },
-
-    {
         "numToStr/Comment.nvim",
         opts = {},
     },
@@ -48,14 +27,6 @@ return {
                     require("flash").jump()
                 end,
                 desc = "Flash",
-            },
-            {
-                "S",
-                mode = { "n", "o", "x" },
-                function()
-                    require("flash").treesitter()
-                end,
-                desc = "Flash Treesitter",
             },
         },
     },
