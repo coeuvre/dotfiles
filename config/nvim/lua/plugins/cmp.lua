@@ -1,6 +1,3 @@
-vim.g.copilot_enabled = false
-vim.g.copilot_assume_mapped = true
-
 return {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -11,12 +8,15 @@ return {
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
 
+        "onsails/lspkind.nvim",
+
         "windwp/nvim-autopairs",
     },
 
     config = function()
         local luasnip = require("luasnip")
         local cmp = require("cmp")
+        local lspkind = require("lspkind")
 
         local confirm = function(fallback)
             if cmp.visible() then
@@ -41,6 +41,13 @@ return {
                 expand = function(args)
                     luasnip.lsp_expand(args.body)
                 end,
+            },
+            formatting = {
+                format = lspkind.cmp_format({
+                    mode = "symbol",
+                    maxwidth = 50,
+                    ellipsis_char = "...",
+                }),
             },
             preselect = cmp.PreselectMode.Item,
             completion = {
