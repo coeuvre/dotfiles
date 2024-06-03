@@ -6,6 +6,21 @@ return {
     "mbbill/undotree",
 
     {
+        "nvim-treesitter/nvim-treesitter",
+        dependencies = {
+            "andymass/vim-matchup",
+        },
+        build = ":TSUpdate",
+        config = function()
+            local configs = require("nvim-treesitter.configs")
+            configs.setup({
+                highlight = { enable = true, additional_vim_regex_highlighting = false },
+                matchup = { enable = true },
+            })
+        end,
+    },
+
+    {
         "numToStr/Comment.nvim",
         opts = {},
     },
