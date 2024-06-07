@@ -55,13 +55,18 @@ return {
         })
 
         lspconfig.clangd.setup({
+            autostart = false,
             capabilities = {
                 offsetEncoding = "utf-16",
             },
         })
 
-        lspconfig.tsserver.setup({})
+        lspconfig.tsserver.setup({
+            autostart = false,
+        })
+
         lspconfig.zls.setup({})
+
         lspconfig.rust_analyzer.setup({})
     end,
 }
