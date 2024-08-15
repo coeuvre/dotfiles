@@ -61,9 +61,9 @@ return {
             },
         })
 
-        lspconfig.tsserver.setup({
-            autostart = false,
-        })
+        lspconfig.tsserver.setup({})
+
+        lspconfig.eslint.setup({})
 
         lspconfig.zls.setup({})
 

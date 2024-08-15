@@ -11,6 +11,7 @@ return {
                 cpp = { "clang_format" },
                 zig = { "zigfmt" },
                 rust = { "rustfmt" },
+                sql = { "pg_format" },
             },
         })
 
