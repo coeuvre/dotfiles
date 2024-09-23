@@ -95,6 +95,7 @@ return {
                 {
                     name = "buffer",
                     option = {
+                        keyword_pattern = [[\k\+]],
                         get_bufnrs = function()
                             return vim.api.nvim_list_bufs()
                         end,
