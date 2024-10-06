@@ -76,6 +76,12 @@ config.keys = {
         mods = mods,
         action = wezterm.action.ActivateTabRelative(1),
     },
+
+    {
+        key = "[",
+        mods = mods,
+        action = wezterm.action.ActivateCopyMode,
+    },
 }
 
 for i = 1, 9 do
