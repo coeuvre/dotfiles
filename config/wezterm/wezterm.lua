@@ -32,12 +32,12 @@ config.keys = {
     {
         key = "s",
         mods = mods,
-        action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+        action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
     },
     {
         key = "v",
         mods = mods,
-        action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
+        action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
     },
     {
         key = "h",
