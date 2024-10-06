@@ -6,6 +6,8 @@ if wezterm.config_builder then
     config = wezterm.config_builder()
 end
 
+-- Disable wayland support until the rewrite is done
+config.enable_wayland = false
 config.color_scheme = "catppuccin-mocha"
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.font = wezterm.font("JetBrainsMonoNL NFP")
@@ -67,12 +69,12 @@ config.keys = {
         action = wezterm.action.SpawnTab("CurrentPaneDomain"),
     },
     {
-        key = "[",
+        key = "p",
         mods = mods,
         action = wezterm.action.ActivateTabRelative(-1),
     },
     {
-        key = "]",
+        key = "n",
         mods = mods,
         action = wezterm.action.ActivateTabRelative(1),
     },

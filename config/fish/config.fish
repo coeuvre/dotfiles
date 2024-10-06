@@ -1,6 +1,11 @@
 set -x PATH ~/bin ~/.cargo/bin $PATH
 set -x EDITOR nvim
 
+set -x C_INCLUDE_PATH ~/.local/include $C_INCLUDE_PATH
+set -x CPLUS_INCLUDE_PATH ~/.local/include $CPLUS_INCLUDE_PATH
+set -x LIBRARY_PATH ~/.local/lib64 ~/.local/lib $LIBRARY_PATH
+set -x LD_LIBRARY_PATH ~/.local/lib64 ~/.local/lib64 $LD_LIBRARY_PATH
+
 # Colorful ls on macOS
 set -x CLICOLOR 1
 
