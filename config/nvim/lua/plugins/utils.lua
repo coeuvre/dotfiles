@@ -132,7 +132,7 @@ return {
     },
 
     {
-        "stevearc/oil.nvim",
+        "nvim-tree/nvim-tree.lua",
         opts = {},
     },
 

@@ -15,7 +15,7 @@ vim.keymap.set({ "n", "v" }, "<leader>f", function()
     require("conform").format({})
 end)
 
-vim.keymap.set("n", "<C-b>", ":Neotree float reveal toggle<cr>", { silent = true })
+vim.keymap.set("n", "<C-b>", ":NvimTreeToggle<cr>", { silent = true })
 
 return {
     quickfix = {
