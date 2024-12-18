@@ -1,6 +1,12 @@
 return {
     "saghen/blink.cmp",
-    dependencies = "rafamadriz/friendly-snippets",
+    dependencies = {
+        "rafamadriz/friendly-snippets",
+        {
+            "windwp/nvim-autopairs",
+            opts = {},
+        },
+    },
     version = "v0.*",
     opts = {
         keymap = { preset = "super-tab" },
