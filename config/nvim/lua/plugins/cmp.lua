@@ -14,5 +14,8 @@ return {
             nerd_font_variant = "mono",
         },
         signature = { enabled = true },
+        fuzzy = {
+            use_typo_resistance = false,
+        },
     },
 }
