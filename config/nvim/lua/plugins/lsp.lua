@@ -49,6 +49,8 @@ return {
             zls = {},
 
             rust_analyzer = {},
+
+            pyright = {},
         }
 
         local lspconfig = require("lspconfig")

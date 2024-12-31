@@ -7,6 +7,7 @@ if wezterm.config_builder then
 end
 
 config.color_scheme = "catppuccin-mocha"
+config.window_close_confirmation = "NeverPrompt"
 config.hide_tab_bar_if_only_one_tab = true
 config.window_padding = { left = 0, right = 0, top = 0, bottom = 0 }
 config.font = wezterm.font("JetBrainsMonoNL NFP")
