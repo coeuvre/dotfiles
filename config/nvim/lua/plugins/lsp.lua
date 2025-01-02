@@ -55,7 +55,13 @@ return {
 
         local lspconfig = require("lspconfig")
         for server, config in pairs(servers) do
-            config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+            config.capabilities = require("blink.cmp").get_lsp_capabilities(vim.tbl_deep_extend("force", {
+                textDocument = {
+                    completion = {
+                        completionItem = { snippetSupport = false },
+                    },
+                },
+            }, config.capabilities or {}))
             lspconfig[server].setup(config)
         end
     end,
