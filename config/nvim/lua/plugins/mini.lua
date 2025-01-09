@@ -11,6 +11,7 @@ return {
                 windows = true,
             },
         })
+        require("mini.icons").setup()
 
         require("mini.ai").setup()
         require("mini.pairs").setup()
@@ -26,7 +27,7 @@ return {
         })
         require("mini.git").setup()
         require("mini.statusline").setup()
-        require("mini.icons").setup()
+        require("mini.notify").setup()
 
         require("mini.files").setup()
         require("mini.pick").setup()
