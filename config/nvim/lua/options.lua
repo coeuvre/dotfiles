@@ -18,6 +18,7 @@ vim.o.number = true
 vim.o.cursorline = true
 vim.o.signcolumn = "yes"
 vim.o.ignorecase = true
+vim.o.laststatus = 3
 
 vim.o.guifont = "JetBrainsMono NF:h11"
 

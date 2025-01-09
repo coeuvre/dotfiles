@@ -5,12 +5,6 @@ vim.keymap.set("n", "<C-q>", ":ToggleQuickfix<cr>", { silent = true })
 vim.keymap.set("n", "<leader>b", ":wa <bar> AsyncTask build<cr>")
 vim.keymap.set("n", "<F5>", ":AsyncTask run<cr>")
 
-vim.keymap.set("n", "]q", ":cnext<CR>zz")
-vim.keymap.set("n", "[q", ":cprev<CR>zz")
-
-vim.keymap.set("n", "]t", ":tabn<CR>zz")
-vim.keymap.set("n", "[t", ":tabp<CR>zz")
-
 vim.keymap.set({ "n", "v" }, "<leader>f", function()
     require("conform").format({})
 end)

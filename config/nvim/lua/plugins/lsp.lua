@@ -6,10 +6,6 @@ return {
     dependencies = {
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
-
-        "j-hui/fidget.nvim",
-        "SmiteshP/nvim-navic",
-
         "saghen/blink.cmp",
 
         {
@@ -26,12 +22,6 @@ return {
     config = function()
         require("mason").setup({})
         require("mason-lspconfig").setup({})
-        require("fidget").setup({})
-        require("nvim-navic").setup({
-            lsp = {
-                auto_attach = true,
-            },
-        })
 
         local servers = {
             lua_ls = {},
