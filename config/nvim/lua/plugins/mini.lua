@@ -11,19 +11,13 @@ return {
                 windows = true,
             },
         })
-        require("mini.comment").setup()
 
         require("mini.ai").setup()
         require("mini.pairs").setup()
         require("mini.surround").setup()
 
         require("mini.bracketed").setup()
-        require("mini.jump").setup()
-        require("mini.jump2d").setup({
-            mappings = {
-                start_jumping = "",
-            },
-        })
+        require("mini.comment").setup()
 
         require("mini.diff").setup({
             view = {
@@ -35,5 +29,8 @@ return {
         require("mini.icons").setup()
 
         require("mini.files").setup()
+        require("mini.pick").setup()
+
+        require("mini.extra").setup()
     end,
 }

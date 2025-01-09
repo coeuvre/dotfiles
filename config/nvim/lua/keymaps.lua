@@ -11,6 +11,13 @@ end)
 
 vim.keymap.set("n", "<C-b>", ":lua MiniFiles.open()<cr>", { silent = true })
 
+vim.keymap.set("n", "<C-p>", ":lua MiniPick.builtin.files()<cr>", { silent = true })
+vim.keymap.set("n", "<leader><leader>", ":lua MiniPick.builtin.buffers()<cr>", { silent = true })
+vim.keymap.set("n", "<leader>r", ":lua MiniPick.builtin.resume()<cr>", { silent = true })
+vim.keymap.set("n", "<leader>/", ":lua MiniPick.builtin.grep_live()<cr>", { silent = true })
+vim.keymap.set("n", "<leader>h", ":lua MiniPick.builtin.help()<cr>", { silent = true })
+vim.keymap.set("n", "<leader>q", ":lua MiniExtra.pickers.list({ scope = 'quickfix' })<cr>", { silent = true })
+
 return {
     quickfix = {
         setup = function(e)
@@ -21,36 +28,11 @@ return {
 
     lsp_attach = {
         setup = function(e)
-            local fzf = require("fzf-lua")
-            -- Buffer local mappings.
-            -- See `:help vim.lsp.*` for documentation on any of the below functions
-            local opts = { buffer = e.buf }
-            vim.keymap.set("n", "gd", function()
-                fzf.lsp_definitions({ jump_to_single_result = true })
-            end, opts)
-            vim.keymap.set("n", "gr", function()
-                fzf.lsp_references({
-                    ignore_current_line = true,
-                    jump_to_single_result = true,
-                })
-            end, opts)
+            local opts = { buffer = e.buf, silent = true }
+            vim.keymap.set("n", "gd", ":lua MiniExtra.pickers.lsp({scope = 'definition'})<cr>", opts)
+            vim.keymap.set("n", "gr", ":lua MiniExtra.pickers.lsp({scope = 'references'})<cr>", opts)
+            vim.keymap.set("n", "<leader>s", ":lua MiniExtra.pickers.lsp({scope = 'document_symbol'})<cr>", opts)
             vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, opts)
-            vim.keymap.set("n", "<leader>.", fzf.lsp_code_actions, opts)
-        end,
-    },
-
-    fzf = {
-        setup = function()
-            local fzf = require("fzf-lua")
-            vim.keymap.set("n", "<leader>r", fzf.resume, {})
-            vim.keymap.set("n", "<leader>h", fzf.helptags, {})
-            vim.keymap.set("n", "<leader>q", fzf.quickfix, {})
-            vim.keymap.set("n", "<leader>s", fzf.lsp_document_symbols, {})
-            vim.keymap.set("n", "<C-p>", fzf.files, {})
-            vim.keymap.set("n", "<leader><leader>", fzf.buffers, {})
-            vim.keymap.set("n", "<leader>/", fzf.live_grep, {})
-            vim.keymap.set("n", "<leader>*", fzf.grep_cword, {})
-            vim.keymap.set("v", "<leader>*", fzf.grep_visual, {})
         end,
     },
 }
