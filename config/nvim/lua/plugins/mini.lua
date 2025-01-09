@@ -3,7 +3,14 @@ return {
     version = false,
 
     config = function()
-        require("mini.basics").setup()
+        require("mini.basics").setup({
+            options = {
+                extra_ui = true,
+            },
+            mappings = {
+                windows = true,
+            },
+        })
         require("mini.comment").setup()
 
         require("mini.ai").setup()
@@ -12,7 +19,11 @@ return {
 
         require("mini.bracketed").setup()
         require("mini.jump").setup()
-        require("mini.jump2d").setup()
+        require("mini.jump2d").setup({
+            mappings = {
+                start_jumping = "",
+            },
+        })
 
         require("mini.diff").setup({
             view = {
@@ -22,5 +33,7 @@ return {
         require("mini.git").setup()
         require("mini.statusline").setup()
         require("mini.icons").setup()
+
+        require("mini.files").setup()
     end,
 }
