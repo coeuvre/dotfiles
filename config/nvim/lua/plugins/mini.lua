@@ -27,10 +27,17 @@ return {
         })
         require("mini.git").setup()
         require("mini.statusline").setup()
-        require("mini.notify").setup()
 
         require("mini.files").setup()
-        require("mini.pick").setup()
+        require("mini.pick").setup({
+            window = {
+                config = function()
+                    return {
+                        width = vim.o.columns,
+                    }
+                end,
+            },
+        })
 
         require("mini.extra").setup()
     end,
