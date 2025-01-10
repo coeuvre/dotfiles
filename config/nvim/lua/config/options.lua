@@ -3,3 +3,7 @@
 -- Add any additional options here
 
 vim.g.snacks_animate = false
+vim.g.autoformat = false
+
+vim.g.zig_fmt_parse_errors = 0
+vim.g.zig_fmt_autosave = 0

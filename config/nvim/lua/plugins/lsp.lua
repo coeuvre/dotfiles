@@ -8,7 +8,13 @@ return {
       },
 
       servers = {
-        zls = { mason = false },
+        zls = {
+          mason = false,
+          settings = {
+            -- Semantic tokens causes highlight flicker when saving the file.
+            semantic_tokens = "none",
+          },
+        },
       },
     },
   },
