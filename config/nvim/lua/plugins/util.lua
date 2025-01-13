@@ -1,5 +1,8 @@
 return {
   {
+    "tpope/vim-sleuth"
+  },
+  {
     "okuuva/auto-save.nvim",
     cmd = "ASToggle",
     event = { "InsertLeave", "TextChanged" },

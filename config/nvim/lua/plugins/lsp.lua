@@ -15,6 +15,7 @@ return {
             semantic_tokens = "none",
           },
         },
+        ols = {},
       },
     },
   },
