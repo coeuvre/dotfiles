@@ -4,11 +4,10 @@ return {
     keymap = {
       preset = "super-tab",
     },
-    completion = {
-      ghost_text = { enabled = false },
-    },
     fuzzy = {
-      use_typo_resistance = false,
+      max_typos = function()
+        return 0
+      end,
     },
     sources = {
       default = { "lsp", "path", "buffer" },
