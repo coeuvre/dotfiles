@@ -3,6 +3,7 @@
 -- Add any additional options here
 
 vim.o.tabstop = 4
+vim.o.fileformats = "unix"
 
 vim.g.snacks_animate = false
 vim.g.autoformat = false
