@@ -7,6 +7,11 @@ return {
         enabled = false,
       },
 
+      capabilities = {
+        -- disable snippet
+        textDocument = { completion = { completionItem = { snippetSupport = false } } },
+      },
+
       servers = {
         zls = {
           mason = false,
