@@ -1,7 +1,8 @@
 return {
   {
-    "tpope/vim-sleuth"
+    "tpope/vim-sleuth",
   },
+
   {
     "okuuva/auto-save.nvim",
     cmd = "ASToggle",
@@ -18,6 +19,7 @@ return {
       end,
     },
   },
+
   {
     "skywind3000/asynctasks.vim",
     dependencies = {
