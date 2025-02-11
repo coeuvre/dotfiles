@@ -6,6 +6,11 @@ return {
         preset = "super-tab",
       },
       completion = {
+        accept = {
+          auto_brackets = {
+            enabled = false,
+          },
+        },
         ghost_text = {
           enabled = false,
         },
