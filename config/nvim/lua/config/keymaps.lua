@@ -4,8 +4,8 @@
 
 vim.keymap.set("n", "<C-p>", LazyVim.pick("files"), { desc = "Find Files (Root Dir)" })
 
-vim.keymap.set("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build"})
-vim.keymap.set("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true , desc = "AsyncTask run"})
+vim.keymap.set("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
+vim.keymap.set("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
 vim.keymap.set("n", "<C-q>", ":ToggleQuickfix<cr>", { silent = true, desc = "ToggleQuickfix" })
 vim.keymap.set("n", "]q", ":cnext<CR>zz", { silent = true, desc = "Next Quickfix" })
 vim.keymap.set("n", "[q", ":cprev<CR>zz", { silent = true, desc = "Prev Quickfix" })
@@ -27,3 +27,19 @@ vim.keymap.del("v", "<A-k>")
 -- buffers
 vim.keymap.del("n", "<S-h>")
 vim.keymap.del("n", "<S-l>")
+
+if vim.g.neovide then
+  vim.keymap.set(
+    { "n", "v" },
+    "<C-=>",
+    ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>",
+    { silent = true }
+  )
+  vim.keymap.set(
+    { "n", "v" },
+    "<C-->",
+    ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>",
+    { silent = true }
+  )
+  vim.keymap.set({ "n", "v" }, "<C-0>", ":lua vim.g.neovide_scale_factor = 1<CR>", { silent = true })
+end
