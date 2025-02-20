@@ -33,9 +33,4 @@ return {
       signature = { enabled = true },
     },
   },
-
-  {
-    "echasnovski/mini.pairs",
-    enabled = false,
-  },
 }
