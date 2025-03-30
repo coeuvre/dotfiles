@@ -7,6 +7,11 @@ return {
         enabled = false,
       },
 
+      diagnostics = {
+        virtual_text = false,
+        virtual_lines = true,
+      },
+
       capabilities = {
         -- disable snippet
         textDocument = { completion = { completionItem = { snippetSupport = false } } },
