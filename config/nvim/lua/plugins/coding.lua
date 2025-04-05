@@ -18,7 +18,9 @@ return {
       },
 
       fuzzy = {
-        implementation = "lua",
+        max_typos = function()
+          return 0
+        end,
       },
 
       signature = { enabled = true },

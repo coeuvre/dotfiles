@@ -91,12 +91,7 @@ for i = 1, 9 do
 end
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-    config.default_prog = { "C:\\msys64\\usr\\bin\\fish.exe", "--login", "-i" }
-    config.set_environment_variables = {
-        ["CHERE_INVOKING"] = "1",
-        ["MSYSTEM"] = "UCRT64",
-        ["MSYS2_PATH_TYPE"] = "inherit",
-    }
+    config.default_prog = { "msys2.cmd", "-shell", "fish", "-full-path" }
 end
 
 return config
