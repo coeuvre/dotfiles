@@ -50,7 +50,6 @@ do
   opt.splitbelow = true
   opt.splitkeep = "screen"
   opt.splitright = true
-  --opt.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]]
   opt.tabstop = 2
   opt.termguicolors = true
   opt.undofile = true
@@ -102,12 +101,9 @@ do
   map("v", ">", ">gv")
 
   -- Quickfix list
-  vim.api.nvim_create_user_command("ToggleQuickfix", function()
+  map("n", "<C-q>", function()
     vim.cmd("call asyncrun#quickfix_toggle(10)")
-  end, {})
-  map("n", "<C-q>", ":ToggleQuickfix<CR>", { silent = true, desc = "Quickfix List" })
-  map("n", "]q", ":cnext<CR>zz", { silent = true, desc = "Next Quickfix" })
-  map("n", "[q", ":cprev<CR>zz", { silent = true, desc = "Prev Quickfix" })
+  end, { silent = true, desc = "Quickfix List" })
 
   -- Formatting
   map({ "n", "v" }, "<leader>cf", function()
@@ -124,6 +120,43 @@ do
   end
   map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
   map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+
+  -- Pickers
+  map("n", "<C-p>", function()
+    require("fzf-lua").files()
+  end, { desc = "Find Files" })
+
+  map("n", "<leader>fR", function()
+    require("fzf-lua").resume()
+  end, { desc = "Resume Last Find" })
+
+  map("n", "<leader>fb", function()
+    require("fzf-lua").buffers()
+  end, { desc = "Find Buffers" })
+
+  map("n", "<leader>/", function()
+    require("fzf-lua").live_grep()
+  end, { desc = "Live Grep" })
+
+  map("n", "<leader>*", function()
+    require("fzf-lua").grep_cword()
+  end, { desc = "Grep Cursor Word" })
+
+  map("n", "grr", function()
+    require("fzf-lua").lsp_references()
+  end, { desc = "LSP References" })
+
+  map("n", "gri", function()
+    require("fzf-lua").lsp_implementations()
+  end, { desc = "LSP Implementations" })
+
+  map("n", "gO", function()
+    require("fzf-lua").lsp_document_symbols()
+  end, { desc = "LSP Document Symbols" })
+
+  map("n", "gra", function()
+    require("fzf-lua").lsp_code_actions()
+  end, { desc = "LSP Code Actions" })
 
   -- AsyncTasks
   map("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
@@ -156,22 +189,40 @@ require("lazy").setup({
     },
 
     {
-      "folke/flash.nvim",
-      event = "VeryLazy",
-      ---@type Flash.Config
-      opts = {},
-      -- stylua: ignore
-      keys = {
-        { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      "echasnovski/mini.nvim",
+      version = false,
+      config = function()
+        require("mini.icons").setup()
+
+        require("mini.diff").setup()
+        require("mini.statusline").setup()
+      end,
+    },
+
+    {
+      "ibhagwan/fzf-lua",
+      opts = {
+        keymap = {
+          fzf = {
+            ["ctrl-q"] = "select-all+accept",
+          },
+        },
       },
     },
 
     {
-      "folke/snacks.nvim",
-      ---@type snacks.Config
-      opts = {
-        bigfile = {},
-        explorer = {},
+      "folke/flash.nvim",
+      event = "VeryLazy",
+      opts = {},
+      keys = {
+        {
+          "s",
+          mode = { "n", "x", "o" },
+          function()
+            require("flash").jump()
+          end,
+          desc = "Flash",
+        },
       },
     },
 
