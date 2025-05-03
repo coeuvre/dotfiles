@@ -106,7 +106,7 @@ do
   end, { silent = true, desc = "Quickfix List" })
 
   -- Formatting
-  map({ "n", "v" }, "<leader>cf", function()
+  map({ "n", "v" }, "<leader>f", function()
     require("conform").format()
   end, { desc = "Format" })
 
@@ -126,11 +126,11 @@ do
     require("fzf-lua").files()
   end, { desc = "Find Files" })
 
-  map("n", "<leader>fR", function()
+  map("n", "<leader>R", function()
     require("fzf-lua").resume()
   end, { desc = "Resume Last Find" })
 
-  map("n", "<leader>fb", function()
+  map("n", "<leader>b", function()
     require("fzf-lua").buffers()
   end, { desc = "Find Buffers" })
 
@@ -141,6 +141,10 @@ do
   map("n", "<leader>*", function()
     require("fzf-lua").grep_cword()
   end, { desc = "Grep Cursor Word" })
+
+  map("n", "gd", function()
+    require("fzf-lua").lsp_definitions()
+  end, { desc = "LSP Definitions" })
 
   map("n", "grr", function()
     require("fzf-lua").lsp_references()
@@ -192,8 +196,6 @@ require("lazy").setup({
       "echasnovski/mini.nvim",
       version = false,
       config = function()
-        require("mini.icons").setup()
-
         require("mini.diff").setup()
         require("mini.statusline").setup()
       end,
@@ -280,6 +282,8 @@ require("lazy").setup({
         require("conform").setup({
           formatters_by_ft = {
             lua = { "stylua" },
+            c = { "clang-format" },
+            cpp = { "clang-format" },
           },
         })
       end,
