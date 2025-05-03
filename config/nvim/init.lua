@@ -196,8 +196,14 @@ require("lazy").setup({
       "echasnovski/mini.nvim",
       version = false,
       config = function()
+        require("mini.ai").setup()
+        require("mini.comment").setup()
         require("mini.diff").setup()
-        require("mini.statusline").setup()
+        require("mini.splitjoin").setup()
+        require("mini.statusline").setup({
+          use_icons = false,
+        })
+        require("mini.trailspace").setup()
       end,
     },
 
@@ -228,7 +234,6 @@ require("lazy").setup({
       },
     },
 
-    -- Completion
     {
       "saghen/blink.cmp",
       version = "1.*",
@@ -245,7 +250,6 @@ require("lazy").setup({
       },
     },
 
-    -- LSP
     {
       "nvim-treesitter/nvim-treesitter",
       build = ":TSUpdate",
