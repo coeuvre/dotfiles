@@ -85,6 +85,7 @@ do
   -- Clear search on escape
   map({ "i", "n", "s" }, "<esc>", function()
     vim.cmd("noh")
+    vim.snippet.stop()
     return "<esc>"
   end, { expr = true, desc = "Escape and Clear hlsearch" })
 
@@ -172,7 +173,7 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "AsyncRunStop",
   callback = function()
     if vim.g.asyncrun_code == 0 then
-      vim.cmd("ToggleQuickfix")
+      vim.cmd("call asyncrun#quickfix_toggle(10)")
       return
     end
     vim.api.nvim_feedkeys("]q", "m", true)
@@ -239,13 +240,6 @@ require("lazy").setup({
       version = "1.*",
       opts = {
         keymap = { preset = "super-tab" },
-
-        fuzzy = {
-          max_typos = function()
-            return 0
-          end,
-        },
-
         signature = { enabled = true },
       },
     },
@@ -268,7 +262,12 @@ require("lazy").setup({
     {
       "neovim/nvim-lspconfig",
       config = function()
-        vim.lsp.enable({ "lua_ls", "clangd", "zls" })
+        vim.lsp.enable({
+          "basedpyright",
+          "clangd",
+          "lua_ls",
+          "zls",
+        })
       end,
     },
 
@@ -285,9 +284,11 @@ require("lazy").setup({
       config = function()
         require("conform").setup({
           formatters_by_ft = {
-            lua = { "stylua" },
             c = { "clang-format" },
             cpp = { "clang-format" },
+            lua = { "stylua" },
+            python = { "ruff_format" },
+            zig = { "zigfmt" },
           },
         })
       end,
@@ -323,6 +324,11 @@ require("lazy").setup({
         vim.g.asyncrun_open = 10
         vim.g.asyncrun_auto = "make"
       end,
+    },
+
+    {
+      "MagicDuck/grug-far.nvim",
+      opts = {},
     },
   },
 })
