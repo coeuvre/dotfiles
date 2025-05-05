@@ -33,7 +33,6 @@ do
   opt.ignorecase = true
   opt.jumpoptions = "view"
   opt.laststatus = 3 -- global statusline
-  opt.list = true
   opt.mouse = "a"
   opt.number = true
   opt.pumblend = 10 -- Popup blend
