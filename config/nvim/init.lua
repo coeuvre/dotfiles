@@ -265,6 +265,7 @@ require("lazy").setup({
           "basedpyright",
           "clangd",
           "lua_ls",
+          "ts_ls",
           "zls",
         })
       end,
@@ -287,6 +288,9 @@ require("lazy").setup({
             cpp = { "clang-format" },
             lua = { "stylua" },
             python = { "ruff_format" },
+            javascript = { "prettierd", "prettier", stop_after_first = true },
+            typescript = { "prettierd", "prettier", stop_after_first = true },
+            typescriptreact = { "prettierd", "prettier", stop_after_first = true },
             zig = { "zigfmt" },
           },
         })
