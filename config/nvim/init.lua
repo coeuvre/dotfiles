@@ -282,15 +282,17 @@ require("lazy").setup({
     {
       "stevearc/conform.nvim",
       config = function()
+        local web_formatter = { "prettierd", "prettier", stop_after_first = true }
         require("conform").setup({
           formatters_by_ft = {
             c = { "clang-format" },
             cpp = { "clang-format" },
+            html = web_formatter,
+            javascript = web_formatter,
             lua = { "stylua" },
             python = { "ruff_format" },
-            javascript = { "prettierd", "prettier", stop_after_first = true },
-            typescript = { "prettierd", "prettier", stop_after_first = true },
-            typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+            typescript = web_formatter,
+            typescriptreact = web_formatter,
             zig = { "zigfmt" },
           },
         })
