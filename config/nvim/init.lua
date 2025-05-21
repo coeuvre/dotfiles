@@ -60,6 +60,9 @@ do
 
   vim.g.zig_fmt_parse_errors = 0
   vim.g.zig_fmt_autosave = 0
+
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
 end
 
 -- Keymaps ---------------------------------------------------------------------
@@ -162,6 +165,9 @@ do
     require("fzf-lua").lsp_code_actions()
   end, { desc = "LSP Code Actions" })
 
+  -- File Explorer
+  map({ "n", "v" }, "<leader>e", ":NvimTreeOpen<cr>", { silent = true, desc = "File Explorer" })
+
   -- AsyncTasks
   map("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
   map("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
@@ -235,6 +241,13 @@ require("lazy").setup({
     },
 
     {
+      "nvim-tree/nvim-tree.lua",
+      config = function()
+        require("nvim-tree").setup({})
+      end,
+    },
+
+    {
       "saghen/blink.cmp",
       version = "1.*",
       opts = {
@@ -261,6 +274,9 @@ require("lazy").setup({
     {
       "neovim/nvim-lspconfig",
       config = function()
+        vim.lsp.config("clangd", {
+          cmd = { "clangd", "--header-insertion=never" },
+        })
         vim.lsp.enable({
           "basedpyright",
           "clangd",
@@ -286,11 +302,13 @@ require("lazy").setup({
         require("conform").setup({
           formatters_by_ft = {
             c = { "clang-format" },
+            cmake = { "cmake_format" },
             cpp = { "clang-format" },
             html = web_formatter,
             javascript = web_formatter,
             lua = { "stylua" },
             python = { "ruff_format" },
+            sh = { "shfmt" },
             typescript = web_formatter,
             typescriptreact = web_formatter,
             zig = { "zigfmt" },
