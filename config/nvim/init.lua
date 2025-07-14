@@ -133,10 +133,6 @@ do
     require("fzf-lua").resume()
   end, { desc = "Resume Last Find" })
 
-  map("n", "<leader>b", function()
-    require("fzf-lua").buffers()
-  end, { desc = "Find Buffers" })
-
   map("n", "<leader>/", function()
     require("fzf-lua").live_grep()
   end, { desc = "Live Grep" })
@@ -169,19 +165,20 @@ do
   map({ "n", "v" }, "<leader>e", ":NvimTreeOpen<cr>", { silent = true, desc = "File Explorer" })
 
   -- AsyncTasks
-  map("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
-  map("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
+  map("n", "<leader>b", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
+  map("n", "<leader>r", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
 end
 
 -- Autocmds --------------------------------------------------------------------
 vim.api.nvim_create_autocmd("User", {
   pattern = "AsyncRunStop",
   callback = function()
-    if vim.g.asyncrun_code == 0 then
-      vim.cmd("call asyncrun#quickfix_toggle(10)")
-      return
-    end
-    vim.api.nvim_feedkeys("]q", "m", true)
+    -- Close quickfix if no errors
+    -- if vim.g.asyncrun_code == 0 then
+    --   vim.cmd("call asyncrun#quickfix_toggle(10)")
+    --   return
+    -- end
+    vim.cmd("silent! cnext")
   end,
 })
 
