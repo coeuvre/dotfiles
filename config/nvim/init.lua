@@ -162,11 +162,22 @@ do
   end, { desc = "LSP Code Actions" })
 
   -- File Explorer
-  map({ "n", "v" }, "<leader>e", ":NvimTreeOpen<cr>", { silent = true, desc = "File Explorer" })
+  map({ "n", "v" }, "<C-b>", ":NvimTreeFindFileToggle<cr>", { silent = true, desc = "File Explorer" })
 
   -- AsyncTasks
-  map("n", "<leader>b", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
-  map("n", "<leader>r", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
+  map("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
+  map("n", "<leader>rt", ":wa <bar> AsyncTask test<cr>", { silent = true, desc = "AsyncTask test" })
+  map("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
+
+  map("n", "<F12>", function()
+    if vim.g.copilot_enabled == 1 then
+      vim.cmd("Copilot disable")
+      vim.cmd("Copilot status")
+    else
+      vim.cmd("Copilot enable")
+      vim.cmd("Copilot status")
+    end
+  end, { desc = "ToggleCopilot" })
 end
 
 -- Autocmds --------------------------------------------------------------------
@@ -244,6 +255,12 @@ require("lazy").setup({
       end,
     },
 
+    {
+      "github/copilot.vim",
+      config = function()
+        vim.cmd("Copilot disable")
+      end,
+    },
     {
       "saghen/blink.cmp",
       version = "1.*",
