@@ -233,22 +233,6 @@ require("lazy").setup({
     },
 
     {
-      "folke/flash.nvim",
-      event = "VeryLazy",
-      opts = {},
-      keys = {
-        {
-          "s",
-          mode = { "n", "x", "o" },
-          function()
-            require("flash").jump()
-          end,
-          desc = "Flash",
-        },
-      },
-    },
-
-    {
       "nvim-tree/nvim-tree.lua",
       config = function()
         require("nvim-tree").setup({})
