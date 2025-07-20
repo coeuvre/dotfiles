@@ -58,6 +58,10 @@ do
   opt.winminwidth = 5
   opt.wrap = false
 
+  if vim.fn.executable("msys2.cmd") == 1 then
+    opt.shell = "msys2.cmd -shell fish -full-path"
+  end
+
   vim.g.zig_fmt_parse_errors = 0
   vim.g.zig_fmt_autosave = 0
 
@@ -83,6 +87,12 @@ do
   map("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window", remap = true })
   map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
   map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
+
+  map("n", "<A-n>", ":tabnew<CR>", { desc = "New tab", remap = true })
+  map("n", "<A-h>", ":tabp<CR>", { desc = "Go to previous tab", remap = true })
+  map("n", "<A-l>", ":tabn<CR>", { desc = "Go to next tab", remap = true })
+  map("n", "<A-S-h>", ":tabm -1<CR>", { remap = true })
+  map("n", "<A-S-l>", ":tabm +1<CR>", { remap = true })
 
   -- Clear search on escape
   map({ "i", "n", "s" }, "<esc>", function()
@@ -128,6 +138,10 @@ do
   map("n", "<C-p>", function()
     require("fzf-lua").files()
   end, { desc = "Find Files" })
+
+  map("n", "<leader>b", function()
+    require("fzf-lua").buffers()
+  end, { desc = "Find Buffers" })
 
   map("n", "<leader>R", function()
     require("fzf-lua").resume()
