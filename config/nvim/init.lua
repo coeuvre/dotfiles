@@ -88,11 +88,11 @@ do
   map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
   map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
 
-  map("n", "<A-n>", ":tabnew<CR>", { desc = "New tab", remap = true })
-  map("n", "<A-h>", ":tabp<CR>", { desc = "Go to previous tab", remap = true })
-  map("n", "<A-l>", ":tabn<CR>", { desc = "Go to next tab", remap = true })
-  map("n", "<A-S-h>", ":tabm -1<CR>", { remap = true })
-  map("n", "<A-S-l>", ":tabm +1<CR>", { remap = true })
+  map("n", "<A-t>", ":tabnew<CR>", { desc = "New tab", remap = true, silent = true })
+  map("n", "<A-p>", ":tabp<CR>", { desc = "Go to previous tab", remap = true, silent = true })
+  map("n", "<A-n>", ":tabn<CR>", { desc = "Go to next tab", remap = true, silent = true })
+  map("n", "<A-S-p>", ":tabm -1<CR>", { remap = true, silent = true })
+  map("n", "<A-S-n>", ":tabm +1<CR>", { remap = true, silent = true })
 
   -- Clear search on escape
   map({ "i", "n", "s" }, "<esc>", function()
