@@ -14,5 +14,9 @@ if type -q zoxide
     zoxide init fish | source
 end
 
+if type -q jj
+    COMPLETE=fish jj | source
+end
+
 test -e ~/.config/fish/config.local.fish && source ~/.config/fish/config.local.fish
 

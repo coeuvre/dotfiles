@@ -3,7 +3,8 @@ nmap <C-l> <C-w>l
 nmap <C-j> <C-w>j
 nmap <C-k> <C-w>k
 
-set clipboard+=unnamed
+set clipboard=unnamedplus
+set clipboard^=ideaput
 set ideajoin
 set incsearch
 set ignorecase
