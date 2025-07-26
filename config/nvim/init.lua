@@ -120,6 +120,20 @@ do
 
   -- Formatting
   map({ "n", "v" }, "<leader>f", function()
+    -- TODO: Use task when it's available in neovim 0.12+ to chain the tasks.
+    -- Currently, they all execute concurrently which might result in the buffer
+    -- being saved for multiple times.
+    local buf = vim.api.nvim_buf_get_name(0)
+    if string.match(buf, "%.zig$") then
+      vim.lsp.buf.code_action({
+        context = { only = { "source.fixAll" } },
+        apply = true,
+      })
+      vim.lsp.buf.code_action({
+        context = { only = { "source.organizeImports" } },
+        apply = true,
+      })
+    end
     require("conform").format()
   end, { desc = "Format" })
 
@@ -264,6 +278,11 @@ require("lazy").setup({
       version = "1.*",
       opts = {
         keymap = { preset = "super-tab" },
+        completion = {
+          trigger = {
+            show_in_snippet = false,
+          },
+        },
         signature = { enabled = true },
       },
     },
