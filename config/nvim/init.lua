@@ -88,12 +88,6 @@ do
   map("n", "<C-k>", "<C-w>k", { desc = "Go to Upper Window", remap = true })
   map("n", "<C-l>", "<C-w>l", { desc = "Go to Right Window", remap = true })
 
-  map("n", "<A-t>", ":tabnew<CR>", { desc = "New tab", remap = true, silent = true })
-  map("n", "<A-p>", ":tabp<CR>", { desc = "Go to previous tab", remap = true, silent = true })
-  map("n", "<A-n>", ":tabn<CR>", { desc = "Go to next tab", remap = true, silent = true })
-  map("n", "<A-S-p>", ":tabm -1<CR>", { remap = true, silent = true })
-  map("n", "<A-S-n>", ":tabm +1<CR>", { remap = true, silent = true })
-
   -- Clear search on escape
   map({ "i", "n", "s" }, "<esc>", function()
     vim.cmd("noh")
@@ -120,6 +114,11 @@ do
 
   -- Formatting
   map({ "n", "v" }, "<leader>f", function()
+    require("conform").format()
+  end, { desc = "Format" })
+
+  -- Fix
+  map({ "n", "v" }, "<leader>F", function()
     -- TODO: Use task when it's available in neovim 0.12+ to chain the tasks.
     -- Currently, they all execute concurrently which might result in the buffer
     -- being saved for multiple times.
@@ -134,7 +133,6 @@ do
         apply = true,
       })
     end
-    require("conform").format()
   end, { desc = "Format" })
 
   -- Diagnostic
