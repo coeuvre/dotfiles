@@ -193,6 +193,8 @@ require("lazy").setup({
           },
         })
 
+        vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
+
         vim.keymap.set({ "n", "v" }, "<leader>f", function()
           require("conform").format()
         end, { desc = "Format" })

@@ -7,7 +7,6 @@ opt.fileformats = "unix,dos"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
 opt.foldmethod = "expr"
-opt.formatexpr = "v:lua.require'conform'.formatexpr()"
 opt.grepformat = "%f:%l:%c:%m"
 opt.grepprg = "rg --vimgrep"
 opt.guifont = "JetBrainsMonoNL NFP"
