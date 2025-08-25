@@ -37,6 +37,7 @@ opt.updatetime = 200
 opt.virtualedit = "block"
 opt.winminwidth = 5
 opt.wrap = false
+opt.cursorline = true
 
 if vim.fn.executable("msys2.cmd") == 1 then
   opt.shell = "msys2.cmd -shell fish -full-path"
