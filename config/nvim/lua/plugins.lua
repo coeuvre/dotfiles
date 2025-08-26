@@ -148,6 +148,14 @@ require("lazy").setup({
           },
         },
         signature = { enabled = true },
+        sources = {
+          default = { "lsp", "buffer", "path" },
+          transform_items = function(_, items)
+            return vim.tbl_filter(function(item)
+              return item.kind ~= require("blink.cmp.types").CompletionItemKind.Snippet
+            end, items)
+          end,
+        },
       },
     },
 
@@ -169,16 +177,25 @@ require("lazy").setup({
     {
       "neovim/nvim-lspconfig",
       config = function()
-        vim.lsp.config("clangd", {
-          cmd = { "clangd", "--header-insertion=never" },
-        })
-        vim.lsp.enable({
-          "basedpyright",
-          "clangd",
-          "lua_ls",
-          "ts_ls",
-          "zls",
-        })
+        local lsps = {
+          clangd = {
+            cmd = { "clangd", "--header-insertion=never" },
+          },
+          basedpyright = {},
+          lua_ls = {},
+          ts_ls = {},
+          zls = {},
+        }
+
+        local base_config = {
+          capabilities = require("blink.cmp").get_lsp_capabilities({
+            textDocument = { completion = { completionItem = { snippetSupport = false } } },
+          }),
+        }
+        for lsp, config in pairs(lsps) do
+          vim.lsp.config(lsp, vim.tbl_extend("force", base_config, config))
+          vim.lsp.enable(lsp)
+        end
       end,
     },
 

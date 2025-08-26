@@ -1,2 +1,4 @@
 font-family = "JetBrainsMonoNL NFP"
 theme = catppuccin-mocha
+app-notifications = no-clipboard-copy
+copy-on-select = clipboard
