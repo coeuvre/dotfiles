@@ -126,7 +126,7 @@ require("lazy").setup({
       config = function()
         vim.cmd("Copilot disable")
 
-        vim.keymap.set("n", "<F12>", function()
+        vim.api.nvim_create_user_command("ToggleCopilot", function()
           if vim.g.copilot_enabled == 1 then
             vim.cmd("Copilot disable")
             vim.cmd("Copilot status")
@@ -134,18 +134,19 @@ require("lazy").setup({
             vim.cmd("Copilot enable")
             vim.cmd("Copilot status")
           end
-        end, { desc = "ToggleCopilot" })
+        end, { desc = "Toggle Copilot" })
       end,
     },
     {
       "saghen/blink.cmp",
       version = "1.*",
       opts = {
-        keymap = { preset = "super-tab" },
+        keymap = { preset = "enter" },
         completion = {
           trigger = {
             show_in_snippet = false,
           },
+          documentation = { auto_show = true, auto_show_delay_ms = 500 },
         },
         signature = { enabled = true },
         sources = {
@@ -225,52 +226,29 @@ require("lazy").setup({
             typescriptreact = web_formatter,
             zig = { "zigfmt" },
           },
+
+          format_on_save = function()
+            -- Disable with a global or buffer-local variable
+            if vim.g.disable_format_on_save then
+              return
+            end
+
+            return { timeout_ms = 1000 }
+          end,
         })
 
         vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
 
-        vim.keymap.set({ "n", "v" }, "<leader>f", function()
-          require("conform").format()
-        end, { desc = "Format" })
-
-        vim.keymap.set({ "n", "v" }, "<leader>F", function()
-          -- TODO: Use task when it's available in neovim 0.12+ to chain the tasks.
-          -- Currently, they all execute concurrently which might result in the buffer
-          -- being saved for multiple times.
-          local buf = vim.api.nvim_buf_get_name(0)
-          if string.match(buf, "%.zig$") then
-            vim.lsp.buf.code_action({
-              context = { only = { "source.fixAll" } },
-              apply = true,
-            })
-            vim.lsp.buf.code_action({
-              context = { only = { "source.organizeImports" } },
-              apply = true,
-            })
-          end
-        end, { desc = "Fix" })
+        vim.api.nvim_create_user_command("ToggleFormatOnSave", function()
+          vim.g.disable_format_on_save = not vim.g.disable_format_on_save
+        end, {
+          desc = "Toggle FormatOnSave",
+        })
       end,
     },
 
     {
       "tpope/vim-sleuth",
-    },
-
-    {
-      "okuuva/auto-save.nvim",
-      cmd = "ASToggle",
-      event = { "InsertLeave", "TextChanged" },
-      opts = {
-        debounce_delay = 300,
-        condition = function()
-          -- don't save for special-buffers
-          if vim.bo.buftype ~= "" then
-            return false
-          end
-
-          return vim.bo.modifiable
-        end,
-      },
     },
 
     {

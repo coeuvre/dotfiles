@@ -52,6 +52,8 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+vim.keymap.set("n", "<C-s>", ":w<cr>", { desc = "Save", silent = true })
+
 -- Better up/down
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -93,3 +95,17 @@ local diagnostic_goto = function(next, severity)
 end
 vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
 vim.keymap.set("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+
+vim.api.nvim_create_user_command("FixAll", function()
+  vim.lsp.buf.code_action({
+    context = { only = { "source.fixAll" } },
+    apply = true,
+  })
+end, { desc = "LSP Fix All" })
+
+vim.api.nvim_create_user_command("OrganizeImports", function()
+  vim.lsp.buf.code_action({
+    context = { only = { "source.organizeImports" } },
+    apply = true,
+  })
+end, { desc = "LSP Organize Imports" })
