@@ -122,17 +122,31 @@ require("lazy").setup({
     },
 
     {
-      "github/copilot.vim",
+      "zbirenbaum/copilot.lua",
       config = function()
-        vim.cmd("Copilot disable")
-
+        vim.g.copilot_loaded = false
         vim.api.nvim_create_user_command("ToggleCopilot", function()
-          if vim.g.copilot_enabled == 1 then
-            vim.cmd("Copilot disable")
-            vim.cmd("Copilot status")
-          else
+          if not vim.g.copilot_loaded then
+            require("copilot").setup({
+              panel = { enabled = false },
+              suggestion = {
+                enabled = true,
+                auto_trigger = true,
+                hide_during_completion = false,
+                keymap = {
+                  accept = false,
+                  dismiss = false,
+                },
+              },
+            })
+            vim.g.copilot_loaded = true
+            return
+          end
+
+          if require("copilot.client").is_disabled() then
             vim.cmd("Copilot enable")
-            vim.cmd("Copilot status")
+          else
+            vim.cmd("Copilot disable")
           end
         end, { desc = "Toggle Copilot" })
       end,
@@ -141,7 +155,33 @@ require("lazy").setup({
       "saghen/blink.cmp",
       version = "1.*",
       opts = {
-        keymap = { preset = "enter" },
+        keymap = {
+          preset = "enter",
+          ["<C-e>"] = {
+            function()
+              if not require("copilot.suggestion").is_visible() then
+                return
+              end
+              require("copilot.suggestion").dismiss()
+              return true
+            end,
+            "hide",
+            "fallback",
+          },
+          ["<Tab>"] = {
+            function()
+              if not require("copilot.suggestion").is_visible() then
+                return
+              end
+
+              require("copilot.suggestion").accept()
+              return true
+            end,
+            "select_and_accept",
+            "fallback",
+          },
+          ["<S-Tab>"] = { "fallback" },
+        },
         completion = {
           trigger = {
             show_in_snippet = false,
@@ -276,8 +316,8 @@ require("lazy").setup({
           vim.cmd("call asyncrun#quickfix_toggle(10)")
         end, { silent = true, desc = "Quickfix List" })
 
-        vim.keymap.set("n", "<leader>rb", ":wa <bar> AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
-        vim.keymap.set("n", "<leader>rt", ":wa <bar> AsyncTask test<cr>", { silent = true, desc = "AsyncTask test" })
+        vim.keymap.set("n", "<leader>rb", ":AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
+        vim.keymap.set("n", "<leader>rt", ":AsyncTask test<cr>", { silent = true, desc = "AsyncTask test" })
         vim.keymap.set("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
       end,
     },
