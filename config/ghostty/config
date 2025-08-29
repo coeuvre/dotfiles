@@ -1,4 +1,9 @@
+term = tmux-256color
+
 font-family = "JetBrainsMonoNL NFP"
 theme = catppuccin-mocha
+
 app-notifications = no-clipboard-copy
+confirm-close-surface = false
 copy-on-select = clipboard
+
