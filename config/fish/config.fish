@@ -1,3 +1,5 @@
+test -e ~/.config/fish/config.local.fish && source ~/.config/fish/config.local.fish
+
 fish_add_path ~/bin
 fish_add_path ~/.cargo/bin
 
@@ -17,6 +19,4 @@ end
 if type -q jj
     COMPLETE=fish jj | source
 end
-
-test -e ~/.config/fish/config.local.fish && source ~/.config/fish/config.local.fish
 
