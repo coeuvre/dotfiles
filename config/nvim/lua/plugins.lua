@@ -259,6 +259,7 @@ require("lazy").setup({
             cpp = { "clang-format" },
             html = web_formatter,
             javascript = web_formatter,
+            javascriptreact = web_formatter,
             lua = { "stylua" },
             python = { "ruff_format" },
             sh = { "shfmt" },
