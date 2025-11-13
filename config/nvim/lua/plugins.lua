@@ -219,10 +219,11 @@ require("lazy").setup({
       "neovim/nvim-lspconfig",
       config = function()
         local lsps = {
+          basedpyright = {},
           clangd = {
             cmd = { "clangd", "--header-insertion=never" },
           },
-          basedpyright = {},
+          gopls = {},
           lua_ls = {},
           ts_ls = {},
           zls = {},
@@ -257,14 +258,15 @@ require("lazy").setup({
             c = { "clang-format" },
             cmake = { "cmake_format" },
             cpp = { "clang-format" },
+            go = { "gofmt" },
             html = web_formatter,
             javascript = web_formatter,
             javascriptreact = web_formatter,
             lua = { "stylua" },
             python = { "ruff_format" },
             sh = { "shfmt" },
-            typescript = web_formatter,
             typescriptreact = web_formatter,
+            typescript = web_formatter,
             zig = { "zigfmt" },
           },
 
