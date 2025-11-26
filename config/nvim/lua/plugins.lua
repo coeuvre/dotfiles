@@ -225,6 +225,7 @@ require("lazy").setup({
           },
           gopls = {},
           lua_ls = {},
+          rust_analyzer = {},
           ts_ls = {},
           zls = {},
         }
@@ -264,6 +265,7 @@ require("lazy").setup({
             javascriptreact = web_formatter,
             lua = { "stylua" },
             python = { "ruff_format" },
+            rust = { "rustfmt" },
             sh = { "shfmt" },
             typescriptreact = web_formatter,
             typescript = web_formatter,
