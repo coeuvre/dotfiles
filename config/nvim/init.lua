@@ -213,7 +213,7 @@ vim.keymap.set("n", "gd", function()
   require("fzf-lua").lsp_definitions()
 end, { desc = "LSP Definitions" })
 
--- Remap <lsp-defaults> to use fzf-lua
+-- Remap |lsp-defaults| to use fzf-lua
 vim.keymap.set("n", "gra", function()
   require("fzf-lua").lsp_code_actions()
 end, { desc = "LSP Code Actions" })
@@ -278,6 +278,15 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
 })
 
+local config = {
+  capabilities = require("blink.cmp").get_lsp_capabilities({
+    textDocument = { completion = { completionItem = { snippetSupport = false } } },
+  }),
+  on_attach = function()
+    vim.lsp.inline_completion.enable(true)
+  end,
+}
+
 local lsps = {
   basedpyright = {},
   clangd = {
@@ -290,16 +299,8 @@ local lsps = {
   zls = {},
 }
 
-local base_config = {
-  capabilities = require("blink.cmp").get_lsp_capabilities({
-    textDocument = { completion = { completionItem = { snippetSupport = false } } },
-  }),
-  on_attach = function()
-    vim.lsp.inline_completion.enable(true)
-  end,
-}
-for lsp, config in pairs(lsps) do
-  vim.lsp.config(lsp, vim.tbl_extend("force", base_config, config))
+for lsp, lsp_config in pairs(lsps) do
+  vim.lsp.config(lsp, vim.tbl_extend("force", config, lsp_config))
   vim.lsp.enable(lsp)
 end
 
@@ -313,6 +314,8 @@ configs.setup({
   highlight = { enable = true, additional_vim_regex_highlighting = false },
   indent = { enable = true },
 })
+
+-- TODO: Automatically run :TSUpdate
 
 -- Async Tasks -----------------------------------------------------------------
 vim.pack.add({
