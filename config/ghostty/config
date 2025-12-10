@@ -7,3 +7,4 @@ app-notifications = no-clipboard-copy
 confirm-close-surface = false
 copy-on-select = clipboard
 
+clipboard-read = allow
