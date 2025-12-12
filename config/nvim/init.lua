@@ -280,21 +280,15 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
 })
 
-local config = {
+local lsp_base_config = {
   capabilities = require("blink.cmp").get_lsp_capabilities({
     textDocument = { completion = { completionItem = { snippetSupport = false } } },
   }),
-  on_attach = function(client, bufnr)
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
-      vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
-    end
-  end,
 }
 
 local lsps = {
   basedpyright = {},
   clangd = { cmd = { "clangd", "--header-insertion=never" } },
-  copilot = {},
   gopls = {},
   lua_ls = {},
   rust_analyzer = {},
@@ -302,18 +296,38 @@ local lsps = {
   zls = {},
 }
 
-for lsp, lsp_config in pairs(lsps) do
-  vim.lsp.config(lsp, vim.tbl_extend("force", config, lsp_config))
+for lsp, config in pairs(lsps) do
+  vim.lsp.config(lsp, vim.tbl_extend("force", lsp_base_config, config))
   vim.lsp.enable(lsp)
 end
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local bufnr = args.buf
+    local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
+      vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+    end
+  end,
+})
+
+vim.api.nvim_create_user_command("ToggleCopilot", function()
+  if vim.lsp.is_enabled("copilot") then
+    vim.lsp.enable("copilot", false)
+    vim.notify("Copilot Disabled", vim.log.levels.INFO)
+  else
+    vim.lsp.enable("copilot")
+    vim.notify("Copilot Enabled", vim.log.levels.INFO)
+  end
+end, { desc = "Toggle Copilot" })
 
 -- Treesitter ------------------------------------------------------------------
 vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
 
 local configs = require("nvim-treesitter.configs")
 configs.setup({
-  ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "query", "javascript", "html", "zig" },
-  sync_install = false,
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "zig" },
   highlight = { enable = true, additional_vim_regex_highlighting = false },
 })
 
