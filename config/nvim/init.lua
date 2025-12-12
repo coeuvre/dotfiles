@@ -3,13 +3,8 @@
 --------------------------------------------------------------------------------
 local opt = vim.opt
 
-if vim.fn.executable("msys2.cmd") == 1 then
-  opt.shell = "msys2.cmd -shell fish -full-path"
-end
-
-opt.autowrite = true
 opt.clipboard = "unnamedplus"
-opt.confirm = true
+opt.cursorline = true
 opt.expandtab = true
 opt.fileformats = "unix,dos"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -37,6 +32,7 @@ opt.smartindent = true
 opt.splitbelow = true
 opt.splitkeep = "screen"
 opt.splitright = true
+opt.swapfile = false
 opt.tabstop = 2
 opt.termguicolors = true
 opt.undofile = true
@@ -45,13 +41,16 @@ opt.updatetime = 200
 opt.virtualedit = "block"
 opt.winminwidth = 5
 opt.wrap = false
-opt.cursorline = true
 
 vim.g.zig_fmt_parse_errors = 0
 vim.g.zig_fmt_autosave = 0
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+if vim.fn.executable("msys2.cmd") == 1 then
+  opt.shell = "msys2.cmd -shell fish -full-path"
+end
 
 --------------------------------------------------------------------------------
 --- Keymaps
