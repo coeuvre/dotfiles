@@ -153,6 +153,11 @@ vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
 
 local web_formatter = { "prettierd", "prettier", stop_after_first = true }
 require("conform").setup({
+  format_on_save = {
+    timeout_ms = 1000,
+    lsp_fallback = true,
+  },
+
   formatters_by_ft = {
     c = { "clang-format" },
     cmake = { "cmake_format" },
@@ -169,10 +174,6 @@ require("conform").setup({
     typescript = web_formatter,
     zig = { "zigfmt" },
   },
-
-  format_on_save = function()
-    return { timeout_ms = 1000 }
-  end,
 })
 vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
 
@@ -188,6 +189,8 @@ require("fzf-lua").setup({
     },
   },
 })
+
+require("fzf-lua").register_ui_select()
 
 vim.keymap.set("n", "<C-p>", function()
   require("fzf-lua").files()
@@ -282,16 +285,17 @@ local config = {
   capabilities = require("blink.cmp").get_lsp_capabilities({
     textDocument = { completion = { completionItem = { snippetSupport = false } } },
   }),
-  on_attach = function()
-    vim.lsp.inline_completion.enable(true)
+  on_attach = function(client, bufnr)
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
+      vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+    end
   end,
 }
 
 local lsps = {
   basedpyright = {},
-  clangd = {
-    cmd = { "clangd", "--header-insertion=never" },
-  },
+  clangd = { cmd = { "clangd", "--header-insertion=never" } },
+  copilot = {},
   gopls = {},
   lua_ls = {},
   rust_analyzer = {},
@@ -315,7 +319,16 @@ configs.setup({
   indent = { enable = true },
 })
 
--- TODO: Automatically run :TSUpdate
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if kind == "install" or kind == "update" then
+      if name == "nvim-treesitter" then
+        vim.cmd("TSUpdate")
+      end
+    end
+  end,
+})
 
 -- Async Tasks -----------------------------------------------------------------
 vim.pack.add({
@@ -340,34 +353,3 @@ end, { silent = true, desc = "Quickfix List" })
 vim.keymap.set("n", "<leader>rb", ":AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
 vim.keymap.set("n", "<leader>rt", ":AsyncTask test<cr>", { silent = true, desc = "AsyncTask test" })
 vim.keymap.set("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
-
---     {
---       "zbirenbaum/copilot.lua",
---       config = function()
---         vim.g.copilot_loaded = false
---         vim.api.nvim_create_user_command("ToggleCopilot", function()
---           if not vim.g.copilot_loaded then
---             require("copilot").setup({
---               panel = { enabled = false },
---               suggestion = {
---                 enabled = true,
---                 auto_trigger = true,
---                 hide_during_completion = false,
---                 keymap = {
---                   accept = false,
---                   dismiss = false,
---                 },
---               },
---             })
---             vim.g.copilot_loaded = true
---             return
---           end
---
---           if require("copilot.client").is_disabled() then
---             vim.cmd("Copilot enable")
---           else
---             vim.cmd("Copilot disable")
---           end
---         end, { desc = "Toggle Copilot" })
---       end,
---     },
