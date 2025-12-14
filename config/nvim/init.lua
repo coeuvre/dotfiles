@@ -95,6 +95,13 @@ vim.api.nvim_create_user_command("FixAll", function()
   })
 end, { desc = "LSP Fix All" })
 
+vim.api.nvim_create_user_command("OrganizeImports", function()
+  vim.lsp.buf.code_action({
+    context = { only = { "source.organizeImports" } },
+    apply = true,
+  })
+end, { desc = "LSP Organize Imports" })
+
 --------------------------------------------------------------------------------
 --- Plugins
 --------------------------------------------------------------------------------
@@ -168,68 +175,6 @@ require("conform").setup({
   },
 })
 vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-local function run_code_action(bufnr, kinds, timeout_ms)
-  local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/codeAction" })
-  if next(clients) == nil then
-    return
-  end
-
-  local result = vim.lsp.buf_request_sync(bufnr, "textDocument/codeAction", function(client)
-    local params = vim.lsp.util.make_given_range_params(
-      { 1, 0 },
-      { 1 + vim.api.nvim_buf_line_count(bufnr), 0 },
-      bufnr,
-      client.offset_encoding
-    )
-    params.context = { diagnostics = {}, only = kinds }
-    return params
-  end, timeout_ms)
-
-  if not result then
-    return
-  end
-
-  if type(result) ~= "table" then
-    vim.notify(result, vim.log.levels.ERROR)
-    return
-  end
-
-  local kind_map = {}
-  for _, kind in ipairs(kinds) do
-    kind_map[kind] = true
-  end
-
-  for client_id, res in pairs(result) do
-    local client = assert(vim.lsp.get_client_by_id(client_id))
-    for _, action in pairs(res.result or {}) do
-      if kind_map[action.kind] then
-        if action.edit then
-          vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
-        elseif action.command then
-          client:exec_cmd(action.command)
-        end
-      end
-    end
-  end
-end
-
--- Code actions and format on save
-vim.api.nvim_create_autocmd("BufWritePre", {
-  desc = "FormatOnSave",
-  pattern = "*",
-  group = vim.api.nvim_create_augroup("FormatOnSave", { clear = true }),
-  callback = function(ev)
-    run_code_action(ev.buf, { "source.organizeImports" }, 1000)
-
-    require("conform").format({
-      bufnr = ev.buf,
-      async = false,
-      lsp_format = "fallback",
-      timeout_ms = 1000,
-    })
-  end,
-})
 
 -- Fuzzy finder ----------------------------------------------------------------
 vim.pack.add({
