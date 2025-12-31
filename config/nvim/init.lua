@@ -7,7 +7,6 @@ opt.clipboard = "unnamedplus"
 opt.cursorline = true
 opt.expandtab = true
 opt.fileformats = "unix,dos"
-opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
 opt.foldmethod = "expr"
 opt.grepformat = "%f:%l:%c:%m"
@@ -114,222 +113,288 @@ vim.api.nvim_create_user_command("UpdatePlugins", function()
   vim.pack.update()
 end, { desc = "Update Plugins" })
 
--- Colorscheme -----------------------------------------------------------------
-vim.pack.add({
-  { src = "https://github.com/catppuccin/nvim.git", name = "catppuccin" },
-})
-vim.cmd.colorscheme("catppuccin")
-
--- Utils -----------------------------------------------------------------------
-vim.pack.add({
-  "https://github.com/tpope/vim-sleuth",
-  { src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
-  "https://github.com/stevearc/oil.nvim",
-  "https://github.com/williamboman/mason.nvim",
-  "https://github.com/MagicDuck/grug-far.nvim",
-})
-
-require("mini.ai").setup()
-require("mini.comment").setup()
-require("mini.diff").setup()
-require("mini.splitjoin").setup()
-require("mini.statusline").setup({
-  use_icons = false,
-})
-require("mini.trailspace").setup()
-require("oil").setup({
-  keymaps = {
-    ["<C-l>"] = false,
-    ["<C-h>"] = false,
-    ["<C-p>"] = false,
-  },
-})
-require("mason").setup({})
-require("grug-far").setup({})
-
--- Formatting ------------------------------------------------------------------
-vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
-
-local web_formatter = { "prettierd", "prettier", stop_after_first = true }
-require("conform").setup({
-  format_on_save = {
-    timeout_ms = 1000,
-    lsp_fallback = true,
-  },
-
-  formatters_by_ft = {
-    c = { "clang-format" },
-    cmake = { "cmake_format" },
-    cpp = { "clang-format" },
-    go = { "gofmt" },
-    html = web_formatter,
-    javascript = web_formatter,
-    javascriptreact = web_formatter,
-    lua = { "stylua" },
-    python = { "ruff_format" },
-    rust = { "rustfmt" },
-    sh = { "shfmt" },
-    typescriptreact = web_formatter,
-    typescript = web_formatter,
-    zig = { "zigfmt" },
-  },
-})
-vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
-
--- Fuzzy finder ----------------------------------------------------------------
-vim.pack.add({
-  { src = "https://github.com/ibhagwan/fzf-lua" },
-})
-
-require("fzf-lua").setup({
-  keymap = {
-    fzf = {
-      ["ctrl-q"] = "select-all+accept",
-    },
-  },
-})
-
-require("fzf-lua").register_ui_select()
-
-vim.keymap.set("n", "<C-p>", function()
-  require("fzf-lua").files()
-end, { desc = "Find Files" })
-
-vim.keymap.set("n", "<leader>b", function()
-  require("fzf-lua").buffers()
-end, { desc = "Find Buffers" })
-
-vim.keymap.set("n", "<leader>R", function()
-  require("fzf-lua").resume()
-end, { desc = "Resume Last Find" })
-
-vim.keymap.set("n", "<leader>/", function()
-  require("fzf-lua").live_grep()
-end, { desc = "Live Grep" })
-
-vim.keymap.set("n", "<leader>*", function()
-  require("fzf-lua").grep_cword()
-end, { desc = "Grep Cursor Word" })
-
-vim.keymap.set("n", "gd", function()
-  require("fzf-lua").lsp_definitions()
-end, { desc = "LSP Definitions" })
-
--- Remap |lsp-defaults| to use fzf-lua
-vim.keymap.set("n", "gra", function()
-  require("fzf-lua").lsp_code_actions()
-end, { desc = "LSP Code Actions" })
-
-vim.keymap.set("n", "gri", function()
-  require("fzf-lua").lsp_implementations()
-end, { desc = "LSP Implementations" })
-
-vim.keymap.set("n", "grr", function()
-  require("fzf-lua").lsp_references()
-end, { desc = "LSP References" })
-
-vim.keymap.set("n", "gO", function()
-  require("fzf-lua").lsp_document_symbols()
-end, { desc = "LSP Document Symbols" })
-
--- Auto-completion -------------------------------------------------------------
-vim.pack.add({
-  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
-})
-
-require("blink.cmp").setup({
-  keymap = {
-    preset = "enter",
-    ["<C-e>"] = {
-      function()
-        -- TODO: Cancel inline completion
-      end,
-      "hide",
-      "fallback",
-    },
-    ["<Tab>"] = {
-      function()
-        if vim.lsp.inline_completion.get() then
-          return true
-        end
-      end,
-      "select_and_accept",
-      "fallback",
-    },
-    ["<S-Tab>"] = { "fallback" },
-  },
-  completion = {
-    trigger = {
-      show_in_snippet = false,
-    },
-    documentation = { auto_show = true, auto_show_delay_ms = 500 },
-  },
-  signature = { enabled = true },
-  sources = {
-    default = { "lsp", "buffer", "path" },
-    transform_items = function(_, items)
-      return vim.tbl_filter(function(item)
-        return item.kind ~= require("blink.cmp.types").CompletionItemKind.Snippet
-      end, items)
+local plugins = {
+  -- Colorscheme ---------------------------------------------------------------
+  {
+    src = "https://github.com/catppuccin/nvim.git",
+    name = "catppuccin",
+    setup = function()
+      vim.cmd.colorscheme("catppuccin")
     end,
   },
-})
 
--- LSP -------------------------------------------------------------------------
-vim.pack.add({
-  "https://github.com/neovim/nvim-lspconfig",
-})
+  -- Utils ---------------------------------------------------------------------
+  "https://github.com/tpope/vim-sleuth",
+  {
+    src = "https://github.com/nvim-mini/mini.nvim",
+    version = "stable",
+    setup = function()
+      require("mini.ai").setup()
+      require("mini.comment").setup()
+      require("mini.diff").setup()
+      require("mini.splitjoin").setup()
+      require("mini.statusline").setup({
+        use_icons = false,
+      })
+      require("mini.trailspace").setup()
+    end,
+  },
+  {
+    src = "https://github.com/stevearc/oil.nvim",
+    setup = function()
+      require("oil").setup({
+        keymaps = {
+          ["<C-l>"] = false,
+          ["<C-h>"] = false,
+          ["<C-p>"] = false,
+        },
+      })
+    end,
+  },
+  {
+    src = "https://github.com/williamboman/mason.nvim",
+    setup = function()
+      require("mason").setup({})
+    end,
+  },
+  {
+    src = "https://github.com/MagicDuck/grug-far.nvim",
+    setup = function()
+      require("grug-far").setup({})
+    end,
+  },
 
-local lsp_base_config = {
-  capabilities = require("blink.cmp").get_lsp_capabilities({
-    textDocument = { completion = { completionItem = { snippetSupport = false } } },
-  }),
+  -- Formatting ----------------------------------------------------------------
+  {
+    src = "https://github.com/stevearc/conform.nvim",
+    setup = function()
+      local web_formatter = { "prettierd", "prettier", stop_after_first = true }
+      require("conform").setup({
+        format_on_save = {
+          timeout_ms = 1000,
+          lsp_fallback = true,
+        },
+
+        formatters_by_ft = {
+          c = { "clang-format" },
+          cmake = { "cmake_format" },
+          cpp = { "clang-format" },
+          go = { "gofmt" },
+          html = web_formatter,
+          javascript = web_formatter,
+          javascriptreact = web_formatter,
+          lua = { "stylua" },
+          python = { "ruff_format" },
+          rust = { "rustfmt" },
+          sh = { "shfmt" },
+          typescriptreact = web_formatter,
+          typescript = web_formatter,
+          zig = { "zigfmt" },
+        },
+      })
+
+      vim.opt.formatexpr = "v:lua.require'conform'.formatexpr()"
+    end,
+  },
+
+  -- Fuzzy finder --------------------------------------------------------------
+  {
+    src = "https://github.com/ibhagwan/fzf-lua",
+    setup = function()
+      require("fzf-lua").setup({
+        keymap = {
+          fzf = {
+            ["ctrl-q"] = "select-all+accept",
+          },
+        },
+      })
+
+      require("fzf-lua").register_ui_select()
+
+      vim.keymap.set("n", "<C-p>", function()
+        require("fzf-lua").files()
+      end, { desc = "Find Files" })
+
+      vim.keymap.set("n", "<leader>b", function()
+        require("fzf-lua").buffers()
+      end, { desc = "Find Buffers" })
+
+      vim.keymap.set("n", "<leader>R", function()
+        require("fzf-lua").resume()
+      end, { desc = "Resume Last Find" })
+
+      vim.keymap.set("n", "<leader>/", function()
+        require("fzf-lua").live_grep()
+      end, { desc = "Live Grep" })
+
+      vim.keymap.set("n", "<leader>*", function()
+        require("fzf-lua").grep_cword()
+      end, { desc = "Grep Cursor Word" })
+
+      vim.keymap.set("n", "gd", function()
+        require("fzf-lua").lsp_definitions()
+      end, { desc = "LSP Definitions" })
+
+      -- Remap |lsp-defaults| to use fzf-lua
+      vim.keymap.set("n", "gra", function()
+        require("fzf-lua").lsp_code_actions()
+      end, { desc = "LSP Code Actions" })
+
+      vim.keymap.set("n", "gri", function()
+        require("fzf-lua").lsp_implementations()
+      end, { desc = "LSP Implementations" })
+
+      vim.keymap.set("n", "grr", function()
+        require("fzf-lua").lsp_references()
+      end, { desc = "LSP References" })
+
+      vim.keymap.set("n", "gO", function()
+        require("fzf-lua").lsp_document_symbols()
+      end, { desc = "LSP Document Symbols" })
+    end,
+  },
+
+  -- Auto-completion -----------------------------------------------------------
+  {
+    src = "https://github.com/saghen/blink.cmp",
+    version = vim.version.range("1.*"),
+    setup = function()
+      require("blink.cmp").setup({
+        keymap = {
+          preset = "enter",
+          ["<C-e>"] = {
+            function()
+              -- TODO: Cancel inline completion
+            end,
+            "hide",
+            "fallback",
+          },
+          ["<Tab>"] = {
+            function()
+              if vim.lsp.inline_completion.get() then
+                return true
+              end
+            end,
+            "select_and_accept",
+            "fallback",
+          },
+          ["<S-Tab>"] = { "fallback" },
+        },
+        completion = {
+          trigger = {
+            show_in_snippet = false,
+          },
+          documentation = { auto_show = true, auto_show_delay_ms = 500 },
+        },
+        signature = { enabled = true },
+        sources = {
+          default = { "lsp", "buffer", "path" },
+          transform_items = function(_, items)
+            return vim.tbl_filter(function(item)
+              return item.kind ~= require("blink.cmp.types").CompletionItemKind.Snippet
+            end, items)
+          end,
+        },
+      })
+    end,
+  },
+
+  -- LSP -----------------------------------------------------------------------
+  {
+    src = "https://github.com/neovim/nvim-lspconfig",
+    setup = function()
+      local lsp_base_config = {
+        capabilities = require("blink.cmp").get_lsp_capabilities({
+          textDocument = { completion = { completionItem = { snippetSupport = false } } },
+        }),
+      }
+
+      local lsps = {
+        basedpyright = {},
+        clangd = { cmd = { "clangd", "--header-insertion=never" } },
+        gopls = {},
+        lua_ls = {},
+        rust_analyzer = {},
+        ts_ls = {},
+        zls = {},
+      }
+
+      for lsp, config in pairs(lsps) do
+        vim.lsp.config(lsp, vim.tbl_extend("force", lsp_base_config, config))
+        vim.lsp.enable(lsp)
+      end
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local bufnr = args.buf
+          local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+          if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
+            vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
+          end
+        end,
+      })
+
+      vim.api.nvim_create_user_command("ToggleCopilot", function()
+        if vim.lsp.is_enabled("copilot") then
+          vim.lsp.enable("copilot", false)
+          vim.notify("Copilot Disabled", vim.log.levels.INFO)
+        else
+          vim.lsp.enable("copilot")
+          vim.notify("Copilot Enabled", vim.log.levels.INFO)
+        end
+      end, { desc = "Toggle Copilot" })
+    end,
+  },
+
+  -- Treesitter ----------------------------------------------------------------
+  {
+    src = "https://github.com/nvim-treesitter/nvim-treesitter",
+    setup = function()
+      local parsers = { "c", "cpp", "lua", "vim", "vimdoc", "query", "zig" }
+
+      pcall(require("nvim-treesitter").install, parsers)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = parsers,
+        callback = function()
+          -- syntax highlighting, provided by Neovim
+          vim.treesitter.start()
+          -- folds, provided by Neovim
+          vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+          vim.wo.foldmethod = "expr"
+          -- indentation, provided by nvim-treesitter
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+      })
+    end,
+  },
+
+  -- Async Tasks ---------------------------------------------------------------
+  "https://github.com/skywind3000/asyncrun.vim",
+  {
+    src = "https://github.com/skywind3000/asynctasks.vim",
+    setup = function()
+      vim.g.asyncrun_open = 10
+      vim.g.asyncrun_auto = "make"
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "AsyncRunStop",
+        callback = function()
+          vim.cmd("silent! cnext")
+        end,
+      })
+
+      vim.keymap.set("n", "<C-q>", function()
+        vim.cmd("call asyncrun#quickfix_toggle(10)")
+      end, { silent = true, desc = "Quickfix List" })
+
+      vim.keymap.set("n", "<leader>rb", ":AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
+      vim.keymap.set("n", "<leader>rt", ":AsyncTask test<cr>", { silent = true, desc = "AsyncTask test" })
+      vim.keymap.set("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
+    end,
+  },
 }
-
-local lsps = {
-  basedpyright = {},
-  clangd = { cmd = { "clangd", "--header-insertion=never" } },
-  gopls = {},
-  lua_ls = {},
-  rust_analyzer = {},
-  ts_ls = {},
-  zls = {},
-}
-
-for lsp, config in pairs(lsps) do
-  vim.lsp.config(lsp, vim.tbl_extend("force", lsp_base_config, config))
-  vim.lsp.enable(lsp)
-end
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local bufnr = args.buf
-    local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion, bufnr) then
-      vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
-    end
-  end,
-})
-
-vim.api.nvim_create_user_command("ToggleCopilot", function()
-  if vim.lsp.is_enabled("copilot") then
-    vim.lsp.enable("copilot", false)
-    vim.notify("Copilot Disabled", vim.log.levels.INFO)
-  else
-    vim.lsp.enable("copilot")
-    vim.notify("Copilot Enabled", vim.log.levels.INFO)
-  end
-end, { desc = "Toggle Copilot" })
-
--- Treesitter ------------------------------------------------------------------
-vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
-
-local configs = require("nvim-treesitter.configs")
-configs.setup({
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "zig" },
-  highlight = { enable = true, additional_vim_regex_highlighting = false },
-})
 
 vim.api.nvim_create_autocmd("PackChanged", {
   callback = function(ev)
@@ -342,26 +407,13 @@ vim.api.nvim_create_autocmd("PackChanged", {
   end,
 })
 
--- Async Tasks -----------------------------------------------------------------
-vim.pack.add({
-  "https://github.com/skywind3000/asyncrun.vim",
-  "https://github.com/skywind3000/asynctasks.vim",
-})
+vim.pack.add(plugins)
 
-vim.g.asyncrun_open = 10
-vim.g.asyncrun_auto = "make"
-
-vim.api.nvim_create_autocmd("User", {
-  pattern = "AsyncRunStop",
-  callback = function()
-    vim.cmd("silent! cnext")
-  end,
-})
-
-vim.keymap.set("n", "<C-q>", function()
-  vim.cmd("call asyncrun#quickfix_toggle(10)")
-end, { silent = true, desc = "Quickfix List" })
-
-vim.keymap.set("n", "<leader>rb", ":AsyncTask build<cr>", { silent = true, desc = "AsyncTask build" })
-vim.keymap.set("n", "<leader>rt", ":AsyncTask test<cr>", { silent = true, desc = "AsyncTask test" })
-vim.keymap.set("n", "<leader>rr", ":AsyncTask run<cr>", { silent = true, desc = "AsyncTask run" })
+for _, plugin in ipairs(plugins) do
+  if type(plugin) == "table" then
+    local setup = plugin["setup"]
+    if type(setup) == "function" then
+      setup()
+    end
+  end
+end
