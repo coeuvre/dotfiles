@@ -77,15 +77,22 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 -- Diagnostic
-local diagnostic_goto = function(next, severity)
-  local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-  severity = severity and vim.diagnostic.severity[severity] or nil
+local diagnostic_jump = function(count)
   return function()
-    go({ severity = severity })
+    vim.diagnostic.jump({
+      count = count,
+      on_jump = function(_, bufnr)
+        vim.diagnostic.open_float({
+          bufnr = bufnr,
+          scope = "cursor",
+          focus = false,
+        })
+      end,
+    })
   end
 end
-vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
-vim.keymap.set("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+vim.keymap.set("n", "]d", diagnostic_jump(1), { desc = "Next Diagnostic" })
+vim.keymap.set("n", "[d", diagnostic_jump(-1), { desc = "Prev Diagnostic" })
 
 vim.api.nvim_create_user_command("FixAll", function()
   vim.lsp.buf.code_action({
@@ -350,6 +357,7 @@ local plugins = {
   -- Treesitter ----------------------------------------------------------------
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter",
+    version = "main",
     setup = function()
       local parsers = { "c", "cpp", "lua", "vim", "vimdoc", "query", "zig" }
 
