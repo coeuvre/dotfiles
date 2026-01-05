@@ -1,4 +1,5 @@
 fish_add_path ~/bin
+fish_add_path ~/.local/bin
 fish_add_path ~/.cargo/bin
 
 set -x EDITOR nvim
@@ -15,6 +16,6 @@ if type -q zoxide
 end
 
 if type -q jj
-    COMPLETE=fish jj | source
+    jj util completion fish | source
 end
 
