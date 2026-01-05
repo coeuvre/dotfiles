@@ -408,17 +408,6 @@ local plugins = {
   },
 }
 
-vim.api.nvim_create_autocmd("PackChanged", {
-  callback = function(ev)
-    local name, kind = ev.data.spec.name, ev.data.kind
-    if kind == "install" or kind == "update" then
-      if name == "nvim-treesitter" then
-        vim.cmd("TSUpdate")
-      end
-    end
-  end,
-})
-
 vim.pack.add(plugins)
 
 for _, plugin in ipairs(plugins) do
@@ -429,3 +418,14 @@ for _, plugin in ipairs(plugins) do
     end
   end
 end
+
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if kind == "install" or kind == "update" then
+      if name == "nvim-treesitter" then
+        vim.cmd("TSUpdate")
+      end
+    end
+  end,
+})
