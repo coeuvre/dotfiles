@@ -216,6 +216,17 @@ local plugins = {
         keymap = {
           fzf = {
             ["ctrl-q"] = "select-all+accept",
+            ["ctrl-d"] = "half-page-down",
+            ["ctrl-u"] = "half-page-up",
+          },
+        },
+        fzf_opts = {
+          ["--layout"] = "default",
+        },
+        winopts = {
+          preview = {
+            layout = "vertical",
+            vertical = "up:60%",
           },
         },
       })
@@ -290,6 +301,12 @@ local plugins = {
             "fallback",
           },
           ["<S-Tab>"] = { "fallback" },
+        },
+        cmdline = {
+          keymap = {
+            preset = "inherit",
+            ["<Tab>"] = { "show", "select_and_accept" },
+          },
         },
         completion = {
           trigger = {
