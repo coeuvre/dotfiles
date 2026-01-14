@@ -216,17 +216,12 @@ local plugins = {
         keymap = {
           fzf = {
             ["ctrl-q"] = "select-all+accept",
-            ["ctrl-d"] = "half-page-down",
-            ["ctrl-u"] = "half-page-up",
           },
-        },
-        fzf_opts = {
-          ["--layout"] = "default",
         },
         winopts = {
           preview = {
             layout = "vertical",
-            vertical = "up:60%",
+            vertical = "down:60%",
           },
         },
       })
