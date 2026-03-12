@@ -1,7 +1,7 @@
 term = tmux-256color
 
 font-family = "JetBrainsMonoNL NFP"
-theme = catppuccin-mocha
+theme = "Catppuccin Mocha"
 
 app-notifications = no-clipboard-copy
 confirm-close-surface = false
