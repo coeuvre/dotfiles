@@ -375,7 +375,7 @@ local plugins = {
     src = "https://github.com/nvim-treesitter/nvim-treesitter",
     version = "main",
     setup = function()
-      local parsers = { "c", "cpp", "lua", "vim", "vimdoc", "query", "zig" }
+      local parsers = { "bash", "c", "cpp", "lua", "vim", "vimdoc", "query", "zig" }
 
       pcall(require("nvim-treesitter").install, parsers)
 
