@@ -1,2 +1,3 @@
 fish_variables
-conf.d
+conf.d/
+functions/
