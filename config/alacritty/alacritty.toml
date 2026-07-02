@@ -1,9 +1,6 @@
 [selection]
 save_to_clipboard = true
 
-[font]
-size = 13
-
 # Catppuccin Mocha
 [colors.primary]
 background = "#1e1e2e"
