@@ -1,19 +1,8 @@
-[env]
-TERM = "xterm-256color"
-
-[window]
-startup_mode = "Maximized"
-
 [selection]
 save_to_clipboard = true
 
-[font.normal]
-family = "JetBrainsMonoNL NFP"
-
-[keyboard]
-bindings = [
-  { key = "N", mods = "Control|Shift", action = "SpawnNewInstance" }
-]
+[font]
+size = 13
 
 # Catppuccin Mocha
 [colors.primary]
