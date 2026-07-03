@@ -6,6 +6,23 @@ import = [
 [selection]
 save_to_clipboard = true
 
+# Forward Ctrl + Tab
+[[keyboard.bindings]]
+key = "Tab"
+mods = "Control"
+chars = "\u001b[27;5;9~"
+
+# Forward Ctrl + Shift + Tab
+[[keyboard.bindings]]
+key = "Tab"
+mods = "Control|Shift"
+chars = "\u001b[27;6;9~"
+
+[[keyboard.bindings]]
+key = "N"
+mods = "Control|Shift"
+action = "CreateNewWindow"
+
 # Catppuccin Mocha
 [colors.primary]
 background = "#1e1e2e"
