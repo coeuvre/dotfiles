@@ -18,6 +18,12 @@ key = "Tab"
 mods = "Control|Shift"
 chars = "\u001b[27;6;9~"
 
+# Forward Shift + Enter
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001b[13;2u"
+
 [[keyboard.bindings]]
 key = "N"
 mods = "Control|Shift"
