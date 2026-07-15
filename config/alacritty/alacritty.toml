@@ -24,6 +24,52 @@ key = "Return"
 mods = "Shift"
 chars = "\u001b[13;2u"
 
+# Forward Ctrl + [1-9]
+[[keyboard.bindings]]
+key = "Key1"
+mods = "Control"
+chars = "\u001b[27;5;49~"
+
+[[keyboard.bindings]]
+key = "Key2"
+mods = "Control"
+chars = "\u001b[27;5;50~"
+
+[[keyboard.bindings]]
+key = "Key3"
+mods = "Control"
+chars = "\u001b[27;5;51~"
+
+[[keyboard.bindings]]
+key = "Key4"
+mods = "Control"
+chars = "\u001b[27;5;52~"
+
+[[keyboard.bindings]]
+key = "Key5"
+mods = "Control"
+chars = "\u001b[27;5;53~"
+
+[[keyboard.bindings]]
+key = "Key6"
+mods = "Control"
+chars = "\u001b[27;5;54~"
+
+[[keyboard.bindings]]
+key = "Key7"
+mods = "Control"
+chars = "\u001b[27;5;55~"
+
+[[keyboard.bindings]]
+key = "Key8"
+mods = "Control"
+chars = "\u001b[27;5;56~"
+
+[[keyboard.bindings]]
+key = "Key9"
+mods = "Control"
+chars = "\u001b[27;5;57~"
+
 [[keyboard.bindings]]
 key = "N"
 mods = "Control|Shift"
