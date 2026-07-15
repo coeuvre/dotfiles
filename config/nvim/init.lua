@@ -227,12 +227,6 @@ local plugins = {
           },
           ["<S-Tab>"] = { "fallback" },
         },
-        cmdline = {
-          keymap = {
-            preset = "inherit",
-            ["<Tab>"] = { "show", "select_and_accept" },
-          },
-        },
         completion = {
           trigger = {
             show_in_snippet = false,
